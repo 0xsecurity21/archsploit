@@ -1,0 +1,5 @@
+# dconf path
+[org/gnome/shell/extensions/user-theme]
+
+# dconf key and value
+name='Yaru-dark'

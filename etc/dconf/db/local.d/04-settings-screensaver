@@ -1,0 +1,5 @@
+# dconf path
+[org/gnome/desktop/screensaver]
+
+# dconf key and value
+picture-uri='file:///usr/share/backgrounds/gnome/arch-linux-minimalism-3840x2160.jpg'

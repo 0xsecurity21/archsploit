@@ -1,0 +1,5 @@
+# dconf path
+[org/gnome/login-screen]
+
+# dconf key and value
+disable-user-list=true

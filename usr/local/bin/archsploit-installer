@@ -1,0 +1,910 @@
+#!/usr/bin/env bash
+set -e
+
+## ---------------- ##
+## Define Variables ##
+## ---------------- ##
+
+## Colour Output
+## -------------
+color_d9534f="\033[01;31m"	# Issues/Errors
+color_5cb85c="\033[01;32m"	# Success
+color_f0ad4e="\033[01;33m"	# Warnings/Information
+color_0275d8="\033[01;34m"	# Heading
+color_revert="\033[00m"		# Normal
+
+## Load Banner
+## -----------
+function showbanner()
+{
+	clear
+	echo -e "${color_d9534f}                  _               _       _ _       ${color_revert}"
+	echo -e "${color_d9534f}    __ _ _ __ ___| |__  ___ _ __ | | ___ (_) |_     ${color_revert}"
+	echo -e "${color_d9534f}   / _' | '__/ __| '_ \/ __| '_ \| |/ _ \| | __|    ${color_revert}"
+	echo -e "${color_d9534f}  | (_| | | | (__| | | \__ \ |_) | | (_) | | |_     ${color_revert}"
+	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
+	echo -e "${color_d9534f}                           |_|            v2.0.2    ${color_revert}"
+	echo
+	echo -e "${color_5cb85c} [i] [Package]: archsploit-installer${color_revert}"
+	echo -e "${color_5cb85c} [i] [Website]: https://neoslab.com${color_revert}"
+  	echo
+  	sleep 1s
+}
+
+## Load Status
+## -----------
+loadstatus()
+{
+    color_d9534f=$(tput setaf 1)
+    color_5cb85c=$(tput setaf 2)
+    color_f0ad4e=$(tput setaf 3)
+    color_0275d8=$(tput setaf 4)
+    color_revert=$(tput sgr0)
+
+    message=$1
+    display="[$2]"
+
+    if [ "$3" == "issue" ];
+    then
+        return="$color_d9534f${display}$color_revert"
+    elif [ "$3" == "valid" ];
+    then
+        return="$color_5cb85c${display}$color_revert"
+    elif [ "$3" == "warning" ];
+    then
+        return="$color_f0ad4e${display}$color_revert"
+    elif [ "$3" == "info" ];
+    then
+        return="$color_f0ad4e${display}$color_revert"
+    else
+        return="$color_revert${display}$color_revert"
+    fi
+
+    let COL=$(tput cols)-${#message}+${#return}-${#display}
+
+    echo -n $message
+    printf "%${COL}s\n"  "$return"
+}
+
+## Display Usage
+## -------------
+function usage
+{
+	clear
+    echo "usage: archsploit-installer [-p --package] or [-h --help]"
+	echo
+    echo "  -p      Package to be installed [sqlsecure|virtualbox|pentest|zaproxy]"
+    echo "  -h      Display this help menu"
+	echo
+    exit 1
+}
+
+## Check Internet status
+## ---------------------
+function checkinternet()
+{
+	for i in {1..10};
+	do
+		ping -c 1 -W ${i} www.google.com &>/dev/null && break;
+	done
+
+	if [[ "$?" -ne 0 ]];
+	then
+		cd /tmp/
+		echo
+		echo -e " ${color_d9534f}[!]${color_revert} An unknown error occured ~ Possible DNS issues or no Internet connection"
+		echo -e " ${color_d9534f}[!]${color_revert} Quitting ..."
+		echo -e "\n"
+		exit 1
+	fi
+}
+
+## Display Warning
+## ---------------
+function warning()
+{
+    echo -e "${color_0275d8} ** Welcome to ArchSploit System Installer **${color_revert}"
+    echo
+    echo -e "${color_d9534f} [!] This script can help you to install and/or configure package(s)${color_revert}"
+    echo -e "${color_d9534f} [!] Please DO NOT use this script if you have any doubt${color_revert}"
+    echo
+    read -p " [?] Do you want to continue ? [y/N] " yn
+    case $yn in
+        [Yy]* )
+			clear
+            ;;
+        [Nn]* )
+            exit
+            ;;
+        * )
+            exit
+            ;;
+    esac
+}
+
+## Disable Sudo Timeout
+## --------------------
+function disableTimeout
+{
+	sudo sh -c 'echo "\nDefaults timestamp_timeout=-1" >> /etc/sudoers'
+}
+
+## Enable Sudo Timeout
+## -------------------
+function enableTimeout
+{
+	sudo sed -i "/Defaults timestamp_timeout=-1/d" /etc/sudoers
+}
+
+## Configure MySQL Secure
+## ----------------------
+function sqlsecure()
+{
+	echo
+    echo -e "${color_0275d8}# Step: sqlsecure()${color_revert}"
+	sleep 5
+
+	sudo mysql_secure_installation
+
+	## Final Notice
+	## ------------
+	echo
+	echo -e "${color_5cb85c}ArchSploit SQL Secure configured successfully${color_revert}"
+	sleep 10
+}
+
+## Configure Virtualbox
+## --------------------
+function virtualbox()
+{
+	echo
+    echo -e "${color_0275d8}# Step: virtualbox()${color_revert}"
+	sleep 5
+
+	sudo modprobe vboxdrv
+    echo 'vboxdrv' | sudo tee /etc/modules-load.d/virtualbox.conf >/dev/null 2>&1
+    sudo usermod -aG vboxusers $USER
+    loadstatus " [+] Configuring Virtualbox" "OK" "valid"
+
+	## Final Notice
+	## ------------
+	echo
+	echo -e "${color_5cb85c}ArchSploit Virtualbox configured successfully${color_revert}"
+	sleep 10
+}
+
+## Install Zaproxy
+## ---------------
+function zaproxy
+{
+	echo
+    echo -e "${color_0275d8}# Step: zaproxy()${color_revert}"
+	sleep 5
+
+	wget -O "/tmp/ZAP_2_9_0_unix.sh" https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2_9_0_unix.sh >/dev/null 2>&1
+	if [ -f "/tmp/ZAP_2_9_0_unix.sh" ];
+	then
+	    cd /tmp/
+		sudo chmod +x /tmp/ZAP_2_9_0_unix.sh
+		sudo ./ZAP_2_9_0_unix.sh
+	    loadstatus " [+] Installing Zaproxy" "OK" "valid"
+	else
+		loadstatus " [*] Installing Zaproxy" "NO" "issue"
+	fi
+}
+
+## Install Pentest Tools
+## ---------------------
+function pentest()
+{
+	echo
+    echo -e "${color_0275d8}# Step: pentest()${color_revert}"
+	sleep 5
+
+	## Update Packages
+	## ---------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Disable Sudo Timeout
+	## --------------------
+	disableTimeout
+
+	## Correct User Permissions
+    ## ------------------------
+    sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+
+	## Airsnort
+    ## https://sourceforge.net/projects/airsnort/
+    ## ------------------------------------------
+    cd /opt/airsnort/
+    sudo ./configure >/dev/null 2>&1
+    sudo make >/dev/null 2>&1
+    sudo make install >/dev/null 2>&1
+    loadstatus " [+] Installing Airsnort" "OK" "valid"
+
+    ## ApkTool
+    ## https://code.google.com/p/android-apktool/
+    ## ------------------------------------------
+    sudo chmod +x /opt/apktool/apktool
+    sudo chmod +x /opt/apktool/apktool.jar
+    sudo ln -s /opt/apktool/apktool /usr/bin/apktool
+    loadstatus " [+] Installing ApkTool" "OK" "valid"
+
+    ## Arachni
+    ## http://www.arachni-scanner.com
+    ## ------------------------------
+	wget -O "/tmp/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz" https://github.com/Arachni/arachni/releases/download/v1.5.1/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz >/dev/null 2>&1
+	if [ -f "/tmp/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz" ];
+	then
+	    cd /tmp/
+	    tar -xvf arachni-1.5.1-0.5.12-linux-x86_64.tar.gz >/dev/null 2>&1
+		sudo mv /tmp/arachni-1.5.1-0.5.12 /opt/arachni
+		sudo chmod +x /opt/arachni/bin/arachni*
+	    sudo touch /usr/local/bin/arachni
+	    sudo chmod +x /usr/local/bin/arachni
+	    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+	    echo 'clear' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+	    echo 'cd /opt/arachni/bin/' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+	    echo 'sudo ./arachni $@' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+	    loadstatus " [+] Installing Arachni" "OK" "valid"
+	else
+		loadstatus " [*] Installing Arachni" "NO" "issue"
+	fi
+
+	## Automater
+    ## https://github.com/1aN0rmus/TekDefense-Automater
+    ## ------------------------------------------------
+    sudo chmod +x /opt/automater/automater.py
+    sudo ln -s /opt/automater/automater.py /usr/bin/automater
+    loadstatus " [+] Installing Automater" "OK" "valid"
+
+    ## Bed
+    ## http://ww5.snake-basket.de/
+    ## ---------------------------
+    sudo chmod +x /opt/bed/bed.pl
+    sudo touch /usr/local/bin/bed
+    sudo chmod +x /usr/local/bin/bed
+    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+    echo 'clear' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+    echo 'cd /opt/bed/' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+    echo 'perl bed.pl $@' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+    loadstatus " [+] Installing Bed" "OK" "valid"
+
+    ## Blackeye
+    ## https://github.com/thelinuxchoice/blackeye
+    ## ------------------------------------------
+    sudo chmod +x /opt/blackeye/blackeye.sh
+    sudo ln -s /opt/blackeye/blackeye.sh /usr/bin/blackeye
+	loadstatus " [+] Installing Blackeye" "OK" "valid"
+
+	## Blueranger
+    ## http://www.hackfromacave.com/projects/blueranger.html
+    ## -----------------------------------------------------
+    sudo chmod +x /opt/blueranger/blueranger.sh
+    sudo ln -s /opt/blueranger/blueranger.sh /usr/bin/blueranger
+	loadstatus " [+] Installing Blueranger" "OK" "valid"
+
+	## BurpSuite
+    ## https://portswigger.net/DownloadUpdate.ashx?Product=Free
+    ## --------------------------------------------------------
+	wget -O "/tmp/burpsuite.jar" https://portswigger.net/DownloadUpdate.ashx?Product=Free >/dev/null 2>&1
+	if [ -f "/tmp/burpsuite.jar" ];
+	then
+	    sudo mkdir -p /opt/burpsuite/
+		sudo mv /tmp/burpsuite.jar /opt/burpsuite/
+		sudo chmod +x /opt/burpsuite/burpsuite.jar
+	    sudo touch /usr/local/bin/burpsuite
+	    sudo chmod +x /usr/local/bin/burpsuite
+	    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+	    echo 'clear' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+	    echo 'cd /opt/burpsuite/' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+	    echo 'sudo /usr/bin/java -jar /opt/burpsuite/burpsuite.jar' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+		loadstatus " [+] Installing BurpSuite" "OK" "valid"
+	else
+		loadstatus " [*] Installing BurpSuite" "NO" "issue"
+	fi
+
+	## CheckURLs
+    ## https://neoslab.com/
+    ## --------------------
+    sudo chmod +x /opt/checkurls/checkurls.py
+    sudo ln -s /opt/checkurls/checkurls.py /usr/bin/checkurls
+	loadstatus " [+] Installing CheckURLs" "OK" "valid"
+
+	## CMSMap
+    ## https://github.com/Dionach/CMSmap
+    ## ---------------------------------
+    sudo chmod +x /opt/cmsmap/cmsmap.py
+    sudo ln -s /opt/cmsmap/cmsmap.py /usr/bin/cmsmap
+	loadstatus " [+] Installing CMSMap" "OK" "valid"
+
+	## ColdWar
+    ## https://github.com/ChrisTruncer/PenTestScripts
+    ## ----------------------------------------------
+    sudo chmod +x /opt/coldwar/coldwar.py
+    sudo ln -s /opt/coldwar/coldwar.py /usr/bin/coldwar
+	loadstatus " [+] Installing ColdWar" "OK" "valid"
+
+	## Commix
+    ## https://github.com/commixproject/commix
+    ## ---------------------------------------
+    sudo chmod +x /opt/commix/commix.py
+    sudo touch /usr/local/bin/commix
+    sudo chmod +x /usr/local/bin/commix
+    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+    echo 'clear' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+    echo 'cd /opt/commix/' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+    echo 'sudo python commix.py $@' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+	loadstatus " [+] Installing Commix" "OK" "valid"
+
+    ## Crackle
+    ## https://github.com/mikeryan/crackle
+    ## -----------------------------------
+	cd /opt/crackle/
+	sudo make >/dev/null 2>&1
+	sudo make install >/dev/null 2>&1
+	loadstatus " [+] Installing Crackle" "OK" "valid"
+
+	## CredCrack
+    ## https://github.com/gojhonny/CredCrack
+    ## -------------------------------------
+    sudo chmod +x /opt/credcrack/credcrack.py
+    sudo ln -s /opt/credcrack/credcrack.py /usr/bin/credcrack
+	loadstatus " [+] Installing CredCrack" "OK" "valid"
+
+	## CredSniper
+    ## https://github.com/ustayready/CredSniper
+    ## ----------------------------------------
+    sudo chmod +x /opt/credsniper/credsniper.py
+    sudo touch /usr/local/bin/credsniper
+    sudo chmod +x /usr/local/bin/credsniper
+    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+    echo 'clear' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+    echo 'cd /opt/credsniper/' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+    echo 'sudo python credsniper.py $@' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+	loadstatus " [+] Installing CredSniper" "OK" "valid"
+
+	## Cymothoa
+    ## http://sourceforge.net/projects/cymothoa/
+    ## -----------------------------------------
+	cd /opt/cymothoa/
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/cymothoa/bgrep /usr/bin/bgrep
+	sudo ln -s /opt/cymothoa/cymothoa /usr/bin/cymothoa
+	loadstatus " [+] Installing Cymothoa" "OK" "valid"
+
+	## Ddrescue
+    ## http://www.garloff.de/kurt/linux/ddrescue/
+    ## ------------------------------------------
+	cd /opt/ddrescue/
+	sudo make >/dev/null 2>&1
+	sudo mv /opt/ddrescue/dd_rescue /opt/ddrescue/ddrescue
+	sudo ln -s /opt/ddrescue/ddrescue /usr/bin/ddrescue
+	loadstatus " [+] Installing Ddrescue" "OK" "valid"
+
+	## Dedsploit
+    ## https://github.com/ex0dus-0x/dedsploit/
+    ## ---------------------------------------
+    sudo chmod +x /opt/dedsploit/dedsploit.py
+    sudo ln -s /opt/dedsploit/dedsploit.py /usr/bin/dedsploit
+	loadstatus " [+] Installing Dedsploit" "OK" "valid"
+
+	## Dex2jar
+	## https://bitbucket.org/pxb1988/Dex2jar
+	## -------------------------------------
+	sudo chmod +x /opt/dex2jar/*.sh
+	sudo ln -s /opt/dex2jar/d2j-dex2jar.sh /usr/bin/dex2jar
+	loadstatus " [+] Installing Dex2jar" "OK" "valid"
+
+	## DirBuster
+	## https://sourceforge.net/projects/dirbuster/
+	## -------------------------------------------
+	sudo chmod +x /opt/dirbuster/dirbuster.jar
+	sudo touch /usr/local/bin/dirbuster
+	sudo chmod +x /usr/local/bin/dirbuster
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+	echo 'cd /opt/dirbuster/' | sudo tee -a /usr/local/bin/armitage >/dev/null 2>&1
+	echo 'sudo /usr/bin/java -jar /opt/dirbuster/dirbuster.jar' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+	loadstatus " [+] Installing DirBuster" "OK" "valid"
+
+	## DNSMap
+	## https://code.google.com/archive/p/dnsmap/
+	## -----------------------------------------
+	cd /opt/dnsmap/
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/dnsmap/dnsmap /usr/bin/dnsmap
+	sudo ln -s /opt/dnsmap/dnsmap-bulk.sh /usr/bin/dnsmap-bulk
+	loadstatus " [+] Installing DNSMap" "OK" "valid"
+
+	## Dracnmap
+	## https://github.com/Screetsec/Dracnmap/
+	## --------------------------------------
+	sudo chmod +x /opt/dracnmap/dracnmap.sh
+	sudo ln -s /opt/dracnmap/dracnmap.sh /usr/bin/dracnmap
+	loadstatus " [+] Installing Dracnmap" "OK" "valid"
+
+	## Dumpzilla
+	## https://www.dumpzilla.org/
+	## --------------------------
+	sudo chmod +x /opt/dumpzilla/dumpzilla.py
+	sudo ln -s /opt/dumpzilla/dumpzilla.py /usr/bin/dumpzilla
+	loadstatus " [+] Installing Dumpzilla" "OK" "valid"
+
+	## EapMd5pass
+	## http://www.willhackforsushi.com/
+	## --------------------------------
+	cd /opt/eapmd5pass/
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/eapmd5pass/eapmd5pass /usr/bin/eapmd5pass
+	loadstatus " [+] Installing EapMd5pass" "OK" "valid"
+
+	## Enum4Linux
+	## https://labs.portcullis.co.uk/tools/enum4linux/
+	## -----------------------------------------------
+	sudo chmod +x /opt/enum4linux/enum4linux.pl
+	sudo ln -s /opt/enum4linux/enum4linux.pl /usr/bin/enum4linux
+	loadstatus " [+] Installing Enum4Linux" "OK" "valid"
+
+	## Enumiax
+	## https://sourceforge.net/projects/enumiax/
+	## -----------------------------------------
+	cd /opt/enumiax/
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/enumiax/enumiax /usr/bin/enumiax
+	loadstatus " [+] Installing Enumiax" "OK" "valid"
+
+	## Findmyhash
+	## https://code.google.com/archive/p/findmyhash/
+	## ---------------------------------------------
+	sudo chmod +x /opt/findmyhash/findmyhash.py
+	sudo ln -s /opt/findmyhash/findmyhash.py /usr/bin/findmyhash
+	loadstatus " [+] Installing Findmyhash" "OK" "valid"
+
+	## Hammer
+	## https://github.com/cyweb/hammer/
+	## --------------------------------
+	sudo chmod +x /opt/hammer/hammer.py
+	sudo ln -s /opt/hammer/hammer.py /usr/bin/hammer
+	loadstatus " [+] Installing Hammer" "OK" "valid"
+
+	## HashID
+	## http://code.google.com/p/hash-identifier/
+	## -----------------------------------------
+	sudo chmod +x /opt/hashid/hashid.py
+	sudo ln -s /opt/hashid/hashid.py /usr/bin/hashid
+	loadstatus " [+] Installing HashID" "OK" "valid"
+
+	## HashTag
+	## https://github.com/SmeegeSec/HashTag/
+	## -------------------------------------
+	sudo chmod +x /opt/hashtag/hashtag.py
+	sudo ln -s /opt/hashtag/hashtag.py /usr/bin/hashtag
+	loadstatus " [+] Installing HashTag" "OK" "valid"
+
+	## Iaxflood
+	## http://www.hackingexposedvoip.com/sec_tools.html
+	## ------------------------------------------------
+	cd /opt/iaxflood/
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/iaxflood/iaxflood /usr/bin/iaxflood
+	loadstatus " [+] Installing Iaxflood" "OK" "valid"
+
+	## Javasnoop
+	## https://code.google.com/archive/p/javasnoop/
+	## --------------------------------------------
+	sudo chmod +x /opt/javasnoop/javasnoop.jar
+	sudo touch /usr/local/bin/javasnoop
+	sudo chmod +x /usr/local/bin/javasnoop
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
+	echo 'sudo /usr/bin/java -jar /opt/javasnoop/javasnoop.jar' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
+	loadstatus " [+] Installing Javasnoop" "OK" "valid"
+
+	## Jexboss
+	## https://github.com/joaomatosf/jexboss/
+	## --------------------------------------
+	sudo chmod +x /opt/jexboss/jexboss.py
+	sudo touch /usr/local/bin/jexboss
+	sudo chmod +x /usr/local/bin/jexboss
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+	echo 'cd /opt/jexboss/' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+	echo 'sudo python jexboss.py $@' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+	loadstatus " [+] Installing Jexboss" "OK" "valid"
+
+	## Joomscan
+	## https://github.com/rezasp/joomscan/
+	## -----------------------------------
+	sudo chmod +x /opt/joomscan/joomscan.pl
+	sudo ln -s /opt/joomscan/joomscan.pl /usr/bin/joomscan
+	loadstatus " [+] Installing Joomscan" "OK" "valid"
+
+	## JSQL-Injection
+	## https://github.com/ron190/jsql-injection/
+	## -----------------------------------------
+	sudo chmod +x /opt/jsql-injection/jsql-injection.jar
+	sudo touch /usr/local/bin/jsql-injection
+	sudo chmod +x /usr/local/bin/jsql-injection
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
+	echo 'sudo /usr/bin/java -jar /opt/jsql-injection/jsql-injection.jar' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
+	loadstatus " [+] Installing JSQL-Injection" "OK" "valid"
+
+	## Libenom
+	## https://github.com/bounteous/libenom/
+	## -------------------------------------
+	sudo chmod +x /opt/libenom/libenom.py
+	sudo ln -s /opt/libenom/libenom.py /usr/bin/libenom
+	loadstatus " [+] Installing Libenom" "OK" "valid"
+
+	## LinEnum
+	## https://github.com/rebootuser/LinEnum/
+	## --------------------------------------
+	sudo chmod +x /opt/linenum/linenum.sh
+	sudo ln -s /opt/linenum/linenum.sh /usr/bin/linenum
+	loadstatus " [+] Installing LinEnum" "OK" "valid"
+
+	## MagicTree
+	## https://www.gremwell.com/
+	## -------------------------
+	sudo chmod +x /opt/magictree/magictree.jar
+	sudo touch /usr/local/bin/magictree
+	sudo chmod +x /usr/local/bin/magictree
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
+	echo 'sudo /usr/bin/java -jar /opt/magictree/magictree.jar' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
+	loadstatus " [+] Installing MagicTree" "OK" "valid"
+
+	## Metagoofil
+	## https://code.google.com/archive/p/metagoofil/
+	## ---------------------------------------------
+	sudo chmod +x /opt/metagoofil/metagoofil.py
+	sudo ln -s /opt/metagoofil/metagoofil.py /usr/bin/metagoofil
+	loadstatus " [+] Installing Metagoofil" "OK" "valid"
+
+	## MITM-Dump
+	## https://mitmproxy.org/
+	## ----------------------
+	sudo chmod +x /opt/mitmdump/mitmdump
+	sudo ln -s /opt/mitmdump/mitmdump /usr/bin/mitmdump
+	loadstatus " [+] Installing MITM-Dump" "OK" "valid"
+
+	## MITM-Proxy
+	## https://mitmproxy.org/
+	## ----------------------
+	sudo chmod +x /opt/mitmproxy/mitmproxy
+	sudo ln -s /opt/mitmproxy/mitmproxy /usr/bin/mitmproxy
+	loadstatus " [+] Installing MITM-Proxy" "OK" "valid"
+
+	## MITM-Web
+	## https://mitmproxy.org/
+	## ----------------------
+	sudo chmod +x /opt/mitmweb/mitmweb
+	sudo ln -s /opt/mitmweb/mitmweb /usr/bin/mitmweb
+	loadstatus " [+] Installing MITM-Web" "OK" "valid"
+
+	## Nikto
+	## https://github.com/sullo/nikto/
+	## -------------------------------
+	sudo chmod +x /opt/nikto/program/nikto.pl
+	sudo touch /usr/local/bin/nikto
+	sudo chmod +x /usr/local/bin/nikto
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+	echo 'cd /opt/nikto/program/' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+	echo 'sudo ./nikto.pl $@' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+	loadstatus " [+] Installing Nikto" "OK" "valid"
+
+	## Nishang
+	## https://github.com/samratashok/nishang/
+	## ---------------------------------------
+	sudo touch /usr/local/bin/nishang
+	sudo chmod +x /usr/local/bin/nishang
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
+	echo 'tree /opt/nishang/' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
+	loadstatus " [+] Installing Nishang" "OK" "valid"
+
+	## Nullinux
+	## https://github.com/m8r0wn/nullinux/
+	## -----------------------------------
+	sudo chmod +x /opt/nullinux/nullinux.py
+	sudo ln -s /opt/nullinux/nullinux.py /usr/bin/nullinux
+	loadstatus " [+] Installing Nullinux" "OK" "valid"
+
+	## Ohrwurm
+	## https://github.com/mazzoo/ohrwurm/
+	## ----------------------------------
+	cd /opt/ohrwurm/
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/ohrwurm/ohrwurm /usr/bin/ohrwurm
+	loadstatus " [+] Installing Ohrwurm" "OK" "valid"
+
+	## Oscanner
+	## http://www.cqure.net/wp/tools/database/oscanner/
+	## ------------------------------------------------
+	sudo chmod +x /opt/oscanner/oscanner.sh
+	sudo touch /usr/local/bin/oscanner
+	sudo chmod +x /usr/local/bin/oscanner
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+	echo 'cd /opt/oscanner/' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+	echo './oscanner.sh $@' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+	loadstatus " [+] Installing Oscanner" "OK" "valid"
+
+	## Pdf-Parser
+	## https://blog.didierstevens.com/programs/pdf-parser/
+	## ---------------------------------------------------
+	sudo chmod +x /opt/pdf-parser/pdf-parser.py
+	sudo ln -s /opt/pdf-parser/pdf-parser.py /usr/bin/pdf-parser
+	loadstatus " [+] Installing Pdf-Parser" "OK" "valid"
+
+	## PocSuite3
+	## https://github.com/knownsec/pocsuite3/
+	## --------------------------------------
+	sudo pip3 install pocsuite3 >/dev/null 2>&1
+	loadstatus " [+] Installing PocSuite3" "OK" "valid"
+
+	## PowerSploit
+	## https://github.com/PowerShellMafia/PowerSploit/
+	## -----------------------------------------------
+	sudo touch /usr/local/bin/powersploit
+	sudo chmod +x /usr/local/bin/powersploit
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
+	echo 'tree /opt/powersploit/' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
+	loadstatus " [+] Installing PowerSploit" "OK" "valid"
+
+	## Pwnat
+	## https://samy.pl/pwnat/
+	## ----------------------
+	cd /opt/pwnat/
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/pwnat/pwnat /usr/bin/pwnat
+	loadstatus " [+] Installing Pwnat" "OK" "valid"
+
+	## Rainbowcrack
+	## https://project-rainbowcrack.com/
+	## ---------------------------------
+	sudo chmod +x /opt/rainbowcrack/rcrack
+	sudo chmod +x /opt/rainbowcrack/rt2rtc
+	sudo chmod +x /opt/rainbowcrack/rtc2rt
+	sudo chmod +x /opt/rainbowcrack/rtgen
+	sudo chmod +x /opt/rainbowcrack/rtmerge
+	sudo chmod +x /opt/rainbowcrack/rtsort
+	sudo touch /usr/local/bin/rcrack
+	sudo chmod +x /usr/local/bin/rcrack
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+	echo './rcrack' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+	sudo touch /usr/local/bin/rt2rtc
+	sudo chmod +x /usr/local/bin/rt2rtc
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+	echo './rt2rtc' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+	sudo touch /usr/local/bin/rtc2rt
+	sudo chmod +x /usr/local/bin/rtc2rt
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+	echo './rtc2rt' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+	sudo touch /usr/local/bin/rtgen
+	sudo chmod +x /usr/local/bin/rtgen
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+	echo './rtgen' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+	sudo touch /usr/local/bin/rtmerge
+	sudo chmod +x /usr/local/bin/rtmerge
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+	echo './rtmerge' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+	sudo touch /usr/local/bin/rtsort
+	sudo chmod +x /usr/local/bin/rtsort
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+	echo './rtsort' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+	loadstatus " [+] Installing Rainbowcrack" "OK" "valid"
+
+	## Routersploit
+	## https://github.com/threat9/routersploit/
+	## ----------------------------------------
+	cd /opt/routersploit/
+	sudo chmod +x /opt/routersploit/rsf.py
+	sudo touch /usr/local/bin/routersploit
+	sudo chmod +x /usr/local/bin/routersploit
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+	echo 'cd /opt/routersploit/' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+	echo 'sudo ./rsf.py $@' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+	loadstatus " [+] Installing Routersploit" "OK" "valid"
+
+	## Rtpflood
+	## http://www.hackingexposedvoip.com/sec_tools.html
+	## ------------------------------------------------
+	cd /opt/rtpflood/
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/rtpflood/rtpflood /usr/bin/rtpflood
+	loadstatus " [+] Installing Rtpflood" "OK" "valid"
+
+	## Sfuzz
+	## https://github.com/orgcandman/Simple-Fuzzer/
+	## --------------------------------------------
+	cd /opt/sfuzz/
+	sudo ./configure >/dev/null 2>&1
+	sudo make >/dev/null 2>&1
+	sudo make install >/dev/null 2>&1
+	loadstatus " [+] Installing Sfuzz" "OK" "valid"
+
+	## Shellnoob
+	## https://github.com/reyammer/shellnoob/
+	## --------------------------------------
+	sudo chmod +x /opt/shellnoob/shellnoob.py
+	sudo ln -s /opt/shellnoob/shellnoob.py /usr/bin/shellnoob
+	loadstatus " [+] Installing Shellnoob" "OK" "valid"
+
+	## SidGuesser
+	## http://www.cqure.net/wp/tools/database/sidguesser/
+	## --------------------------------------------------
+	sudo chmod +x /opt/sidguesser/configure
+	cd /opt/sidguesser/
+	sudo ./configure >/dev/null 2>&1
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/sidguesser/sidguess /usr/bin/sidguess
+	loadstatus " [+] Installing SidGuesser" "OK" "valid"
+
+	## SMTP User Enum
+	## https://github.com/qashqao/smtp-user-enum/
+	## ------------------------------------------
+	sudo chmod +x /opt/smtp-user-enum/smtp-user-enum.pl
+	sudo ln -s /opt/smtp-user-enum/smtp-user-enum.pl /usr/bin/smtp-user-enum
+	loadstatus " [+] Installing SMTP User Enum" "OK" "valid"
+
+	## SniffJoke
+	## https://github.com/vecna/sniffjoke/
+	## -----------------------------------
+	sudo mkdir -p /opt/sniffjoke/build
+	cd /opt/sniffjoke/build/
+	sudo cmake .. >/dev/null 2>&1
+	sudo make >/dev/null 2>&1
+	sudo make install >/dev/null 2>&1
+	loadstatus " [+] Installing SniffJoke" "OK" "valid"
+
+	## SQLMap
+	## https://github.com/sqlmapproject/sqlmap/
+	## ----------------------------------------
+	sudo chmod +x /opt/sqlmap/sqlmap.py
+	sudo ln -s /opt/sqlmap/sqlmap.py /usr/bin/sqlmap
+	loadstatus " [+] Installing SQLMap" "OK" "valid"
+
+	## SubBrute
+	## https://github.com/TheRook/subbrute/
+	## ------------------------------------
+	sudo chmod +x /opt/subbrute/subbrute.py
+	sudo ln -s /opt/subbrute/subbrute.py /usr/bin/subbrute
+	loadstatus " [+] Installing SubBrute" "OK" "valid"
+
+	## TOR Browser
+	## https://www.torproject.org/
+	## ---------------------------
+	wget -O "/tmp/tor-browser-linux64-9.0.7_en-US.tar.xz" https://www.torproject.org/dist/torbrowser/9.0.7/tor-browser-linux64-9.0.7_en-US.tar.xz >/dev/null 2>&1
+	if [ -f "/tmp/tor-browser-linux64-9.0.7_en-US.tar.xz" ];
+	then
+	    cd /tmp/
+	    tar xf tor-browser-linux64-9.0.7_en-US.tar.xz
+	    sudo mv /tmp/tor-browser_en-US /opt/tor-browser
+		loadstatus " [+] Installing TOR Browser" "OK" "valid"
+	else
+		loadstatus " [*] Installing TOR Browser" "NO" "issue"
+	fi
+
+	## Udpflood
+	## http://www.hackingexposedvoip.com/sec_tools.html
+	## ------------------------------------------------
+	cd /opt/udpflood/
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/udpflood/udpflood /usr/bin/udpflood
+	loadstatus " [+] Installing Udpflood" "OK" "valid"
+
+	## Unicorn
+	## https://github.com/trustedsec/unicorn/
+	## --------------------------------------
+	sudo chmod +x /opt/unicorn/unicorn.py
+	sudo ln -s /opt/unicorn/unicorn.py /usr/bin/unicorn
+	loadstatus " [+] Installing Unicorn" "OK" "valid"
+
+	## WebScarab
+	## http://dawes.za.net/
+	## --------------------
+	sudo chmod +x /opt/webscarab/webscarab.jar
+	sudo touch /usr/local/bin/webscarab
+	sudo chmod +x /usr/local/bin/webscarab
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+	echo 'cd /opt/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+	echo 'sudo /usr/bin/java -jar /opt/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+	loadstatus " [+] Installing WebScarab" "OK" "valid"
+
+	## WebShells
+	## https://tools.kali.org/
+	## -----------------------
+	sudo touch /usr/local/bin/webshells
+	sudo chmod +x /usr/local/bin/webshells
+	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
+	echo 'clear' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
+	echo 'tree /opt/webshells/' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
+	loadstatus " [+] Installing WebShells" "OK" "valid"
+
+	## Xspy
+	## https://github.com/mnp/xspy/
+	## ----------------------------
+	cd /opt/xspy/
+	sudo make >/dev/null 2>&1
+	sudo ln -s /opt/xspy/xspy /usr/bin/xspy
+	loadstatus " [+] Installing Xspy" "OK" "valid"
+
+	## Enable Sudo Timeout
+	## -------------------
+	enableTimeout
+
+	## Correct User Permissions
+    ## ------------------------
+    sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+
+	## Final Notice
+	## ------------
+	echo
+	echo -e "${color_5cb85c}ArchSploit Pentest tools installed successfully${color_revert}"
+	sleep 10
+}
+
+## -------- ##
+## Callback ##
+## -------- ##
+
+if [ "$#" -eq  "0" ]
+then
+	usage
+else
+	if [ "$1" == "--package" -o "$1" == "-p" ];
+	then
+		if [ "$2" == "sqlsecure" -o "$2" == "virtualbox" -o "$2" == "pentest" -o "$2" == "zaproxy" ];
+		then
+			clear
+			sudo -v
+
+			showbanner
+			checkinternet
+			warning
+
+			if [ "$2" == "sqlsecure" ];
+		    then
+				sqlsecure
+		    elif [ "$2" == "virtualbox" ];
+		    then
+				virtualbox
+		    elif [ "$2" == "pentest" ];
+		    then
+		        pentest
+			elif [ "$2" == "zaproxy" ];
+		    then
+		        zaproxy
+			fi
+		else
+			usage
+		fi
+	elif [ "$1" == "--help" -o "$1" == "-h" ];
+	then
+		usage
+	else
+		usage
+	fi
+fi

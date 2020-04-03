@@ -1,0 +1,7 @@
+# dconf path
+[org/gnome/shell/extensions/dash-to-dock]
+
+# dconf key and value
+dash-max-icon-size=32
+extend-height=true
+transparency-mode='FIXED'

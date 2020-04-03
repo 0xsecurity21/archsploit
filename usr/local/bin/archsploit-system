@@ -1,0 +1,316 @@
+#!/usr/bin/env bash
+set -e
+
+## ---------------- ##
+## Define Variables ##
+## ---------------- ##
+
+## Colour Output
+## -------------
+color_d9534f="\033[01;31m"	# Issues/Errors
+color_5cb85c="\033[01;32m"	# Success
+color_f0ad4e="\033[01;33m"	# Warnings/Information
+color_0275d8="\033[01;34m"	# Heading
+color_revert="\033[00m"		# Normal
+
+## Load Banner
+## -----------
+function showbanner()
+{
+	clear
+	echo -e "${color_d9534f}                  _               _       _ _       ${color_revert}"
+	echo -e "${color_d9534f}    __ _ _ __ ___| |__  ___ _ __ | | ___ (_) |_     ${color_revert}"
+	echo -e "${color_d9534f}   / _' | '__/ __| '_ \/ __| '_ \| |/ _ \| | __|    ${color_revert}"
+	echo -e "${color_d9534f}  | (_| | | | (__| | | \__ \ |_) | | (_) | | |_     ${color_revert}"
+	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
+	echo -e "${color_d9534f}                           |_|            v2.0.2    ${color_revert}"
+	echo
+	echo -e "${color_5cb85c} [i] [Package]: archsploit-installer${color_revert}"
+	echo -e "${color_5cb85c} [i] [Website]: https://neoslab.com${color_revert}"
+  	echo
+  	sleep 1s
+}
+
+## Load Status
+## -----------
+loadstatus()
+{
+    color_d9534f=$(tput setaf 1)
+    color_5cb85c=$(tput setaf 2)
+    color_f0ad4e=$(tput setaf 3)
+    color_0275d8=$(tput setaf 4)
+    color_revert=$(tput sgr0)
+
+    message=$1
+    display="[$2]"
+
+    if [ "$3" == "issue" ];
+    then
+        return="$color_d9534f${display}$color_revert"
+    elif [ "$3" == "valid" ];
+    then
+        return="$color_5cb85c${display}$color_revert"
+    elif [ "$3" == "warning" ];
+    then
+        return="$color_f0ad4e${display}$color_revert"
+    elif [ "$3" == "info" ];
+    then
+        return="$color_f0ad4e${display}$color_revert"
+    else
+        return="$color_revert${display}$color_revert"
+    fi
+
+    let COL=$(tput cols)-${#message}+${#return}-${#display}
+
+    echo -n $message
+    printf "%${COL}s\n"  "$return"
+}
+
+## Display Usage
+## -------------
+function usage
+{
+	clear
+    echo "usage: archsploit-system [-a --action] or [-h --help]"
+	echo
+    echo "  -a      Followed by the action to be executed by the script [clean|update|gresource]"
+	echo "  -h      Display this help menu"
+	echo
+    exit 1
+}
+
+## Check Internet status
+## ---------------------
+function checkinternet()
+{
+	for i in {1..10};
+	do
+		ping -c 1 -W ${i} www.google.com &>/dev/null && break;
+	done
+
+	if [[ "$?" -ne 0 ]];
+	then
+		cd /tmp/
+		echo
+		echo -e " ${color_d9534f}[!]${color_revert} An unknown error occured ~ Possible DNS issues or no Internet connection"
+		echo -e " ${color_d9534f}[!]${color_revert} Quitting ..."
+		echo -e "\n"
+		exit 1
+	fi
+}
+
+## Display Warning
+## ---------------
+function warning()
+{
+    echo -e "${color_0275d8} ** Welcome to ArchSploit System Manager **${color_revert}"
+    echo
+    echo -e "${color_d9534f} [!] This script can help you to manage system tasks${color_revert}"
+    echo -e "${color_d9534f} [!] Please DO NOT use this script if you have any doubt${color_revert}"
+    echo
+    read -p " [?] Do you want to continue ? [y/N] " yn
+    case $yn in
+        [Yy]* )
+			clear
+            ;;
+        [Nn]* )
+            exit
+            ;;
+        * )
+            exit
+            ;;
+    esac
+}
+
+## Load Cleaner
+## ------------
+function cleaner()
+{
+	echo
+    echo -e "${color_0275d8}# Step: autocleaner()${color_revert}"
+	sleep 5
+
+	## Delete Firefox Logs
+	## -------------------
+	sudo rm -rf /home/$USER/.mozilla/firefox/backup/
+	sudo rm -rf /home/$USER/.cache/mozilla/firefox/backup/
+	sudo mkdir -p /home/$USER/.mozilla/firefox/backup/ /home/$USER/.cache/mozilla/firefox/backup/
+	sudo mv /home/$USER/.mozilla/firefox/*.default/*.sqlite  /home/$USER/.mozilla/firefox/backup/ >/dev/null 2>&1
+	sudo mv /home/$USER/.mozilla/firefox/*.default/sessionstore.js /home/$USER/.mozilla/firefox/backup/ >/dev/null 2>&1
+	sudo mv /home/$USER/.cache/mozilla/firefox/*.default/* /home/$USER/.cache/mozilla/firefox/backup/ >/dev/null 2>&1
+	sudo rm -f /home/$USER/.mozilla/firefox/*.default/cookies.sqlite
+	sudo rm -f /home/$USER/.mozilla/firefox/*.default/*.sqlite
+	sudo rm -f /home/$USER/.mozilla/firefox/*default/sessionstore.js
+	sudo rm -rf /home/$USER/.cache/mozilla/firefox/*.default/*
+	loadstatus " [+] Delete Firefox Logs" "OK" "valid"
+	sleep 5
+
+	## Delete Chromium Logs
+	## --------------------
+	sudo rm -rf /home/$USER/.cache/chromium/* >/dev/null 2>&1
+	sudo rm -rf /home/$USER/.config/chromium/Default/* >/dev/null 2>&1
+	loadstatus " [+] Delete Chromium Logs" "OK" "valid"
+	sleep 5
+
+	## Delete System Logs
+	## ------------------
+	true > /home/$USER/.msf4/history
+	sudo rm -f /home/$USER/.wget-hsts
+	sudo rm -rf /home/neoslab/.hashcat/
+	sudo rm -rf /home/neoslab/.ngrok2/
+	sudo rm -rf /home/$USER/.cache/thumbnails/fail
+	sudo rm -rf /home/$USER/.cache/thumbnails/large
+	sudo rm -rf /home/$USER/.cache/thumbnails/normal
+	sudo rm -rf /home/$USER/.john
+	sudo rm -rf /home/$USER/.sqlmap
+
+	sudo rm -f /opt/jexboss/jexboss_*.log
+	sudo rm -rf /opt/jexboss/__pycache__/
+
+	sudo find /var/log/ -type f -name '*.gz' -exec rm -f {} \; >/dev/null 2>&1
+	sudo find /var/log/ -type f -name '*.old' -exec rm -f {} \; >/dev/null 2>&1
+	sudo find /var/log/ -type f -name '*.1' -exec rm -f {} \; >/dev/null 2>&1
+	sudo find /var/log/ -type f -name '*.log' -exec rm -f {} \; >/dev/null 2>&1
+	loadstatus " [+] Delete System Logs" "OK" "valid"
+	sleep 5
+
+	## Delete Files History
+	## --------------------
+	sudo rm -f /home/$USER/.local/share/recently-used.xbel
+	loadstatus " [+] Delete Files History" "OK" "valid"
+	sleep 5
+
+	## Delete SSH Keys
+	## ---------------
+	sudo rm -rf /home/$USER/.ssh/
+	sudo rm -rf /root/.ssh/
+	loadstatus " [+] Delete SSH Keys" "OK" "valid"
+	sleep 5
+
+	## Delete Persistents Files
+	## ------------------------
+	sudo rm -rf /home/$USER/.local/share/Trash/*
+	loadstatus " [+] Delete Persistents Files" "OK" "valid"
+	sleep 5
+
+	## Delete Commands History
+	## -----------------------
+	history -c && history -w
+	loadstatus " [+] Delete Commands History" "OK" "valid"
+	sleep 5
+
+	## Delete Bash Logs
+	## ----------------
+	true > /home/$USER/.bash_history
+	loadstatus " [+] Delete Bash Logs" "OK" "valid"
+	sleep 5
+
+	## Clean Cache Directories
+	## -----------------------
+	sudo pacman -Scc --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Clean Cache Directories" "OK" "valid"
+	sleep 5
+
+	## Final Notice
+	## ------------
+	echo
+	echo -e "${color_5cb85c}ArchSploit Cleaner completed${color_revert}"
+	echo "The system will shutdown within 10 seconds"
+	sleep 10
+
+	sudo shutdown now
+}
+
+## Load Updater
+## ------------
+function updater()
+{
+	echo
+    echo -e "${color_0275d8}# Step: updater()${color_revert}"
+	sleep 5
+
+	## Update Packages
+	## ---------------
+	sudo pacman -Syyu --noconfirm --needed
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Final Notice
+	## ------------
+	echo
+	echo -e "${color_5cb85c}ArchSploit Updater completed${color_revert}"
+	sleep 10
+}
+
+## Load Gresource
+## --------------
+function gresource()
+{
+	echo
+    echo -e "${color_0275d8}# Step: gresource()${color_revert}"
+	sleep 5
+
+	## Extract Gresource
+	## -----------------
+	basedir=/usr/share/gnome-shell/gnome-shell-theme.gresource
+	workdir=${HOME}/shell-theme
+
+	for r in `gresource list $basedir`;
+	do
+		r=${r#\/org\/gnome\/shell/}
+		if [ ! -d $workdir/${r%/*} ];
+		then
+		  mkdir -p $workdir/${r%/*}
+		fi
+	done
+
+	for r in `gresource list $basedir`;
+	do
+		gresource extract $basedir $r > $workdir/${r#\/org\/gnome\/shell/}
+	done
+
+	## Final Notice
+	## ------------
+	echo
+	echo -e "${color_5cb85c}ArchSploit Gresource extractor completed${color_revert}"
+	sleep 10
+}
+
+## -------- ##
+## Callback ##
+## -------- ##
+
+if [ "$#" -eq  "0" ]
+then
+	usage
+else
+	if [ "$1" == "--action" -o "$1" == "-a" ];
+	then
+		if [ "$2" == "clean" -o "$2" == "update" -o "$2" == "gresource" ];
+		then
+			clear
+			sudo -v
+
+			showbanner
+			checkinternet
+			warning
+
+			if [ "$2" == "clean" ];
+		    then
+				cleaner
+		    elif [ "$2" == "update" ];
+		    then
+				updater
+		    elif [ "$2" == "gresource" ];
+		    then
+		        gresource
+			fi
+		else
+			usage
+		fi
+	elif [ "$1" == "--help" -o "$1" == "-h" ];
+	then
+		usage
+	else
+		usage
+	fi
+fi

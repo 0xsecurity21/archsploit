@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+<wallpapers>
+    <wallpaper deleted="false">
+        <name>Arch Linux Bubbles</name>
+        <filename>/usr/share/backgrounds/gnome/arch-linux-bubbles-3840x2160.jpg</filename>
+        <options>zoom</options>
+        <pcolor>#000000</pcolor>
+        <scolor>#000000</scolor>
+    </wallpaper>
+    <wallpaper deleted="false">
+        <name>Arch Linux DarkRed</name>
+        <filename>/usr/share/backgrounds/gnome/arch-linux-darkred-3840x2160.jpg</filename>
+        <options>zoom</options>
+        <pcolor>#000000</pcolor>
+        <scolor>#000000</scolor>
+    </wallpaper>
+    <wallpaper deleted="false">
+        <name>Arch Linux Fusion</name>
+        <filename>/usr/share/backgrounds/gnome/arch-linux-fusion-3840x2160.jpg</filename>
+        <options>zoom</options>
+        <pcolor>#000000</pcolor>
+        <scolor>#000000</scolor>
+    </wallpaper>
+    <wallpaper deleted="false">
+        <name>Arch Linux Keyboard</name>
+        <filename>/usr/share/backgrounds/gnome/arch-linux-keyboard-3840x2160.jpg</filename>
+        <options>zoom</options>
+        <pcolor>#000000</pcolor>
+        <scolor>#000000</scolor>
+    </wallpaper>
+    <wallpaper deleted="false">
+        <name>Arch Linux Minimalism</name>
+        <filename>/usr/share/backgrounds/gnome/arch-linux-minimalism-3840x2160.jpg</filename>
+        <options>zoom</options>
+        <pcolor>#000000</pcolor>
+        <scolor>#000000</scolor>
+    </wallpaper>
+    <wallpaper deleted="false">
+        <name>Arch Linux Simple</name>
+        <filename>/usr/share/backgrounds/gnome/arch-linux-simple-3840x2160.jpg</filename>
+        <options>zoom</options>
+        <pcolor>#000000</pcolor>
+        <scolor>#000000</scolor>
+    </wallpaper>
+    <wallpaper deleted="false">
+        <name>Arch Linux Texture</name>
+        <filename>/usr/share/backgrounds/gnome/arch-linux-texture-3840x2160.jpg</filename>
+        <options>zoom</options>
+        <pcolor>#000000</pcolor>
+        <scolor>#000000</scolor>
+    </wallpaper>
+    <wallpaper deleted="false">
+        <name>Arch Linux Vintage</name>
+        <filename>/usr/share/backgrounds/gnome/arch-linux-vintage-3840x2160.jpg</filename>
+        <options>zoom</options>
+        <pcolor>#000000</pcolor>
+        <scolor>#000000</scolor>
+    </wallpaper>
+    <wallpaper deleted="false">
+        <name>Arch Linux Waves</name>
+        <filename>/usr/share/backgrounds/gnome/arch-linux-waves-3840x2160.jpg</filename>
+        <options>zoom</options>
+        <pcolor>#000000</pcolor>
+        <scolor>#000000</scolor>
+    </wallpaper>
+</wallpapers>

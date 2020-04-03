@@ -1,0 +1,5 @@
+# dconf path
+[org/gnome/desktop/interface]
+
+# dconf key and value
+cursor-theme='Yaru'

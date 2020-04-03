@@ -1,0 +1,6 @@
+# dconf path
+[org/gnome/desktop/wm/preferences]
+
+# dconf key and value
+theme='Adwaita-dark'
+button-layout=':minimize,maximize,close'

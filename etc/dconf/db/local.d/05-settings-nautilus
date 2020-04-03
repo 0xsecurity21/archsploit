@@ -1,0 +1,5 @@
+# dconf path
+[org/gnome/nautilus/icon-view]
+
+# dconf key and value
+default-zoom-level='small'
