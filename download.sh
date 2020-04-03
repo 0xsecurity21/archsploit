@@ -9,4 +9,4 @@ wget https://raw.githubusercontent.com/archsploit/archsploit/master/archsploit.c
 wget https://raw.githubusercontent.com/archsploit/archsploit/master/archsploit.sh
 
 ## Change User Permission
-chmod +x archlinux.sh
+chmod +x archsploit.sh
