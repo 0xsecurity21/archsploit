@@ -163,7 +163,6 @@ function cleaner()
 	sudo rm -rf /home/$USER/.cache/thumbnails/normal
 	sudo rm -rf /home/$USER/.john
 	sudo rm -rf /home/$USER/.sqlmap
-
 	sudo rm -f /opt/jexboss/jexboss_*.log
 	sudo rm -rf /opt/jexboss/__pycache__/
 

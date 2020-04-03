@@ -70,7 +70,8 @@ class DashToDock_MyDashActor extends St.Widget {
             name: 'dash',
             layout_manager: layout,
             clip_to_allocation: true,
-            y_align: Clutter.ActorAlign.CENTER,
+            x_align: this._isHorizontal ? Clutter.ActorAlign.START: Clutter.ActorAlign.FILL,
+            y_align: this._isHorizontal ? Clutter.ActorAlign.FILL: Clutter.ActorAlign.START
         });
 
         // Since we are usually visible but not usually changing, make sure
@@ -236,8 +237,8 @@ var MyDash = GObject.registerClass({
 
         super._init({
             child: this._container,
-            x_align: Clutter.ActorAlign.START,
-            y_align: Clutter.ActorAlign.START,
+            x_align: Clutter.ActorAlign.FILL,
+            y_align: Clutter.ActorAlign.FILL,
         });
 
         if (this._isHorizontal) {
@@ -541,14 +542,15 @@ var MyDash = GObject.registerClass({
         let spacing = themeNode.get_length('spacing');
 
         let firstButton = iconChildren[0].child;
-        let firstIcon = firstButton.icon;
-
-        let minHeight, natHeight, minWidth, natWidth;
+        let firstIcon = firstButton._delegate.icon;
 
         // Enforce the current icon size during the size request
         firstIcon.setIconSize(this.iconSize);
-        [minHeight, natHeight] = firstButton.get_preferred_height(-1);
-        [minWidth, natWidth] = firstButton.get_preferred_width(-1);
+        let [, iconHeight] = firstIcon.icon.get_preferred_height(-1);
+        let [, buttonHeight] = firstButton.get_preferred_height(-1);
+        let [, iconWidth] = firstIcon.icon.get_preferred_width(-1);
+        let [, buttonWidth] = firstButton.get_preferred_width(-1);
+
 
         let scaleFactor = St.ThemeContext.get_for_stage(global.stage).scale_factor;
         let iconSizes = this._availableIconSizes.map(function(s) {
@@ -557,10 +559,10 @@ var MyDash = GObject.registerClass({
 
         // Subtract icon padding and box spacing from the available height
         if (this._isHorizontal)
-            availHeight -= iconChildren.length * (natWidth - this.iconSize * scaleFactor) +
+            availHeight -= iconChildren.length * (buttonWidth - iconWidth) +
                            (iconChildren.length - 1) * spacing;
         else
-            availHeight -= iconChildren.length * (natHeight - this.iconSize * scaleFactor) +
+            availHeight -= iconChildren.length * (buttonHeight - iconHeight) +
                            (iconChildren.length - 1) * spacing;
 
         let availSize = availHeight / iconChildren.length;

@@ -1030,7 +1030,7 @@ function terminate()
 	## ------------
 	echo
 	echo -e "${color_5cb85c}Arch Linux Installed Successfully${color_revert}"
-	echo "Don't forget to remove the installation before to boot your system"
+	echo "Don't forget to remove the USB Disk before to boot your system"
 	echo "The system will shutdown within 15 seconds"
 	sleep 15
 
