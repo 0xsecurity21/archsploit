@@ -2098,6 +2098,13 @@ StScrollBar {
 #lockDialogGroup {
   background-color: #313131; }
 
+#lockDialogGroup {
+  background: #313131 url("resource:///org/gnome/shell/theme/texture.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
 #unlockDialogNotifications StButton#vhandle, #unlockDialogNotifications StButton#hhandle {
   background-color: rgba(53, 53, 53, 0.3); }
   #unlockDialogNotifications StButton#vhandle:hover, #unlockDialogNotifications StButton#vhandle:focus, #unlockDialogNotifications StButton#hhandle:hover, #unlockDialogNotifications StButton#hhandle:focus {
