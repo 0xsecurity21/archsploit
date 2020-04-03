@@ -25,7 +25,7 @@ function showbanner()
 	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
 	echo -e "${color_d9534f}                           |_|            v2.0.2    ${color_revert}"
 	echo
-	echo -e "${color_5cb85c} [i] [Package]: archsploit-installer${color_revert}"
+	echo -e "${color_5cb85c} [i] [Package]: archsploit-system${color_revert}"
 	echo -e "${color_5cb85c} [i] [Website]: https://neoslab.com${color_revert}"
   	echo
   	sleep 1s
@@ -103,9 +103,9 @@ function checkinternet()
 ## ---------------
 function warning()
 {
-    echo -e "${color_0275d8} ** Welcome to ArchSploit System Manager **${color_revert}"
+	echo -e "${color_0275d8} ** Welcome to ArchSploit System Script **${color_revert}"
     echo
-    echo -e "${color_d9534f} [!] This script can help you to manage system tasks${color_revert}"
+    echo -e "${color_d9534f} [!] This script help you to manage ArchSploit system tasks${color_revert}"
     echo -e "${color_d9534f} [!] Please DO NOT use this script if you have any doubt${color_revert}"
     echo
     read -p " [?] Do you want to continue ? [y/N] " yn

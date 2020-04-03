@@ -103,9 +103,9 @@ function checkinternet()
 ## ---------------
 function warning()
 {
-    echo -e "${color_0275d8} ** Welcome to ArchSploit System Installer **${color_revert}"
+	echo -e "${color_0275d8} ** Welcome to ArchSploit Installer Script **${color_revert}"
     echo
-    echo -e "${color_d9534f} [!] This script can help you to install and/or configure package(s)${color_revert}"
+    echo -e "${color_d9534f} [!] This script help you to install and/or configure ArchSploit package(s)${color_revert}"
     echo -e "${color_d9534f} [!] Please DO NOT use this script if you have any doubt${color_revert}"
     echo
     read -p " [?] Do you want to continue ? [y/N] " yn

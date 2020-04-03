@@ -25,7 +25,7 @@ function showbanner()
 	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
 	echo -e "${color_d9534f}                           |_|            v2.0.2    ${color_revert}"
 	echo
-	echo -e "${color_5cb85c} [i] [Package]: archsploit-installer${color_revert}"
+	echo -e "${color_5cb85c} [i] [Package]: archsploit-deploy${color_revert}"
 	echo -e "${color_5cb85c} [i] [Website]: https://neoslab.com${color_revert}"
   	echo
   	sleep 1s
@@ -90,7 +90,7 @@ function checkinternet()
 ## ---------------
 function warning()
 {
-    echo -e "${color_0275d8} ** Welcome to Arch Linux Installation Script **${color_revert}"
+    echo -e "${color_0275d8} ** Welcome to ArchSploit Deploy Script **${color_revert}"
     echo
     echo -e "${color_d9534f} [!] This script will format all your system partitions${color_revert}"
     echo -e "${color_d9534f} [!] All your data and content will be permanently lost${color_revert}"
@@ -889,7 +889,7 @@ function terminate()
 	## Download Default Backgrounds
 	## ----------------------------
 	rm -f /mnt/usr/share/backgrounds/gnome/*
-	backgrounds=( arch-linux-bubbles-3840x2160.jpg arch-linux-darkred-3840x2160.jpg arch-linux-fusion-3840x2160.jpg arch-linux-keyboard-3840x2160.jpg arch-linux-minimalism-3840x2160.jpg arch-linux-texture-3840x2160.jpg arch-linux-simple-3840x2160.jpg arch-linux-vintage-3840x2160.jpg arch-linux-waves-3840x2160.jpg )
+	backgrounds=( arch-linux-darkred-2560x1440.jpg arch-linux-fusion-2560x1440.jpg arch-linux-keyboard-2560x1440.jpg arch-linux-minimalism-2560x1440.jpg arch-linux-simple-2560x1440.jpg arch-linux-texture-2560x1440.jpg arch-linux-vintage-2560x1440.jpg arch-linux-waves-2560x1440.jpg )
 	for basename in "${backgrounds[@]}"
 	do
 		if [ -f "/mnt/tmp/archsploit/usr/share/backgrounds/gnome/${basename}" ];
