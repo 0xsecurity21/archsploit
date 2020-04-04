@@ -122,20 +122,6 @@ function warning()
     esac
 }
 
-## Disable Sudo Timeout
-## --------------------
-function disableTimeout
-{
-	sudo sh -c 'echo "\nDefaults timestamp_timeout=-1" >> /etc/sudoers'
-}
-
-## Enable Sudo Timeout
-## -------------------
-function enableTimeout
-{
-	sudo sed -i "/Defaults timestamp_timeout=-1/d" /etc/sudoers
-}
-
 ## Configure MySQL Secure
 ## ----------------------
 function sqlsecure()
@@ -205,10 +191,6 @@ function pentest()
 	## ---------------
 	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Update System Packages" "OK" "valid"
-
-	## Disable Sudo Timeout
-	## --------------------
-	disableTimeout
 
 	## Correct User Permissions
     ## ------------------------
@@ -849,10 +831,6 @@ function pentest()
 	sudo make >/dev/null 2>&1
 	sudo ln -s /opt/xspy/xspy /usr/bin/xspy
 	loadstatus " [+] Installing Xspy" "OK" "valid"
-
-	## Enable Sudo Timeout
-	## -------------------
-	enableTimeout
 
 	## Correct User Permissions
     ## ------------------------
