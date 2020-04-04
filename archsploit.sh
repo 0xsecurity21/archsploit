@@ -428,7 +428,7 @@ function addrelease()
 	echo "Release: 2.0.2" >> /mnt/etc/archsploit/release/release.md
 	echo "Codename: Xisqu" >> /mnt/etc/archsploit/release/release.md
 	echo "Build: 20200404" >> /mnt/etc/archsploit/release/release.md
-	loadstatus " [+] Create Release" "OK" "valid"
+	loadstatus " [+] Add Release" "OK" "valid"
 }
 
 ## Optimize Virtual Machine
