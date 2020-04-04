@@ -413,19 +413,19 @@ function clonerepository()
 	loadstatus " [+] Clone Repository" "OK" "valid"
 }
 
-## Create Release
-## --------------
-function createrelease()
+## Add Release
+## -----------
+function addrelease()
 {
 	echo
-	echo -e "${color_0275d8}# Step: createrelease()${color_revert}"
+	echo -e "${color_0275d8}# Step: addrelease()${color_revert}"
 	sleep 5
 
 	mkdir -p /mnt/etc/archsploit/release/
 	mkdir -p /mnt/etc/archsploit/packages/
 	echo "Distributor ID: ArchSploit" >> /mnt/etc/archsploit/release/release.md
 	echo "Description: ArchSploit Xisqu v2.0.2" >> /mnt/etc/archsploit/release/release.md
-	echo "Release: 1.0.1" >> /mnt/etc/archsploit/release/release.md
+	echo "Release: 2.0.2" >> /mnt/etc/archsploit/release/release.md
 	echo "Codename: Xisqu" >> /mnt/etc/archsploit/release/release.md
 	echo "Build: 20200404" >> /mnt/etc/archsploit/release/release.md
 	loadstatus " [+] Create Release" "OK" "valid"
@@ -817,7 +817,7 @@ function packages()
 
 	## Configure TOR & Polipo
 	## ----------------------
-	if [ -f "/mnt/tmp/archsploit/etc/polipo/config.txt" ];
+	if [ -f "/mnt/tmp/archsploit/etc/polipo/config" ];
 	then
 		mv /mnt/etc/polipo/config /mnt/etc/polipo/config.bak
 		mv /mnt/tmp/archsploit/etc/polipo/config /mnt/etc/polipo/
@@ -1075,6 +1075,7 @@ function launch()
 	buildfstab
 	configuration
 	clonerepository
+	addrelease
 
 	if [ "$virtualbox" == "true" ];
 	then
