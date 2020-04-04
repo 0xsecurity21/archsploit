@@ -1225,18 +1225,6 @@ function pentest()
 		loadstatus " [+] WebShells already installed" "OK" "valid"
 	fi
 
-	## WPScan
-	## https://wpscan.org/
-	## -------------------
-	if [ ! -f "/etc/archsploit/packages/wpscan.md" ];
-	then
-		gem install wpscan >/dev/null 2>&1
-		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/wpscan.md >/dev/null 2>&1
-		loadstatus " [+] Installing WPScan" "OK" "valid"
-	else
-		loadstatus " [+] WPScan already installed" "OK" "valid"
-	fi
-
 	## Xspy
 	## https://github.com/mnp/xspy/
 	## ----------------------------
