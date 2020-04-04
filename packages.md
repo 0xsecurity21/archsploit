@@ -181,7 +181,7 @@
 * [CMSmap](https://github.com/Dionach/CMSmap/)
 * [DirBuster](https://sourceforge.net/projects/dirbuster/)
 * [Joomscan](https://github.com/rezasp/joomscan/)
-* [Wpscan](https://www.archlinux.org/packages/community/x86_64/wpscan/)
+* [Wpscan](https://wpscan.org/)
 
 * * *
 

@@ -166,16 +166,21 @@ function zaproxy
 	echo
     echo -e "${color_0275d8}# Step: zaproxy()${color_revert}"
 	sleep 5
-
-	wget -O "/tmp/ZAP_2_9_0_unix.sh" https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2_9_0_unix.sh >/dev/null 2>&1
-	if [ -f "/tmp/ZAP_2_9_0_unix.sh" ];
+	if [ ! -f "/etc/archsploit/packages/zaproxy.md" ];
 	then
-	    cd /tmp/
-		sudo chmod +x /tmp/ZAP_2_9_0_unix.sh
-		sudo ./ZAP_2_9_0_unix.sh
-	    loadstatus " [+] Installing Zaproxy" "OK" "valid"
+		wget -O "/tmp/ZAP_2_9_0_unix.sh" https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2_9_0_unix.sh >/dev/null 2>&1
+		if [ -f "/tmp/ZAP_2_9_0_unix.sh" ];
+		then
+		    cd /tmp/
+			sudo chmod +x /tmp/ZAP_2_9_0_unix.sh
+			sudo ./ZAP_2_9_0_unix.sh
+			echo "Version: 1.0.1" >> /etc/archsploit/packages/zaproxy.md
+		    loadstatus " [+] Installing Zaproxy" "OK" "valid"
+		else
+			loadstatus " [*] Installing Zaproxy" "NO" "issue"
+		fi
 	else
-		loadstatus " [*] Installing Zaproxy" "NO" "issue"
+		loadstatus " [+] Zaproxy already installed" "OK" "valid"
 	fi
 }
 
@@ -200,637 +205,1051 @@ function pentest()
 	## Airsnort
     ## https://sourceforge.net/projects/airsnort/
     ## ------------------------------------------
-    cd /opt/airsnort/
-    sudo ./configure >/dev/null 2>&1
-    sudo make >/dev/null 2>&1
-    sudo make install >/dev/null 2>&1
-    loadstatus " [+] Installing Airsnort" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/airsnort.md" ];
+	then
+	    cd /opt/airsnort/
+	    sudo ./configure >/dev/null 2>&1
+	    sudo make >/dev/null 2>&1
+	    sudo make install >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/airsnort.md
+	    loadstatus " [+] Installing Airsnort" "OK" "valid"
+	else
+		loadstatus " [+] Airsnort already installed" "OK" "valid"
+	fi
 
     ## ApkTool
     ## https://code.google.com/p/android-apktool/
     ## ------------------------------------------
-    sudo chmod +x /opt/apktool/apktool
-    sudo chmod +x /opt/apktool/apktool.jar
-    sudo ln -s /opt/apktool/apktool /usr/bin/apktool
-    loadstatus " [+] Installing ApkTool" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/apktool.md" ];
+	then
+	    sudo chmod +x /opt/apktool/apktool
+	    sudo chmod +x /opt/apktool/apktool.jar
+	    sudo ln -s /opt/apktool/apktool /usr/bin/apktool
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/apktool.md
+	    loadstatus " [+] Installing ApkTool" "OK" "valid"
+	else
+		loadstatus " [+] ApkTool already installed" "OK" "valid"
+	fi
 
     ## Arachni
-    ## http://www.arachni-scanner.com
-    ## ------------------------------
-	wget -O "/tmp/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz" https://github.com/Arachni/arachni/releases/download/v1.5.1/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz >/dev/null 2>&1
-	if [ -f "/tmp/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz" ];
+    ## http://www.arachni-scanner.com/
+    ## -------------------------------
+	if [ ! -f "/etc/archsploit/packages/arachni.md" ];
 	then
-	    cd /tmp/
-	    tar -xvf arachni-1.5.1-0.5.12-linux-x86_64.tar.gz >/dev/null 2>&1
-		sudo mv /tmp/arachni-1.5.1-0.5.12 /opt/arachni
-		sudo chmod +x /opt/arachni/bin/arachni*
-	    sudo touch /usr/local/bin/arachni
-	    sudo chmod +x /usr/local/bin/arachni
-	    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
-	    echo 'clear' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
-	    echo 'cd /opt/arachni/bin/' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
-	    echo 'sudo ./arachni $@' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
-	    loadstatus " [+] Installing Arachni" "OK" "valid"
+		wget -O "/tmp/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz" https://github.com/Arachni/arachni/releases/download/v1.5.1/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz >/dev/null 2>&1
+		if [ -f "/tmp/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz" ];
+		then
+		    cd /tmp/
+		    tar -xvf arachni-1.5.1-0.5.12-linux-x86_64.tar.gz >/dev/null 2>&1
+			sudo mv /tmp/arachni-1.5.1-0.5.12 /opt/arachni
+			sudo chmod +x /opt/arachni/bin/arachni*
+		    sudo touch /usr/local/bin/arachni
+		    sudo chmod +x /usr/local/bin/arachni
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+		    echo 'cd /opt/arachni/bin/' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+		    echo 'sudo ./arachni $@' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+			echo "Version: 1.0.1" >> /etc/archsploit/packages/arachni.md
+		    loadstatus " [+] Installing Arachni" "OK" "valid"
+		else
+			loadstatus " [*] Installing Arachni" "NO" "issue"
+		fi
 	else
-		loadstatus " [*] Installing Arachni" "NO" "issue"
+		loadstatus " [+] Arachni already installed" "OK" "valid"
 	fi
 
 	## Automater
-    ## https://github.com/1aN0rmus/TekDefense-Automater
-    ## ------------------------------------------------
-    sudo chmod +x /opt/automater/automater.py
-    sudo ln -s /opt/automater/automater.py /usr/bin/automater
-    loadstatus " [+] Installing Automater" "OK" "valid"
+    ## https://github.com/1aN0rmus/TekDefense-Automater/
+    ## -------------------------------------------------
+	if [ ! -f "/etc/archsploit/packages/automater.md" ];
+	then
+	    sudo chmod +x /opt/automater/automater.py
+	    sudo ln -s /opt/automater/automater.py /usr/bin/automater
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/automater.md
+	    loadstatus " [+] Installing Automater" "OK" "valid"
+	else
+		loadstatus " [+] Automater already installed" "OK" "valid"
+	fi
 
     ## Bed
     ## http://ww5.snake-basket.de/
     ## ---------------------------
-    sudo chmod +x /opt/bed/bed.pl
-    sudo touch /usr/local/bin/bed
-    sudo chmod +x /usr/local/bin/bed
-    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
-    echo 'clear' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
-    echo 'cd /opt/bed/' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
-    echo 'perl bed.pl $@' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
-    loadstatus " [+] Installing Bed" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/bed.md" ];
+	then
+	    sudo chmod +x /opt/bed/bed.pl
+	    sudo touch /usr/local/bin/bed
+	    sudo chmod +x /usr/local/bin/bed
+	    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+	    echo 'clear' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+	    echo 'cd /opt/bed/' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+	    echo 'perl bed.pl $@' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/bed.md
+	    loadstatus " [+] Installing Bed" "OK" "valid"
+	else
+		loadstatus " [+] Bed already installed" "OK" "valid"
+	fi
 
     ## Blackeye
-    ## https://github.com/thelinuxchoice/blackeye
-    ## ------------------------------------------
-    sudo chmod +x /opt/blackeye/blackeye.sh
-    sudo ln -s /opt/blackeye/blackeye.sh /usr/bin/blackeye
-	loadstatus " [+] Installing Blackeye" "OK" "valid"
+    ## https://github.com/thelinuxchoice/blackeye/
+    ## -------------------------------------------
+	if [ ! -f "/etc/archsploit/packages/blackeye.md" ];
+	then
+	    sudo chmod +x /opt/blackeye/blackeye.sh
+	    sudo ln -s /opt/blackeye/blackeye.sh /usr/bin/blackeye
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/blackeye.md
+		loadstatus " [+] Installing Blackeye" "OK" "valid"
+	else
+		loadstatus " [+] Blackeye already installed" "OK" "valid"
+	fi
 
 	## Blueranger
     ## http://www.hackfromacave.com/projects/blueranger.html
     ## -----------------------------------------------------
-    sudo chmod +x /opt/blueranger/blueranger.sh
-    sudo ln -s /opt/blueranger/blueranger.sh /usr/bin/blueranger
-	loadstatus " [+] Installing Blueranger" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/blueranger.md" ];
+	then
+	    sudo chmod +x /opt/blueranger/blueranger.sh
+	    sudo ln -s /opt/blueranger/blueranger.sh /usr/bin/blueranger
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/blueranger.md
+		loadstatus " [+] Installing Blueranger" "OK" "valid"
+	else
+		loadstatus " [+] Blueranger already installed" "OK" "valid"
+	fi
 
 	## BurpSuite
     ## https://portswigger.net/DownloadUpdate.ashx?Product=Free
     ## --------------------------------------------------------
-	wget -O "/tmp/burpsuite.jar" https://portswigger.net/DownloadUpdate.ashx?Product=Free >/dev/null 2>&1
-	if [ -f "/tmp/burpsuite.jar" ];
+	if [ ! -f "/etc/archsploit/packages/burpsuite.md" ];
 	then
-	    sudo mkdir -p /opt/burpsuite/
-		sudo mv /tmp/burpsuite.jar /opt/burpsuite/
-		sudo chmod +x /opt/burpsuite/burpsuite.jar
-	    sudo touch /usr/local/bin/burpsuite
-	    sudo chmod +x /usr/local/bin/burpsuite
-	    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
-	    echo 'clear' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
-	    echo 'cd /opt/burpsuite/' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
-	    echo 'sudo /usr/bin/java -jar /opt/burpsuite/burpsuite.jar' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
-		loadstatus " [+] Installing BurpSuite" "OK" "valid"
+		wget -O "/tmp/burpsuite.jar" https://portswigger.net/DownloadUpdate.ashx?Product=Free >/dev/null 2>&1
+		if [ -f "/tmp/burpsuite.jar" ];
+		then
+		    sudo mkdir -p /opt/burpsuite/
+			sudo mv /tmp/burpsuite.jar /opt/burpsuite/
+			sudo chmod +x /opt/burpsuite/burpsuite.jar
+		    sudo touch /usr/local/bin/burpsuite
+		    sudo chmod +x /usr/local/bin/burpsuite
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+		    echo 'cd /opt/burpsuite/' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+		    echo 'sudo /usr/bin/java -jar /opt/burpsuite/burpsuite.jar' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+			echo "Version: 1.0.1" >> /etc/archsploit/packages/burpsuite.md
+			loadstatus " [+] Installing BurpSuite" "OK" "valid"
+		else
+			loadstatus " [*] Installing BurpSuite" "NO" "issue"
+		fi
 	else
-		loadstatus " [*] Installing BurpSuite" "NO" "issue"
+		loadstatus " [+] BurpSuite already installed" "OK" "valid"
 	fi
 
 	## CheckURLs
     ## https://neoslab.com/
     ## --------------------
-    sudo chmod +x /opt/checkurls/checkurls.py
-    sudo ln -s /opt/checkurls/checkurls.py /usr/bin/checkurls
-	loadstatus " [+] Installing CheckURLs" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/checkurls.md" ];
+	then
+	    sudo chmod +x /opt/checkurls/checkurls.py
+	    sudo ln -s /opt/checkurls/checkurls.py /usr/bin/checkurls
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/checkurls.md
+		loadstatus " [+] Installing CheckURLs" "OK" "valid"
+	else
+		loadstatus " [+] CheckURLs already installed" "OK" "valid"
+	fi
 
 	## CMSMap
-    ## https://github.com/Dionach/CMSmap
-    ## ---------------------------------
-    sudo chmod +x /opt/cmsmap/cmsmap.py
-    sudo ln -s /opt/cmsmap/cmsmap.py /usr/bin/cmsmap
-	loadstatus " [+] Installing CMSMap" "OK" "valid"
+    ## https://github.com/Dionach/CMSmap/
+    ## ----------------------------------
+	if [ ! -f "/etc/archsploit/packages/cmsmap.md" ];
+	then
+	    sudo chmod +x /opt/cmsmap/cmsmap.py
+	    sudo ln -s /opt/cmsmap/cmsmap.py /usr/bin/cmsmap
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/cmsmap.md
+		loadstatus " [+] Installing CMSMap" "OK" "valid"
+	else
+		loadstatus " [+] CMSMap already installed" "OK" "valid"
+	fi
 
 	## ColdWar
-    ## https://github.com/ChrisTruncer/PenTestScripts
-    ## ----------------------------------------------
-    sudo chmod +x /opt/coldwar/coldwar.py
-    sudo ln -s /opt/coldwar/coldwar.py /usr/bin/coldwar
-	loadstatus " [+] Installing ColdWar" "OK" "valid"
+    ## https://github.com/ChrisTruncer/PenTestScripts/
+    ## -----------------------------------------------
+	if [ ! -f "/etc/archsploit/packages/coldwar.md" ];
+	then
+	    sudo chmod +x /opt/coldwar/coldwar.py
+	    sudo ln -s /opt/coldwar/coldwar.py /usr/bin/coldwar
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/coldwar.md
+		loadstatus " [+] Installing ColdWar" "OK" "valid"
+	else
+		loadstatus " [+] ColdWar already installed" "OK" "valid"
+	fi
 
 	## Commix
-    ## https://github.com/commixproject/commix
-    ## ---------------------------------------
-    sudo chmod +x /opt/commix/commix.py
-    sudo touch /usr/local/bin/commix
-    sudo chmod +x /usr/local/bin/commix
-    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
-    echo 'clear' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
-    echo 'cd /opt/commix/' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
-    echo 'sudo python commix.py $@' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
-	loadstatus " [+] Installing Commix" "OK" "valid"
+    ## https://github.com/commixproject/commix/
+    ## ----------------------------------------
+	if [ ! -f "/etc/archsploit/packages/commix.md" ];
+	then
+	    sudo chmod +x /opt/commix/commix.py
+	    sudo touch /usr/local/bin/commix
+	    sudo chmod +x /usr/local/bin/commix
+	    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+	    echo 'clear' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+	    echo 'cd /opt/commix/' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+	    echo 'sudo python commix.py $@' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/commix.md
+		loadstatus " [+] Installing Commix" "OK" "valid"
+	else
+		loadstatus " [+] Commix already installed" "OK" "valid"
+	fi
 
     ## Crackle
-    ## https://github.com/mikeryan/crackle
-    ## -----------------------------------
-	cd /opt/crackle/
-	sudo make >/dev/null 2>&1
-	sudo make install >/dev/null 2>&1
-	loadstatus " [+] Installing Crackle" "OK" "valid"
+    ## https://github.com/mikeryan/crackle/
+    ## ------------------------------------
+	if [ ! -f "/etc/archsploit/packages/crackle.md" ];
+	then
+		cd /opt/crackle/
+		sudo make >/dev/null 2>&1
+		sudo make install >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/crackle.md
+		loadstatus " [+] Installing Crackle" "OK" "valid"
+	else
+		loadstatus " [+] Crackle already installed" "OK" "valid"
+	fi
 
 	## CredCrack
-    ## https://github.com/gojhonny/CredCrack
-    ## -------------------------------------
-    sudo chmod +x /opt/credcrack/credcrack.py
-    sudo ln -s /opt/credcrack/credcrack.py /usr/bin/credcrack
-	loadstatus " [+] Installing CredCrack" "OK" "valid"
+    ## https://github.com/gojhonny/CredCrack/
+    ## --------------------------------------
+	if [ ! -f "/etc/archsploit/packages/credcrack.md" ];
+	then
+	    sudo chmod +x /opt/credcrack/credcrack.py
+	    sudo ln -s /opt/credcrack/credcrack.py /usr/bin/credcrack
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/credcrack.md
+		loadstatus " [+] Installing CredCrack" "OK" "valid"
+	else
+		loadstatus " [+] CredCrack already installed" "OK" "valid"
+	fi
 
 	## CredSniper
-    ## https://github.com/ustayready/CredSniper
-    ## ----------------------------------------
-    sudo chmod +x /opt/credsniper/credsniper.py
-    sudo touch /usr/local/bin/credsniper
-    sudo chmod +x /usr/local/bin/credsniper
-    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
-    echo 'clear' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
-    echo 'cd /opt/credsniper/' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
-    echo 'sudo python credsniper.py $@' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
-	loadstatus " [+] Installing CredSniper" "OK" "valid"
+    ## https://github.com/ustayready/CredSniper/
+    ## -----------------------------------------
+	if [ ! -f "/etc/archsploit/packages/credsniper.md" ];
+	then
+	    sudo chmod +x /opt/credsniper/credsniper.py
+	    sudo touch /usr/local/bin/credsniper
+	    sudo chmod +x /usr/local/bin/credsniper
+	    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+	    echo 'clear' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+	    echo 'cd /opt/credsniper/' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+	    echo 'sudo python credsniper.py $@' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/credsniper.md
+		loadstatus " [+] Installing CredSniper" "OK" "valid"
+	else
+		loadstatus " [+] CredSniper already installed" "OK" "valid"
+	fi
 
 	## Cymothoa
     ## http://sourceforge.net/projects/cymothoa/
     ## -----------------------------------------
-	cd /opt/cymothoa/
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/cymothoa/bgrep /usr/bin/bgrep
-	sudo ln -s /opt/cymothoa/cymothoa /usr/bin/cymothoa
-	loadstatus " [+] Installing Cymothoa" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/cymothoa.md" ];
+	then
+		cd /opt/cymothoa/
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/cymothoa/bgrep /usr/bin/bgrep
+		sudo ln -s /opt/cymothoa/cymothoa /usr/bin/cymothoa
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/cymothoa.md
+		loadstatus " [+] Installing Cymothoa" "OK" "valid"
+	else
+		loadstatus " [+] Cymothoa already installed" "OK" "valid"
+	fi
 
 	## Ddrescue
     ## http://www.garloff.de/kurt/linux/ddrescue/
     ## ------------------------------------------
-	cd /opt/ddrescue/
-	sudo make >/dev/null 2>&1
-	sudo mv /opt/ddrescue/dd_rescue /opt/ddrescue/ddrescue
-	sudo ln -s /opt/ddrescue/ddrescue /usr/bin/ddrescue
-	loadstatus " [+] Installing Ddrescue" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/ddrescue.md" ];
+	then
+		cd /opt/ddrescue/
+		sudo make >/dev/null 2>&1
+		sudo mv /opt/ddrescue/dd_rescue /opt/ddrescue/ddrescue
+		sudo ln -s /opt/ddrescue/ddrescue /usr/bin/ddrescue
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/ddrescue.md
+		loadstatus " [+] Installing Ddrescue" "OK" "valid"
+	else
+		loadstatus " [+] Ddrescue already installed" "OK" "valid"
+	fi
 
 	## Dedsploit
     ## https://github.com/ex0dus-0x/dedsploit/
     ## ---------------------------------------
-    sudo chmod +x /opt/dedsploit/dedsploit.py
-    sudo ln -s /opt/dedsploit/dedsploit.py /usr/bin/dedsploit
-	loadstatus " [+] Installing Dedsploit" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/dedsploit.md" ];
+	then
+	    sudo chmod +x /opt/dedsploit/dedsploit.py
+	    sudo ln -s /opt/dedsploit/dedsploit.py /usr/bin/dedsploit
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/dedsploit.md
+		loadstatus " [+] Installing Dedsploit" "OK" "valid"
+	else
+		loadstatus " [+] Dedsploit already installed" "OK" "valid"
+	fi
 
 	## Dex2jar
 	## https://bitbucket.org/pxb1988/Dex2jar
 	## -------------------------------------
-	sudo chmod +x /opt/dex2jar/*.sh
-	sudo ln -s /opt/dex2jar/d2j-dex2jar.sh /usr/bin/dex2jar
-	loadstatus " [+] Installing Dex2jar" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/dex2jar.md" ];
+	then
+		sudo chmod +x /opt/dex2jar/*.sh
+		sudo ln -s /opt/dex2jar/d2j-dex2jar.sh /usr/bin/dex2jar
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/dex2jar.md
+		loadstatus " [+] Installing Dex2jar" "OK" "valid"
+	else
+		loadstatus " [+] Dex2jar already installed" "OK" "valid"
+	fi
 
 	## DirBuster
 	## https://sourceforge.net/projects/dirbuster/
 	## -------------------------------------------
-	sudo chmod +x /opt/dirbuster/dirbuster.jar
-	sudo touch /usr/local/bin/dirbuster
-	sudo chmod +x /usr/local/bin/dirbuster
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
-	echo 'cd /opt/dirbuster/' | sudo tee -a /usr/local/bin/armitage >/dev/null 2>&1
-	echo 'sudo /usr/bin/java -jar /opt/dirbuster/dirbuster.jar' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
-	loadstatus " [+] Installing DirBuster" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/dirbuster.md" ];
+	then
+		sudo chmod +x /opt/dirbuster/dirbuster.jar
+		sudo touch /usr/local/bin/dirbuster
+		sudo chmod +x /usr/local/bin/dirbuster
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+		echo 'cd /opt/dirbuster/' | sudo tee -a /usr/local/bin/armitage >/dev/null 2>&1
+		echo 'sudo /usr/bin/java -jar /opt/dirbuster/dirbuster.jar' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/dirbuster.md
+		loadstatus " [+] Installing DirBuster" "OK" "valid"
+	else
+		loadstatus " [+] DirBuster already installed" "OK" "valid"
+	fi
 
 	## DNSMap
 	## https://code.google.com/archive/p/dnsmap/
 	## -----------------------------------------
-	cd /opt/dnsmap/
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/dnsmap/dnsmap /usr/bin/dnsmap
-	sudo ln -s /opt/dnsmap/dnsmap-bulk.sh /usr/bin/dnsmap-bulk
-	loadstatus " [+] Installing DNSMap" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/dnsmap.md" ];
+	then
+		cd /opt/dnsmap/
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/dnsmap/dnsmap /usr/bin/dnsmap
+		sudo ln -s /opt/dnsmap/dnsmap-bulk.sh /usr/bin/dnsmap-bulk
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/dnsmap.md
+		loadstatus " [+] Installing DNSMap" "OK" "valid"
+	else
+		loadstatus " [+] DNSMap already installed" "OK" "valid"
+	fi
 
 	## Dracnmap
 	## https://github.com/Screetsec/Dracnmap/
 	## --------------------------------------
-	sudo chmod +x /opt/dracnmap/dracnmap.sh
-	sudo ln -s /opt/dracnmap/dracnmap.sh /usr/bin/dracnmap
-	loadstatus " [+] Installing Dracnmap" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/dracnmap.md" ];
+	then
+		sudo chmod +x /opt/dracnmap/dracnmap.sh
+		sudo ln -s /opt/dracnmap/dracnmap.sh /usr/bin/dracnmap
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/dracnmap.md
+		loadstatus " [+] Installing Dracnmap" "OK" "valid"
+	else
+		loadstatus " [+] Dracnmap already installed" "OK" "valid"
+	fi
 
 	## Dumpzilla
 	## https://www.dumpzilla.org/
 	## --------------------------
-	sudo chmod +x /opt/dumpzilla/dumpzilla.py
-	sudo ln -s /opt/dumpzilla/dumpzilla.py /usr/bin/dumpzilla
-	loadstatus " [+] Installing Dumpzilla" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/dumpzilla.md" ];
+	then
+		sudo chmod +x /opt/dumpzilla/dumpzilla.py
+		sudo ln -s /opt/dumpzilla/dumpzilla.py /usr/bin/dumpzilla
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/dumpzilla.md
+		loadstatus " [+] Installing Dumpzilla" "OK" "valid"
+	else
+		loadstatus " [+] Dumpzilla already installed" "OK" "valid"
+	fi
 
 	## EapMd5pass
 	## http://www.willhackforsushi.com/
 	## --------------------------------
-	cd /opt/eapmd5pass/
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/eapmd5pass/eapmd5pass /usr/bin/eapmd5pass
-	loadstatus " [+] Installing EapMd5pass" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/eapmd5pass.md" ];
+	then
+		cd /opt/eapmd5pass/
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/eapmd5pass/eapmd5pass /usr/bin/eapmd5pass
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/eapmd5pass.md
+		loadstatus " [+] Installing EapMd5pass" "OK" "valid"
+	else
+		loadstatus " [+] EapMd5pass already installed" "OK" "valid"
+	fi
 
 	## Enum4Linux
 	## https://labs.portcullis.co.uk/tools/enum4linux/
 	## -----------------------------------------------
-	sudo chmod +x /opt/enum4linux/enum4linux.pl
-	sudo ln -s /opt/enum4linux/enum4linux.pl /usr/bin/enum4linux
-	loadstatus " [+] Installing Enum4Linux" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/enum4linux.md" ];
+	then
+		sudo chmod +x /opt/enum4linux/enum4linux.pl
+		sudo ln -s /opt/enum4linux/enum4linux.pl /usr/bin/enum4linux
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/enum4linux.md
+		loadstatus " [+] Installing Enum4Linux" "OK" "valid"
+	else
+		loadstatus " [+] Enum4Linux already installed" "OK" "valid"
+	fi
 
 	## Enumiax
 	## https://sourceforge.net/projects/enumiax/
 	## -----------------------------------------
-	cd /opt/enumiax/
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/enumiax/enumiax /usr/bin/enumiax
-	loadstatus " [+] Installing Enumiax" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/enumiax.md" ];
+	then
+		cd /opt/enumiax/
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/enumiax/enumiax /usr/bin/enumiax
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/enumiax.md
+		loadstatus " [+] Installing Enumiax" "OK" "valid"
+	else
+		loadstatus " [+] Enumiax already installed" "OK" "valid"
+	fi
 
 	## Findmyhash
 	## https://code.google.com/archive/p/findmyhash/
 	## ---------------------------------------------
-	sudo chmod +x /opt/findmyhash/findmyhash.py
-	sudo ln -s /opt/findmyhash/findmyhash.py /usr/bin/findmyhash
-	loadstatus " [+] Installing Findmyhash" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/findmyhash.md" ];
+	then
+		sudo chmod +x /opt/findmyhash/findmyhash.py
+		sudo ln -s /opt/findmyhash/findmyhash.py /usr/bin/findmyhash
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/findmyhash.md
+		loadstatus " [+] Installing Findmyhash" "OK" "valid"
+	else
+		loadstatus " [+] Findmyhash already installed" "OK" "valid"
+	fi
 
 	## Hammer
 	## https://github.com/cyweb/hammer/
 	## --------------------------------
-	sudo chmod +x /opt/hammer/hammer.py
-	sudo ln -s /opt/hammer/hammer.py /usr/bin/hammer
-	loadstatus " [+] Installing Hammer" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/hammer.md" ];
+	then
+		sudo chmod +x /opt/hammer/hammer.py
+		sudo ln -s /opt/hammer/hammer.py /usr/bin/hammer
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/hammer.md
+		loadstatus " [+] Installing Hammer" "OK" "valid"
+	else
+		loadstatus " [+] Hammer already installed" "OK" "valid"
+	fi
 
 	## HashID
 	## http://code.google.com/p/hash-identifier/
 	## -----------------------------------------
-	sudo chmod +x /opt/hashid/hashid.py
-	sudo ln -s /opt/hashid/hashid.py /usr/bin/hashid
-	loadstatus " [+] Installing HashID" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/hashid.md" ];
+	then
+		sudo chmod +x /opt/hashid/hashid.py
+		sudo ln -s /opt/hashid/hashid.py /usr/bin/hashid
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/hashid.md
+		loadstatus " [+] Installing HashID" "OK" "valid"
+	else
+		loadstatus " [+] HashID already installed" "OK" "valid"
+	fi
 
 	## HashTag
 	## https://github.com/SmeegeSec/HashTag/
 	## -------------------------------------
-	sudo chmod +x /opt/hashtag/hashtag.py
-	sudo ln -s /opt/hashtag/hashtag.py /usr/bin/hashtag
-	loadstatus " [+] Installing HashTag" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/hashtag.md" ];
+	then
+		sudo chmod +x /opt/hashtag/hashtag.py
+		sudo ln -s /opt/hashtag/hashtag.py /usr/bin/hashtag
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/hashtag.md
+		loadstatus " [+] Installing HashTag" "OK" "valid"
+	else
+		loadstatus " [+] HashTag already installed" "OK" "valid"
+	fi
 
 	## Iaxflood
 	## http://www.hackingexposedvoip.com/sec_tools.html
 	## ------------------------------------------------
-	cd /opt/iaxflood/
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/iaxflood/iaxflood /usr/bin/iaxflood
-	loadstatus " [+] Installing Iaxflood" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/iaxflood.md" ];
+	then
+		cd /opt/iaxflood/
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/iaxflood/iaxflood /usr/bin/iaxflood
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/iaxflood.md
+		loadstatus " [+] Installing Iaxflood" "OK" "valid"
+	else
+		loadstatus " [+] Iaxflood already installed" "OK" "valid"
+	fi
 
 	## Javasnoop
 	## https://code.google.com/archive/p/javasnoop/
 	## --------------------------------------------
-	sudo chmod +x /opt/javasnoop/javasnoop.jar
-	sudo touch /usr/local/bin/javasnoop
-	sudo chmod +x /usr/local/bin/javasnoop
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
-	echo 'sudo /usr/bin/java -jar /opt/javasnoop/javasnoop.jar' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
-	loadstatus " [+] Installing Javasnoop" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/javasnoop.md" ];
+	then
+		sudo chmod +x /opt/javasnoop/javasnoop.jar
+		sudo touch /usr/local/bin/javasnoop
+		sudo chmod +x /usr/local/bin/javasnoop
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
+		echo 'sudo /usr/bin/java -jar /opt/javasnoop/javasnoop.jar' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/javasnoop.md
+		loadstatus " [+] Installing Javasnoop" "OK" "valid"
+	else
+		loadstatus " [+] Javasnoop already installed" "OK" "valid"
+	fi
 
 	## Jexboss
 	## https://github.com/joaomatosf/jexboss/
 	## --------------------------------------
-	sudo chmod +x /opt/jexboss/jexboss.py
-	sudo touch /usr/local/bin/jexboss
-	sudo chmod +x /usr/local/bin/jexboss
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
-	echo 'cd /opt/jexboss/' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
-	echo 'sudo python jexboss.py $@' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
-	loadstatus " [+] Installing Jexboss" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/jexboss.md" ];
+	then
+		sudo chmod +x /opt/jexboss/jexboss.py
+		sudo touch /usr/local/bin/jexboss
+		sudo chmod +x /usr/local/bin/jexboss
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+		echo 'cd /opt/jexboss/' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+		echo 'sudo python jexboss.py $@' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/jexboss.md
+		loadstatus " [+] Installing Jexboss" "OK" "valid"
+	else
+		loadstatus " [+] Jexboss already installed" "OK" "valid"
+	fi
 
 	## Joomscan
 	## https://github.com/rezasp/joomscan/
 	## -----------------------------------
-	sudo chmod +x /opt/joomscan/joomscan.pl
-	sudo ln -s /opt/joomscan/joomscan.pl /usr/bin/joomscan
-	loadstatus " [+] Installing Joomscan" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/joomscan.md" ];
+	then
+		sudo chmod +x /opt/joomscan/joomscan.pl
+		sudo ln -s /opt/joomscan/joomscan.pl /usr/bin/joomscan
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/joomscan.md
+		loadstatus " [+] Installing Joomscan" "OK" "valid"
+	else
+		loadstatus " [+] Joomscan already installed" "OK" "valid"
+	fi
 
 	## JSQL-Injection
 	## https://github.com/ron190/jsql-injection/
 	## -----------------------------------------
-	sudo chmod +x /opt/jsql-injection/jsql-injection.jar
-	sudo touch /usr/local/bin/jsql-injection
-	sudo chmod +x /usr/local/bin/jsql-injection
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
-	echo 'sudo /usr/bin/java -jar /opt/jsql-injection/jsql-injection.jar' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
-	loadstatus " [+] Installing JSQL-Injection" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/jsql-injection.md" ];
+	then
+		sudo chmod +x /opt/jsql-injection/jsql-injection.jar
+		sudo touch /usr/local/bin/jsql-injection
+		sudo chmod +x /usr/local/bin/jsql-injection
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
+		echo 'sudo /usr/bin/java -jar /opt/jsql-injection/jsql-injection.jar' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/jsql-injection.md
+		loadstatus " [+] Installing JSQL-Injection" "OK" "valid"
+	else
+		loadstatus " [+] JSQL-Injection already installed" "OK" "valid"
+	fi
 
 	## Libenom
 	## https://github.com/bounteous/libenom/
 	## -------------------------------------
-	sudo chmod +x /opt/libenom/libenom.py
-	sudo ln -s /opt/libenom/libenom.py /usr/bin/libenom
-	loadstatus " [+] Installing Libenom" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/libenom.md" ];
+	then
+		sudo chmod +x /opt/libenom/libenom.py
+		sudo ln -s /opt/libenom/libenom.py /usr/bin/libenom
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/libenom.md
+		loadstatus " [+] Installing Libenom" "OK" "valid"
+	else
+		loadstatus " [+] Libenom already installed" "OK" "valid"
+	fi
 
 	## LinEnum
 	## https://github.com/rebootuser/LinEnum/
 	## --------------------------------------
-	sudo chmod +x /opt/linenum/linenum.sh
-	sudo ln -s /opt/linenum/linenum.sh /usr/bin/linenum
-	loadstatus " [+] Installing LinEnum" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/linenum.md" ];
+	then
+		sudo chmod +x /opt/linenum/linenum.sh
+		sudo ln -s /opt/linenum/linenum.sh /usr/bin/linenum
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/linenum.md
+		loadstatus " [+] Installing LinEnum" "OK" "valid"
+	else
+		loadstatus " [+] LinEnum already installed" "OK" "valid"
+	fi
 
 	## MagicTree
 	## https://www.gremwell.com/
 	## -------------------------
-	sudo chmod +x /opt/magictree/magictree.jar
-	sudo touch /usr/local/bin/magictree
-	sudo chmod +x /usr/local/bin/magictree
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
-	echo 'sudo /usr/bin/java -jar /opt/magictree/magictree.jar' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
-	loadstatus " [+] Installing MagicTree" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/magictree.md" ];
+	then
+		sudo chmod +x /opt/magictree/magictree.jar
+		sudo touch /usr/local/bin/magictree
+		sudo chmod +x /usr/local/bin/magictree
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
+		echo 'sudo /usr/bin/java -jar /opt/magictree/magictree.jar' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/magictree.md
+		loadstatus " [+] Installing MagicTree" "OK" "valid"
+	else
+		loadstatus " [+] MagicTree already installed" "OK" "valid"
+	fi
 
 	## Metagoofil
 	## https://code.google.com/archive/p/metagoofil/
 	## ---------------------------------------------
-	sudo chmod +x /opt/metagoofil/metagoofil.py
-	sudo ln -s /opt/metagoofil/metagoofil.py /usr/bin/metagoofil
-	loadstatus " [+] Installing Metagoofil" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/metagoofil.md" ];
+	then
+		sudo chmod +x /opt/metagoofil/metagoofil.py
+		sudo ln -s /opt/metagoofil/metagoofil.py /usr/bin/metagoofil
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/metagoofil.md
+		loadstatus " [+] Installing Metagoofil" "OK" "valid"
+	else
+		loadstatus " [+] Metagoofil already installed" "OK" "valid"
+	fi
 
 	## MITM-Dump
 	## https://mitmproxy.org/
 	## ----------------------
-	sudo chmod +x /opt/mitmdump/mitmdump
-	sudo ln -s /opt/mitmdump/mitmdump /usr/bin/mitmdump
-	loadstatus " [+] Installing MITM-Dump" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/mitmdump.md" ];
+	then
+		sudo chmod +x /opt/mitmdump/mitmdump
+		sudo ln -s /opt/mitmdump/mitmdump /usr/bin/mitmdump
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/mitmdump.md
+		loadstatus " [+] Installing MITM-Dump" "OK" "valid"
+	else
+		loadstatus " [+] MITM-Dump already installed" "OK" "valid"
+	fi
 
 	## MITM-Proxy
 	## https://mitmproxy.org/
 	## ----------------------
-	sudo chmod +x /opt/mitmproxy/mitmproxy
-	sudo ln -s /opt/mitmproxy/mitmproxy /usr/bin/mitmproxy
-	loadstatus " [+] Installing MITM-Proxy" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/mitmproxy.md" ];
+	then
+		sudo chmod +x /opt/mitmproxy/mitmproxy
+		sudo ln -s /opt/mitmproxy/mitmproxy /usr/bin/mitmproxy
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/mitmproxy.md
+		loadstatus " [+] Installing MITM-Proxy" "OK" "valid"
+	else
+		loadstatus " [+] MITM-Proxy already installed" "OK" "valid"
+	fi
 
 	## MITM-Web
 	## https://mitmproxy.org/
 	## ----------------------
-	sudo chmod +x /opt/mitmweb/mitmweb
-	sudo ln -s /opt/mitmweb/mitmweb /usr/bin/mitmweb
-	loadstatus " [+] Installing MITM-Web" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/mitmweb.md" ];
+	then
+		sudo chmod +x /opt/mitmweb/mitmweb
+		sudo ln -s /opt/mitmweb/mitmweb /usr/bin/mitmweb
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/mitmweb.md
+		loadstatus " [+] Installing MITM-Web" "OK" "valid"
+	else
+		loadstatus " [+] MITM-Web already installed" "OK" "valid"
+	fi
 
 	## Nikto
 	## https://github.com/sullo/nikto/
 	## -------------------------------
-	sudo chmod +x /opt/nikto/program/nikto.pl
-	sudo touch /usr/local/bin/nikto
-	sudo chmod +x /usr/local/bin/nikto
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
-	echo 'cd /opt/nikto/program/' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
-	echo 'sudo ./nikto.pl $@' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
-	loadstatus " [+] Installing Nikto" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/nikto.md" ];
+	then
+		sudo chmod +x /opt/nikto/program/nikto.pl
+		sudo touch /usr/local/bin/nikto
+		sudo chmod +x /usr/local/bin/nikto
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+		echo 'cd /opt/nikto/program/' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+		echo 'sudo ./nikto.pl $@' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/nikto.md
+		loadstatus " [+] Installing Nikto" "OK" "valid"
+	else
+		loadstatus " [+] Nikto already installed" "OK" "valid"
+	fi
 
 	## Nishang
 	## https://github.com/samratashok/nishang/
 	## ---------------------------------------
-	sudo touch /usr/local/bin/nishang
-	sudo chmod +x /usr/local/bin/nishang
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
-	echo 'tree /opt/nishang/' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
-	loadstatus " [+] Installing Nishang" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/nishang.md" ];
+	then
+		sudo touch /usr/local/bin/nishang
+		sudo chmod +x /usr/local/bin/nishang
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
+		echo 'tree /opt/nishang/' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/nishang.md
+		loadstatus " [+] Installing Nishang" "OK" "valid"
+	else
+		loadstatus " [+] Nishang already installed" "OK" "valid"
+	fi
 
 	## Nullinux
 	## https://github.com/m8r0wn/nullinux/
 	## -----------------------------------
-	sudo chmod +x /opt/nullinux/nullinux.py
-	sudo ln -s /opt/nullinux/nullinux.py /usr/bin/nullinux
-	loadstatus " [+] Installing Nullinux" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/nullinux.md" ];
+	then
+		sudo chmod +x /opt/nullinux/nullinux.py
+		sudo ln -s /opt/nullinux/nullinux.py /usr/bin/nullinux
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/nullinux.md
+		loadstatus " [+] Installing Nullinux" "OK" "valid"
+	else
+		loadstatus " [+] Nullinux already installed" "OK" "valid"
+	fi
 
 	## Ohrwurm
 	## https://github.com/mazzoo/ohrwurm/
 	## ----------------------------------
-	cd /opt/ohrwurm/
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/ohrwurm/ohrwurm /usr/bin/ohrwurm
-	loadstatus " [+] Installing Ohrwurm" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/ohrwurm.md" ];
+	then
+		cd /opt/ohrwurm/
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/ohrwurm/ohrwurm /usr/bin/ohrwurm
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/ohrwurm.md
+		loadstatus " [+] Installing Ohrwurm" "OK" "valid"
+	else
+		loadstatus " [+] Ohrwurm already installed" "OK" "valid"
+	fi
 
 	## Oscanner
 	## http://www.cqure.net/wp/tools/database/oscanner/
 	## ------------------------------------------------
-	sudo chmod +x /opt/oscanner/oscanner.sh
-	sudo touch /usr/local/bin/oscanner
-	sudo chmod +x /usr/local/bin/oscanner
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
-	echo 'cd /opt/oscanner/' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
-	echo './oscanner.sh $@' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
-	loadstatus " [+] Installing Oscanner" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/oscanner.md" ];
+	then
+		sudo chmod +x /opt/oscanner/oscanner.sh
+		sudo touch /usr/local/bin/oscanner
+		sudo chmod +x /usr/local/bin/oscanner
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+		echo 'cd /opt/oscanner/' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+		echo './oscanner.sh $@' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/oscanner.md
+		loadstatus " [+] Installing Oscanner" "OK" "valid"
+	else
+		loadstatus " [+] Oscanner already installed" "OK" "valid"
+	fi
 
 	## Pdf-Parser
 	## https://blog.didierstevens.com/programs/pdf-parser/
 	## ---------------------------------------------------
-	sudo chmod +x /opt/pdf-parser/pdf-parser.py
-	sudo ln -s /opt/pdf-parser/pdf-parser.py /usr/bin/pdf-parser
-	loadstatus " [+] Installing Pdf-Parser" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/pdf-parser.md" ];
+	then
+		sudo chmod +x /opt/pdf-parser/pdf-parser.py
+		sudo ln -s /opt/pdf-parser/pdf-parser.py /usr/bin/pdf-parser
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/pdf-parser.md
+		loadstatus " [+] Installing Pdf-Parser" "OK" "valid"
+	else
+		loadstatus " [+] Pdf-Parser already installed" "OK" "valid"
+	fi
 
 	## PocSuite3
 	## https://github.com/knownsec/pocsuite3/
 	## --------------------------------------
-	sudo pip3 install pocsuite3 >/dev/null 2>&1
-	loadstatus " [+] Installing PocSuite3" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/pocsuite3.md" ];
+	then
+		sudo pip3 install pocsuite3 >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/pocsuite3.md
+		loadstatus " [+] Installing PocSuite3" "OK" "valid"
+	else
+		loadstatus " [+] PocSuite3 already installed" "OK" "valid"
+	fi
 
 	## PowerSploit
 	## https://github.com/PowerShellMafia/PowerSploit/
 	## -----------------------------------------------
-	sudo touch /usr/local/bin/powersploit
-	sudo chmod +x /usr/local/bin/powersploit
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
-	echo 'tree /opt/powersploit/' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
-	loadstatus " [+] Installing PowerSploit" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/powersploit.md" ];
+	then
+		sudo touch /usr/local/bin/powersploit
+		sudo chmod +x /usr/local/bin/powersploit
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
+		echo 'tree /opt/powersploit/' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/powersploit.md
+		loadstatus " [+] Installing PowerSploit" "OK" "valid"
+	else
+		loadstatus " [+] PowerSploit already installed" "OK" "valid"
+	fi
 
 	## Pwnat
 	## https://samy.pl/pwnat/
 	## ----------------------
-	cd /opt/pwnat/
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/pwnat/pwnat /usr/bin/pwnat
-	loadstatus " [+] Installing Pwnat" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/pwnat.md" ];
+	then
+		cd /opt/pwnat/
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/pwnat/pwnat /usr/bin/pwnat
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/pwnat.md
+		loadstatus " [+] Installing Pwnat" "OK" "valid"
+	else
+		loadstatus " [+] Pwnat already installed" "OK" "valid"
+	fi
 
 	## Rainbowcrack
 	## https://project-rainbowcrack.com/
 	## ---------------------------------
-	sudo chmod +x /opt/rainbowcrack/rcrack
-	sudo chmod +x /opt/rainbowcrack/rt2rtc
-	sudo chmod +x /opt/rainbowcrack/rtc2rt
-	sudo chmod +x /opt/rainbowcrack/rtgen
-	sudo chmod +x /opt/rainbowcrack/rtmerge
-	sudo chmod +x /opt/rainbowcrack/rtsort
-	sudo touch /usr/local/bin/rcrack
-	sudo chmod +x /usr/local/bin/rcrack
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
-	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
-	echo './rcrack' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
-	sudo touch /usr/local/bin/rt2rtc
-	sudo chmod +x /usr/local/bin/rt2rtc
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
-	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
-	echo './rt2rtc' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
-	sudo touch /usr/local/bin/rtc2rt
-	sudo chmod +x /usr/local/bin/rtc2rt
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
-	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
-	echo './rtc2rt' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
-	sudo touch /usr/local/bin/rtgen
-	sudo chmod +x /usr/local/bin/rtgen
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
-	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
-	echo './rtgen' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
-	sudo touch /usr/local/bin/rtmerge
-	sudo chmod +x /usr/local/bin/rtmerge
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
-	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
-	echo './rtmerge' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
-	sudo touch /usr/local/bin/rtsort
-	sudo chmod +x /usr/local/bin/rtsort
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
-	echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
-	echo './rtsort' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
-	loadstatus " [+] Installing Rainbowcrack" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/rainbowcrack.md" ];
+	then
+		sudo chmod +x /opt/rainbowcrack/rcrack
+		sudo chmod +x /opt/rainbowcrack/rt2rtc
+		sudo chmod +x /opt/rainbowcrack/rtc2rt
+		sudo chmod +x /opt/rainbowcrack/rtgen
+		sudo chmod +x /opt/rainbowcrack/rtmerge
+		sudo chmod +x /opt/rainbowcrack/rtsort
+		sudo touch /usr/local/bin/rcrack
+		sudo chmod +x /usr/local/bin/rcrack
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+		echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+		echo './rcrack' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+		sudo touch /usr/local/bin/rt2rtc
+		sudo chmod +x /usr/local/bin/rt2rtc
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+		echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+		echo './rt2rtc' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+		sudo touch /usr/local/bin/rtc2rt
+		sudo chmod +x /usr/local/bin/rtc2rt
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+		echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+		echo './rtc2rt' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+		sudo touch /usr/local/bin/rtgen
+		sudo chmod +x /usr/local/bin/rtgen
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+		echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+		echo './rtgen' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+		sudo touch /usr/local/bin/rtmerge
+		sudo chmod +x /usr/local/bin/rtmerge
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+		echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+		echo './rtmerge' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+		sudo touch /usr/local/bin/rtsort
+		sudo chmod +x /usr/local/bin/rtsort
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+		echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+		echo './rtsort' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/rainbowcrack.md
+		loadstatus " [+] Installing Rainbowcrack" "OK" "valid"
+	else
+		loadstatus " [+] Rainbowcrack already installed" "OK" "valid"
+	fi
 
 	## Routersploit
 	## https://github.com/threat9/routersploit/
 	## ----------------------------------------
-	cd /opt/routersploit/
-	sudo chmod +x /opt/routersploit/rsf.py
-	sudo touch /usr/local/bin/routersploit
-	sudo chmod +x /usr/local/bin/routersploit
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
-	echo 'cd /opt/routersploit/' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
-	echo 'sudo ./rsf.py $@' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
-	loadstatus " [+] Installing Routersploit" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/routersploit.md" ];
+	then
+		cd /opt/routersploit/
+		sudo chmod +x /opt/routersploit/rsf.py
+		sudo touch /usr/local/bin/routersploit
+		sudo chmod +x /usr/local/bin/routersploit
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+		echo 'cd /opt/routersploit/' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+		echo 'sudo ./rsf.py $@' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/routersploit.md
+		loadstatus " [+] Installing Routersploit" "OK" "valid"
+	else
+		loadstatus " [+] Routersploit already installed" "OK" "valid"
+	fi
 
 	## Rtpflood
 	## http://www.hackingexposedvoip.com/sec_tools.html
 	## ------------------------------------------------
-	cd /opt/rtpflood/
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/rtpflood/rtpflood /usr/bin/rtpflood
-	loadstatus " [+] Installing Rtpflood" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/rtpflood.md" ];
+	then
+		cd /opt/rtpflood/
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/rtpflood/rtpflood /usr/bin/rtpflood
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/rtpflood.md
+		loadstatus " [+] Installing Rtpflood" "OK" "valid"
+	else
+		loadstatus " [+] Rtpflood already installed" "OK" "valid"
+	fi
 
 	## Sfuzz
 	## https://github.com/orgcandman/Simple-Fuzzer/
 	## --------------------------------------------
-	cd /opt/sfuzz/
-	sudo ./configure >/dev/null 2>&1
-	sudo make >/dev/null 2>&1
-	sudo make install >/dev/null 2>&1
-	loadstatus " [+] Installing Sfuzz" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/sfuzz.md" ];
+	then
+		cd /opt/sfuzz/
+		sudo ./configure >/dev/null 2>&1
+		sudo make >/dev/null 2>&1
+		sudo make install >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/sfuzz.md
+		loadstatus " [+] Installing Sfuzz" "OK" "valid"
+	else
+		loadstatus " [+] Sfuzz already installed" "OK" "valid"
+	fi
 
 	## Shellnoob
 	## https://github.com/reyammer/shellnoob/
 	## --------------------------------------
-	sudo chmod +x /opt/shellnoob/shellnoob.py
-	sudo ln -s /opt/shellnoob/shellnoob.py /usr/bin/shellnoob
-	loadstatus " [+] Installing Shellnoob" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/shellnoob.md" ];
+	then
+		sudo chmod +x /opt/shellnoob/shellnoob.py
+		sudo ln -s /opt/shellnoob/shellnoob.py /usr/bin/shellnoob
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/shellnoob.md
+		loadstatus " [+] Installing Shellnoob" "OK" "valid"
+	else
+		loadstatus " [+] Shellnoob already installed" "OK" "valid"
+	fi
 
 	## SidGuesser
 	## http://www.cqure.net/wp/tools/database/sidguesser/
 	## --------------------------------------------------
-	sudo chmod +x /opt/sidguesser/configure
-	cd /opt/sidguesser/
-	sudo ./configure >/dev/null 2>&1
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/sidguesser/sidguess /usr/bin/sidguess
-	loadstatus " [+] Installing SidGuesser" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/sidguesser.md" ];
+	then
+		sudo chmod +x /opt/sidguesser/configure
+		cd /opt/sidguesser/
+		sudo ./configure >/dev/null 2>&1
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/sidguesser/sidguess /usr/bin/sidguess
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/sidguesser.md
+		loadstatus " [+] Installing SidGuesser" "OK" "valid"
+	else
+		loadstatus " [+] SidGuesser already installed" "OK" "valid"
+	fi
 
 	## SMTP User Enum
 	## https://github.com/qashqao/smtp-user-enum/
 	## ------------------------------------------
-	sudo chmod +x /opt/smtp-user-enum/smtp-user-enum.pl
-	sudo ln -s /opt/smtp-user-enum/smtp-user-enum.pl /usr/bin/smtp-user-enum
-	loadstatus " [+] Installing SMTP User Enum" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/smtp-user-enum.md" ];
+	then
+		sudo chmod +x /opt/smtp-user-enum/smtp-user-enum.pl
+		sudo ln -s /opt/smtp-user-enum/smtp-user-enum.pl /usr/bin/smtp-user-enum
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/smtp-user-enum.md
+		loadstatus " [+] Installing SMTP User Enum" "OK" "valid"
+	else
+		loadstatus " [+] SMTP User Enum already installed" "OK" "valid"
+	fi
 
 	## SniffJoke
 	## https://github.com/vecna/sniffjoke/
 	## -----------------------------------
-	sudo mkdir -p /opt/sniffjoke/build
-	cd /opt/sniffjoke/build/
-	sudo cmake .. >/dev/null 2>&1
-	sudo make >/dev/null 2>&1
-	sudo make install >/dev/null 2>&1
-	loadstatus " [+] Installing SniffJoke" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/sniffjoke.md" ];
+	then
+		sudo mkdir -p /opt/sniffjoke/build
+		cd /opt/sniffjoke/build/
+		sudo cmake .. >/dev/null 2>&1
+		sudo make >/dev/null 2>&1
+		sudo make install >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/sniffjoke.md
+		loadstatus " [+] Installing SniffJoke" "OK" "valid"
+	else
+		loadstatus " [+] SniffJoke already installed" "OK" "valid"
+	fi
 
 	## SQLMap
 	## https://github.com/sqlmapproject/sqlmap/
 	## ----------------------------------------
-	sudo chmod +x /opt/sqlmap/sqlmap.py
-	sudo ln -s /opt/sqlmap/sqlmap.py /usr/bin/sqlmap
-	loadstatus " [+] Installing SQLMap" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/sqlmap.md" ];
+	then
+		sudo chmod +x /opt/sqlmap/sqlmap.py
+		sudo ln -s /opt/sqlmap/sqlmap.py /usr/bin/sqlmap
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/sqlmap.md
+		loadstatus " [+] Installing SQLMap" "OK" "valid"
+	else
+		loadstatus " [+] SQLMap already installed" "OK" "valid"
+	fi
 
 	## SubBrute
 	## https://github.com/TheRook/subbrute/
 	## ------------------------------------
-	sudo chmod +x /opt/subbrute/subbrute.py
-	sudo ln -s /opt/subbrute/subbrute.py /usr/bin/subbrute
-	loadstatus " [+] Installing SubBrute" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/subbrute.md" ];
+	then
+		sudo chmod +x /opt/subbrute/subbrute.py
+		sudo ln -s /opt/subbrute/subbrute.py /usr/bin/subbrute
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/subbrute.md
+		loadstatus " [+] Installing SubBrute" "OK" "valid"
+	else
+		loadstatus " [+] SubBrute already installed" "OK" "valid"
+	fi
 
 	## TOR Browser
 	## https://www.torproject.org/
 	## ---------------------------
-	wget -O "/tmp/tor-browser-linux64-9.0.7_en-US.tar.xz" https://www.torproject.org/dist/torbrowser/9.0.7/tor-browser-linux64-9.0.7_en-US.tar.xz >/dev/null 2>&1
-	if [ -f "/tmp/tor-browser-linux64-9.0.7_en-US.tar.xz" ];
+	if [ ! -f "/etc/archsploit/packages/tor-browser.md" ];
 	then
-	    cd /tmp/
-	    tar xf tor-browser-linux64-9.0.7_en-US.tar.xz
-	    sudo mv /tmp/tor-browser_en-US /opt/tor-browser
-		loadstatus " [+] Installing TOR Browser" "OK" "valid"
+		wget -O "/tmp/tor-browser-linux64-9.0.7_en-US.tar.xz" https://www.torproject.org/dist/torbrowser/9.0.7/tor-browser-linux64-9.0.7_en-US.tar.xz >/dev/null 2>&1
+		if [ -f "/tmp/tor-browser-linux64-9.0.7_en-US.tar.xz" ];
+		then
+		    cd /tmp/
+		    tar xf tor-browser-linux64-9.0.7_en-US.tar.xz
+		    sudo mv /tmp/tor-browser_en-US /opt/tor-browser
+			echo "Version: 1.0.1" >> /etc/archsploit/packages/tor-browser.md
+			loadstatus " [+] Installing TOR Browser" "OK" "valid"
+		else
+			loadstatus " [*] Installing TOR Browser" "NO" "issue"
+		fi
 	else
-		loadstatus " [*] Installing TOR Browser" "NO" "issue"
+		loadstatus " [+] TOR Browser already installed" "OK" "valid"
 	fi
 
 	## Udpflood
 	## http://www.hackingexposedvoip.com/sec_tools.html
 	## ------------------------------------------------
-	cd /opt/udpflood/
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/udpflood/udpflood /usr/bin/udpflood
-	loadstatus " [+] Installing Udpflood" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/udpflood.md" ];
+	then
+		cd /opt/udpflood/
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/udpflood/udpflood /usr/bin/udpflood
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/udpflood.md
+		loadstatus " [+] Installing Udpflood" "OK" "valid"
+	else
+		loadstatus " [+] Udpflood already installed" "OK" "valid"
+	fi
 
 	## Unicorn
 	## https://github.com/trustedsec/unicorn/
 	## --------------------------------------
-	sudo chmod +x /opt/unicorn/unicorn.py
-	sudo ln -s /opt/unicorn/unicorn.py /usr/bin/unicorn
-	loadstatus " [+] Installing Unicorn" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/unicorn.md" ];
+	then
+		sudo chmod +x /opt/unicorn/unicorn.py
+		sudo ln -s /opt/unicorn/unicorn.py /usr/bin/unicorn
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/unicorn.md
+		loadstatus " [+] Installing Unicorn" "OK" "valid"
+	else
+		loadstatus " [+] Unicorn already installed" "OK" "valid"
+	fi
 
 	## WebScarab
 	## http://dawes.za.net/
 	## --------------------
-	sudo chmod +x /opt/webscarab/webscarab.jar
-	sudo touch /usr/local/bin/webscarab
-	sudo chmod +x /usr/local/bin/webscarab
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
-	echo 'cd /opt/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
-	echo 'sudo /usr/bin/java -jar /opt/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
-	loadstatus " [+] Installing WebScarab" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/webscarab.md" ];
+	then
+		sudo chmod +x /opt/webscarab/webscarab.jar
+		sudo touch /usr/local/bin/webscarab
+		sudo chmod +x /usr/local/bin/webscarab
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+		echo 'cd /opt/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+		echo 'sudo /usr/bin/java -jar /opt/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/webscarab.md
+		loadstatus " [+] Installing WebScarab" "OK" "valid"
+	else
+		loadstatus " [+] WebScarab already installed" "OK" "valid"
+	fi
 
 	## WebShells
 	## https://tools.kali.org/
 	## -----------------------
-	sudo touch /usr/local/bin/webshells
-	sudo chmod +x /usr/local/bin/webshells
-	echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
-	echo 'clear' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
-	echo 'tree /opt/webshells/' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
-	loadstatus " [+] Installing WebShells" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/webshells.md" ];
+	then
+		sudo touch /usr/local/bin/webshells
+		sudo chmod +x /usr/local/bin/webshells
+		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
+		echo 'clear' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
+		echo 'tree /opt/webshells/' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/webshells.md
+		loadstatus " [+] Installing WebShells" "OK" "valid"
+	else
+		loadstatus " [+] WebShells already installed" "OK" "valid"
+	fi
+
+	## WPScan
+	## https://wpscan.org/
+	## -------------------
+	if [ ! -f "/etc/archsploit/packages/wpscan.md" ];
+	then
+		gem install wpscan >/dev/null 2>&1
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/wpscan.md
+		loadstatus " [+] Installing WPScan" "OK" "valid"
+	else
+		loadstatus " [+] WPScan already installed" "OK" "valid"
+	fi
 
 	## Xspy
 	## https://github.com/mnp/xspy/
 	## ----------------------------
-	cd /opt/xspy/
-	sudo make >/dev/null 2>&1
-	sudo ln -s /opt/xspy/xspy /usr/bin/xspy
-	loadstatus " [+] Installing Xspy" "OK" "valid"
+	if [ ! -f "/etc/archsploit/packages/xspy.md" ];
+	then
+		cd /opt/xspy/
+		sudo make >/dev/null 2>&1
+		sudo ln -s /opt/xspy/xspy /usr/bin/xspy
+		echo "Version: 1.0.1" >> /etc/archsploit/packages/xspy.md
+		loadstatus " [+] Installing Xspy" "OK" "valid"
+	else
+		loadstatus " [+] Xspy already installed" "OK" "valid"
+	fi
 
 	## Correct User Permissions
     ## ------------------------

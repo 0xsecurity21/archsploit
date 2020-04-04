@@ -413,6 +413,24 @@ function clonerepository()
 	loadstatus " [+] Clone Repository" "OK" "valid"
 }
 
+## Create Release
+## --------------
+function createrelease()
+{
+	echo
+	echo -e "${color_0275d8}# Step: createrelease()${color_revert}"
+	sleep 5
+
+	mkdir -p /mnt/etc/archsploit/release/
+	mkdir -p /mnt/etc/archsploit/packages/
+	echo "Distributor ID: ArchSploit" >> /mnt/etc/archsploit/release/release.md
+	echo "Description: ArchSploit Xisqu v2.0.2" >> /mnt/etc/archsploit/release/release.md
+	echo "Release: 1.0.1" >> /mnt/etc/archsploit/release/release.md
+	echo "Codename: Xisqu" >> /mnt/etc/archsploit/release/release.md
+	echo "Build: 20200404" >> /mnt/etc/archsploit/release/release.md
+	loadstatus " [+] Create Release" "OK" "valid"
+}
+
 ## Optimize Virtual Machine
 ## ------------------------
 function virtualmachine()
