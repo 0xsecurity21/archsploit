@@ -819,7 +819,7 @@ function packages()
 	## ----------------------
 	if [ -f "/mnt/tmp/archsploit/etc/polipo/config" ];
 	then
-		mv /mnt/etc/polipo/config /mnt/etc/polipo/config.bak
+		rm -f /mnt/etc/polipo/config
 		mv /mnt/tmp/archsploit/etc/polipo/config /mnt/etc/polipo/
 		loadstatus " [+] TOR Configuration" "OK" "valid"
 	else
