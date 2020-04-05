@@ -872,20 +872,6 @@ function pentest()
 		loadstatus " [+] Nullinux already installed" "OK" "valid"
 	fi
 
-	## Ohrwurm
-	## https://github.com/mazzoo/ohrwurm/
-	## ----------------------------------
-	if [ ! -f "/etc/archsploit/packages/ohrwurm.md" ];
-	then
-		cd /opt/ohrwurm/
-		sudo make >/dev/null 2>&1
-		sudo ln -s /opt/ohrwurm/ohrwurm /usr/bin/ohrwurm
-		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/ohrwurm.md >/dev/null 2>&1
-		loadstatus " [+] Installing Ohrwurm" "OK" "valid"
-	else
-		loadstatus " [+] Ohrwurm already installed" "OK" "valid"
-	fi
-
 	## Oscanner
 	## http://www.cqure.net/wp/tools/database/oscanner/
 	## ------------------------------------------------

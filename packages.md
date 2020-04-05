@@ -125,7 +125,6 @@
 * [MITM-Dump](https://mitmproxy.org/)
 * [MITM-Proxy](https://mitmproxy.org/)
 * [MITM-Web](https://mitmproxy.org/)
-* [Ohrwurm](https://github.com/mazzoo/ohrwurm/)
 * [SniffJoke](https://github.com/vecna/sniffjoke/)
 * [WebScarab](http://dawes.za.net/)
 * [Wireshark](https://www.archlinux.org/packages/community/x86_64/wireshark-qt/)
