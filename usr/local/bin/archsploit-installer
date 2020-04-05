@@ -174,6 +174,9 @@ function zaproxy
 		    cd /tmp/
 			sudo chmod +x /tmp/ZAP_2_9_0_unix.sh
 			sudo ./ZAP_2_9_0_unix.sh
+
+			sudo cp /usr/share/archsploit-shortcuts/archsploit-zaproxy.txt /usr/share/applications/archsploit-zaproxy.desktop
+			sudo rm -f /usr/share/applications/OWASP\ ZAP-0.desktop
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/zaproxy.md >/dev/null 2>&1
 		    loadstatus " [+] Installing Zaproxy" "OK" "valid"
 		else
@@ -211,6 +214,8 @@ function pentest()
 	    sudo ./configure >/dev/null 2>&1
 	    sudo make >/dev/null 2>&1
 	    sudo make install >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-airsnort.txt /usr/share/applications/archsploit-airsnort.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/airsnort.md >/dev/null 2>&1
 	    loadstatus " [+] Installing Airsnort" "OK" "valid"
 	else
@@ -225,6 +230,8 @@ function pentest()
 	    sudo chmod +x /opt/apktool/apktool
 	    sudo chmod +x /opt/apktool/apktool.jar
 	    sudo ln -s /opt/apktool/apktool /usr/bin/apktool
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-apktool.txt /usr/share/applications/archsploit-apktool.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/apktool.md >/dev/null 2>&1
 	    loadstatus " [+] Installing ApkTool" "OK" "valid"
 	else
@@ -249,6 +256,8 @@ function pentest()
 		    echo 'clear' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
 		    echo 'cd /opt/arachni/bin/' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
 		    echo 'sudo ./arachni $@' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+
+			sudo cp /usr/share/archsploit-shortcuts/archsploit-arachni.txt /usr/share/applications/archsploit-arachni.desktop
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/arachni.md >/dev/null 2>&1
 		    loadstatus " [+] Installing Arachni" "OK" "valid"
 		else
@@ -265,6 +274,8 @@ function pentest()
 	then
 	    sudo chmod +x /opt/automater/automater.py
 	    sudo ln -s /opt/automater/automater.py /usr/bin/automater
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-automater.txt /usr/share/applications/archsploit-automater.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/automater.md >/dev/null 2>&1
 	    loadstatus " [+] Installing Automater" "OK" "valid"
 	else
@@ -283,6 +294,8 @@ function pentest()
 	    echo 'clear' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
 	    echo 'cd /opt/bed/' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
 	    echo 'perl bed.pl $@' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-bed.txt /usr/share/applications/archsploit-bed.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/bed.md >/dev/null 2>&1
 	    loadstatus " [+] Installing Bed" "OK" "valid"
 	else
@@ -296,6 +309,8 @@ function pentest()
 	then
 	    sudo chmod +x /opt/blackeye/blackeye.sh
 	    sudo ln -s /opt/blackeye/blackeye.sh /usr/bin/blackeye
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-blackeye.txt /usr/share/applications/archsploit-blackeye.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blackeye.md >/dev/null 2>&1
 		loadstatus " [+] Installing Blackeye" "OK" "valid"
 	else
@@ -309,6 +324,8 @@ function pentest()
 	then
 	    sudo chmod +x /opt/blueranger/blueranger.sh
 	    sudo ln -s /opt/blueranger/blueranger.sh /usr/bin/blueranger
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-blueranger.txt /usr/share/applications/archsploit-blueranger.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blueranger.md >/dev/null 2>&1
 		loadstatus " [+] Installing Blueranger" "OK" "valid"
 	else
@@ -332,6 +349,8 @@ function pentest()
 		    echo 'clear' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
 		    echo 'cd /opt/burpsuite/' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
 		    echo 'sudo /usr/bin/java -jar /opt/burpsuite/burpsuite.jar' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+
+			sudo cp /usr/share/archsploit-shortcuts/archsploit-burpsuite.txt /usr/share/applications/archsploit-burpsuite.desktop
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/burpsuite.md >/dev/null 2>&1
 			loadstatus " [+] Installing BurpSuite" "OK" "valid"
 		else
@@ -348,6 +367,7 @@ function pentest()
 	then
 	    sudo chmod +x /opt/checkurls/checkurls.py
 	    sudo ln -s /opt/checkurls/checkurls.py /usr/bin/checkurls
+
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/checkurls.md >/dev/null 2>&1
 		loadstatus " [+] Installing CheckURLs" "OK" "valid"
 	else
@@ -361,6 +381,8 @@ function pentest()
 	then
 	    sudo chmod +x /opt/cmsmap/cmsmap.py
 	    sudo ln -s /opt/cmsmap/cmsmap.py /usr/bin/cmsmap
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-cmsmap.txt /usr/share/applications/archsploit-cmsmap.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/cmsmap.md >/dev/null 2>&1
 		loadstatus " [+] Installing CMSMap" "OK" "valid"
 	else
@@ -374,6 +396,8 @@ function pentest()
 	then
 	    sudo chmod +x /opt/coldwar/coldwar.py
 	    sudo ln -s /opt/coldwar/coldwar.py /usr/bin/coldwar
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-coldwar.txt /usr/share/applications/archsploit-coldwar.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/coldwar.md >/dev/null 2>&1
 		loadstatus " [+] Installing ColdWar" "OK" "valid"
 	else
@@ -392,6 +416,8 @@ function pentest()
 	    echo 'clear' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
 	    echo 'cd /opt/commix/' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
 	    echo 'sudo python commix.py $@' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-commix.txt /usr/share/applications/archsploit-commix.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/commix.md >/dev/null 2>&1
 		loadstatus " [+] Installing Commix" "OK" "valid"
 	else
@@ -406,6 +432,8 @@ function pentest()
 		cd /opt/crackle/
 		sudo make >/dev/null 2>&1
 		sudo make install >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-crackle.txt /usr/share/applications/archsploit-crackle.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/crackle.md >/dev/null 2>&1
 		loadstatus " [+] Installing Crackle" "OK" "valid"
 	else
@@ -419,6 +447,8 @@ function pentest()
 	then
 	    sudo chmod +x /opt/credcrack/credcrack.py
 	    sudo ln -s /opt/credcrack/credcrack.py /usr/bin/credcrack
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-credcrack.txt /usr/share/applications/archsploit-credcrack.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credcrack.md >/dev/null 2>&1
 		loadstatus " [+] Installing CredCrack" "OK" "valid"
 	else
@@ -437,6 +467,8 @@ function pentest()
 	    echo 'clear' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
 	    echo 'cd /opt/credsniper/' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
 	    echo 'sudo python credsniper.py $@' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-credsniper.txt /usr/share/applications/archsploit-credsniper.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credsniper.md >/dev/null 2>&1
 		loadstatus " [+] Installing CredSniper" "OK" "valid"
 	else
@@ -452,6 +484,8 @@ function pentest()
 		sudo make >/dev/null 2>&1
 		sudo ln -s /opt/cymothoa/bgrep /usr/bin/bgrep
 		sudo ln -s /opt/cymothoa/cymothoa /usr/bin/cymothoa
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-cymothoa.txt /usr/share/applications/archsploit-cymothoa.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/cymothoa.md >/dev/null 2>&1
 		loadstatus " [+] Installing Cymothoa" "OK" "valid"
 	else
@@ -467,6 +501,8 @@ function pentest()
 		sudo make >/dev/null 2>&1
 		sudo mv /opt/ddrescue/dd_rescue /opt/ddrescue/ddrescue
 		sudo ln -s /opt/ddrescue/ddrescue /usr/bin/ddrescue
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-ddrescue.txt /usr/share/applications/archsploit-ddrescue.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/ddrescue.md >/dev/null 2>&1
 		loadstatus " [+] Installing Ddrescue" "OK" "valid"
 	else
@@ -480,6 +516,8 @@ function pentest()
 	then
 	    sudo chmod +x /opt/dedsploit/dedsploit.py
 	    sudo ln -s /opt/dedsploit/dedsploit.py /usr/bin/dedsploit
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-dedsploit.txt /usr/share/applications/archsploit-dedsploit.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dedsploit.md >/dev/null 2>&1
 		loadstatus " [+] Installing Dedsploit" "OK" "valid"
 	else
@@ -493,6 +531,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/dex2jar/*.sh
 		sudo ln -s /opt/dex2jar/d2j-dex2jar.sh /usr/bin/dex2jar
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-dex2jar.txt /usr/share/applications/archsploit-dex2jar.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dex2jar.md >/dev/null 2>&1
 		loadstatus " [+] Installing Dex2jar" "OK" "valid"
 	else
@@ -511,6 +551,8 @@ function pentest()
 		echo 'clear' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
 		echo 'cd /opt/dirbuster/' | sudo tee -a /usr/local/bin/armitage >/dev/null 2>&1
 		echo 'sudo /usr/bin/java -jar /opt/dirbuster/dirbuster.jar' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-dirbuster.txt /usr/share/applications/archsploit-dirbuster.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dirbuster.md >/dev/null 2>&1
 		loadstatus " [+] Installing DirBuster" "OK" "valid"
 	else
@@ -526,6 +568,8 @@ function pentest()
 		sudo make >/dev/null 2>&1
 		sudo ln -s /opt/dnsmap/dnsmap /usr/bin/dnsmap
 		sudo ln -s /opt/dnsmap/dnsmap-bulk.sh /usr/bin/dnsmap-bulk
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-dnsmap.txt /usr/share/applications/archsploit-dnsmap.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dnsmap.md >/dev/null 2>&1
 		loadstatus " [+] Installing DNSMap" "OK" "valid"
 	else
@@ -539,6 +583,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/dracnmap/dracnmap.sh
 		sudo ln -s /opt/dracnmap/dracnmap.sh /usr/bin/dracnmap
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-dracnmap.txt /usr/share/applications/archsploit-dracnmap.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dracnmap.md >/dev/null 2>&1
 		loadstatus " [+] Installing Dracnmap" "OK" "valid"
 	else
@@ -552,6 +598,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/dumpzilla/dumpzilla.py
 		sudo ln -s /opt/dumpzilla/dumpzilla.py /usr/bin/dumpzilla
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-dumpzilla.txt /usr/share/applications/archsploit-dumpzilla.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dumpzilla.md >/dev/null 2>&1
 		loadstatus " [+] Installing Dumpzilla" "OK" "valid"
 	else
@@ -566,6 +614,8 @@ function pentest()
 		cd /opt/eapmd5pass/
 		sudo make >/dev/null 2>&1
 		sudo ln -s /opt/eapmd5pass/eapmd5pass /usr/bin/eapmd5pass
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-eapmd5pass.txt /usr/share/applications/archsploit-eapmd5pass.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/eapmd5pass.md >/dev/null 2>&1
 		loadstatus " [+] Installing EapMd5pass" "OK" "valid"
 	else
@@ -579,6 +629,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/enum4linux/enum4linux.pl
 		sudo ln -s /opt/enum4linux/enum4linux.pl /usr/bin/enum4linux
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-enum4linux.txt /usr/share/applications/archsploit-enum4linux.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/enum4linux.md >/dev/null 2>&1
 		loadstatus " [+] Installing Enum4Linux" "OK" "valid"
 	else
@@ -593,6 +645,8 @@ function pentest()
 		cd /opt/enumiax/
 		sudo make >/dev/null 2>&1
 		sudo ln -s /opt/enumiax/enumiax /usr/bin/enumiax
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-enumiax.txt /usr/share/applications/archsploit-enumiax.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/enumiax.md >/dev/null 2>&1
 		loadstatus " [+] Installing Enumiax" "OK" "valid"
 	else
@@ -606,6 +660,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/findmyhash/findmyhash.py
 		sudo ln -s /opt/findmyhash/findmyhash.py /usr/bin/findmyhash
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-findmyhash.txt /usr/share/applications/archsploit-findmyhash.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/findmyhash.md >/dev/null 2>&1
 		loadstatus " [+] Installing Findmyhash" "OK" "valid"
 	else
@@ -619,6 +675,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/hammer/hammer.py
 		sudo ln -s /opt/hammer/hammer.py /usr/bin/hammer
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-hammer.txt /usr/share/applications/archsploit-hammer.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hammer.md >/dev/null 2>&1
 		loadstatus " [+] Installing Hammer" "OK" "valid"
 	else
@@ -632,6 +690,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/hashid/hashid.py
 		sudo ln -s /opt/hashid/hashid.py /usr/bin/hashid
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-hashid.txt /usr/share/applications/archsploit-hashid.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashid.md >/dev/null 2>&1
 		loadstatus " [+] Installing HashID" "OK" "valid"
 	else
@@ -645,6 +705,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/hashtag/hashtag.py
 		sudo ln -s /opt/hashtag/hashtag.py /usr/bin/hashtag
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-hashtag.txt /usr/share/applications/archsploit-hashtag.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashtag.md >/dev/null 2>&1
 		loadstatus " [+] Installing HashTag" "OK" "valid"
 	else
@@ -659,6 +721,8 @@ function pentest()
 		cd /opt/iaxflood/
 		sudo make >/dev/null 2>&1
 		sudo ln -s /opt/iaxflood/iaxflood /usr/bin/iaxflood
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-iaxflood.txt /usr/share/applications/archsploit-iaxflood.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/iaxflood.md >/dev/null 2>&1
 		loadstatus " [+] Installing Iaxflood" "OK" "valid"
 	else
@@ -676,6 +740,8 @@ function pentest()
 		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
 		echo 'clear' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
 		echo 'sudo /usr/bin/java -jar /opt/javasnoop/javasnoop.jar' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-javasnoop.txt /usr/share/applications/archsploit-javasnoop.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/javasnoop.md >/dev/null 2>&1
 		loadstatus " [+] Installing Javasnoop" "OK" "valid"
 	else
@@ -694,6 +760,8 @@ function pentest()
 		echo 'clear' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
 		echo 'cd /opt/jexboss/' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
 		echo 'sudo python jexboss.py $@' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-jexboss.txt /usr/share/applications/archsploit-jexboss.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/jexboss.md >/dev/null 2>&1
 		loadstatus " [+] Installing Jexboss" "OK" "valid"
 	else
@@ -707,6 +775,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/joomscan/joomscan.pl
 		sudo ln -s /opt/joomscan/joomscan.pl /usr/bin/joomscan
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-joomscan.txt /usr/share/applications/archsploit-joomscan.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/joomscan.md >/dev/null 2>&1
 		loadstatus " [+] Installing Joomscan" "OK" "valid"
 	else
@@ -724,6 +794,8 @@ function pentest()
 		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
 		echo 'clear' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
 		echo 'sudo /usr/bin/java -jar /opt/jsql-injection/jsql-injection.jar' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-jsql-injection.txt /usr/share/applications/archsploit-jsql-injection.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/jsql-injection.md >/dev/null 2>&1
 		loadstatus " [+] Installing JSQL-Injection" "OK" "valid"
 	else
@@ -737,6 +809,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/libenom/libenom.py
 		sudo ln -s /opt/libenom/libenom.py /usr/bin/libenom
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-libenom.txt /usr/share/applications/archsploit-libenom.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/libenom.md >/dev/null 2>&1
 		loadstatus " [+] Installing Libenom" "OK" "valid"
 	else
@@ -750,6 +824,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/linenum/linenum.sh
 		sudo ln -s /opt/linenum/linenum.sh /usr/bin/linenum
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-linenum.txt /usr/share/applications/archsploit-linenum.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/linenum.md >/dev/null 2>&1
 		loadstatus " [+] Installing LinEnum" "OK" "valid"
 	else
@@ -767,6 +843,8 @@ function pentest()
 		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
 		echo 'clear' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
 		echo 'sudo /usr/bin/java -jar /opt/magictree/magictree.jar' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-magictree.txt /usr/share/applications/archsploit-magictree.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/magictree.md >/dev/null 2>&1
 		loadstatus " [+] Installing MagicTree" "OK" "valid"
 	else
@@ -780,6 +858,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/metagoofil/metagoofil.py
 		sudo ln -s /opt/metagoofil/metagoofil.py /usr/bin/metagoofil
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-metagoofil.txt /usr/share/applications/archsploit-metagoofil.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/metagoofil.md >/dev/null 2>&1
 		loadstatus " [+] Installing Metagoofil" "OK" "valid"
 	else
@@ -793,6 +873,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/mitmdump/mitmdump
 		sudo ln -s /opt/mitmdump/mitmdump /usr/bin/mitmdump
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-mitmdump.txt /usr/share/applications/archsploit-mitmdump.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmdump.md >/dev/null 2>&1
 		loadstatus " [+] Installing MITM-Dump" "OK" "valid"
 	else
@@ -806,6 +888,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/mitmproxy/mitmproxy
 		sudo ln -s /opt/mitmproxy/mitmproxy /usr/bin/mitmproxy
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-mitmproxy.txt /usr/share/applications/archsploit-mitmproxy.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmproxy.md >/dev/null 2>&1
 		loadstatus " [+] Installing MITM-Proxy" "OK" "valid"
 	else
@@ -819,6 +903,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/mitmweb/mitmweb
 		sudo ln -s /opt/mitmweb/mitmweb /usr/bin/mitmweb
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-mitmweb.txt /usr/share/applications/archsploit-mitmweb.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmweb.md >/dev/null 2>&1
 		loadstatus " [+] Installing MITM-Web" "OK" "valid"
 	else
@@ -837,6 +923,8 @@ function pentest()
 		echo 'clear' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
 		echo 'cd /opt/nikto/program/' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
 		echo 'sudo ./nikto.pl $@' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-nikto.txt /usr/share/applications/archsploit-nikto.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nikto.md >/dev/null 2>&1
 		loadstatus " [+] Installing Nikto" "OK" "valid"
 	else
@@ -853,6 +941,8 @@ function pentest()
 		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
 		echo 'clear' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
 		echo 'tree /opt/nishang/' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-nishang.txt /usr/share/applications/archsploit-nishang.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nishang.md >/dev/null 2>&1
 		loadstatus " [+] Installing Nishang" "OK" "valid"
 	else
@@ -866,6 +956,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/nullinux/nullinux.py
 		sudo ln -s /opt/nullinux/nullinux.py /usr/bin/nullinux
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-nullinux.txt /usr/share/applications/archsploit-nullinux.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nullinux.md >/dev/null 2>&1
 		loadstatus " [+] Installing Nullinux" "OK" "valid"
 	else
@@ -884,6 +976,8 @@ function pentest()
 		echo 'clear' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
 		echo 'cd /opt/oscanner/' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
 		echo './oscanner.sh $@' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-oscanner.txt /usr/share/applications/archsploit-oscanner.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/oscanner.md >/dev/null 2>&1
 		loadstatus " [+] Installing Oscanner" "OK" "valid"
 	else
@@ -897,6 +991,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/pdf-parser/pdf-parser.py
 		sudo ln -s /opt/pdf-parser/pdf-parser.py /usr/bin/pdf-parser
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-pdf-parser.txt /usr/share/applications/archsploit-pdf-parser.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pdf-parser.md >/dev/null 2>&1
 		loadstatus " [+] Installing Pdf-Parser" "OK" "valid"
 	else
@@ -909,6 +1005,8 @@ function pentest()
 	if [ ! -f "/etc/archsploit/packages/pocsuite3.md" ];
 	then
 		sudo pip3 install pocsuite3 >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-pocsuite.txt /usr/share/applications/archsploit-pocsuite.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pocsuite3.md >/dev/null 2>&1
 		loadstatus " [+] Installing PocSuite3" "OK" "valid"
 	else
@@ -925,6 +1023,8 @@ function pentest()
 		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
 		echo 'clear' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
 		echo 'tree /opt/powersploit/' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-powersploit.txt /usr/share/applications/archsploit-powersploit.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/powersploit.md >/dev/null 2>&1
 		loadstatus " [+] Installing PowerSploit" "OK" "valid"
 	else
@@ -939,6 +1039,8 @@ function pentest()
 		cd /opt/pwnat/
 		sudo make >/dev/null 2>&1
 		sudo ln -s /opt/pwnat/pwnat /usr/bin/pwnat
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-pwnat.txt /usr/share/applications/archsploit-pwnat.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pwnat.md >/dev/null 2>&1
 		loadstatus " [+] Installing Pwnat" "OK" "valid"
 	else
@@ -992,6 +1094,8 @@ function pentest()
 		echo 'clear' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
 		echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
 		echo './rtsort' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-rcrack.txt /usr/share/applications/archsploit-rcrack.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/rainbowcrack.md >/dev/null 2>&1
 		loadstatus " [+] Installing Rainbowcrack" "OK" "valid"
 	else
@@ -1011,6 +1115,8 @@ function pentest()
 		echo 'clear' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
 		echo 'cd /opt/routersploit/' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
 		echo 'sudo ./rsf.py $@' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-routersploit.txt /usr/share/applications/archsploit-routersploit.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/routersploit.md >/dev/null 2>&1
 		loadstatus " [+] Installing Routersploit" "OK" "valid"
 	else
@@ -1025,6 +1131,8 @@ function pentest()
 		cd /opt/rtpflood/
 		sudo make >/dev/null 2>&1
 		sudo ln -s /opt/rtpflood/rtpflood /usr/bin/rtpflood
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-rtpflood.txt /usr/share/applications/archsploit-rtpflood.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/rtpflood.md >/dev/null 2>&1
 		loadstatus " [+] Installing Rtpflood" "OK" "valid"
 	else
@@ -1040,6 +1148,8 @@ function pentest()
 		sudo ./configure >/dev/null 2>&1
 		sudo make >/dev/null 2>&1
 		sudo make install >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-sfuzz.txt /usr/share/applications/archsploit-sfuzz.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sfuzz.md >/dev/null 2>&1
 		loadstatus " [+] Installing Sfuzz" "OK" "valid"
 	else
@@ -1053,6 +1163,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/shellnoob/shellnoob.py
 		sudo ln -s /opt/shellnoob/shellnoob.py /usr/bin/shellnoob
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-shellnoob.txt /usr/share/applications/archsploit-shellnoob.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/shellnoob.md >/dev/null 2>&1
 		loadstatus " [+] Installing Shellnoob" "OK" "valid"
 	else
@@ -1069,6 +1181,8 @@ function pentest()
 		sudo ./configure >/dev/null 2>&1
 		sudo make >/dev/null 2>&1
 		sudo ln -s /opt/sidguesser/sidguess /usr/bin/sidguess
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-sidguess.txt /usr/share/applications/archsploit-sidguess.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sidguesser.md >/dev/null 2>&1
 		loadstatus " [+] Installing SidGuesser" "OK" "valid"
 	else
@@ -1082,6 +1196,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/smtp-user-enum/smtp-user-enum.pl
 		sudo ln -s /opt/smtp-user-enum/smtp-user-enum.pl /usr/bin/smtp-user-enum
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-smtp-user-enum.txt /usr/share/applications/archsploit-smtp-user-enum.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smtp-user-enum.md >/dev/null 2>&1
 		loadstatus " [+] Installing SMTP User Enum" "OK" "valid"
 	else
@@ -1098,6 +1214,8 @@ function pentest()
 		sudo cmake .. >/dev/null 2>&1
 		sudo make >/dev/null 2>&1
 		sudo make install >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-sniffjoke.txt /usr/share/applications/archsploit-sniffjoke.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sniffjoke.md >/dev/null 2>&1
 		loadstatus " [+] Installing SniffJoke" "OK" "valid"
 	else
@@ -1111,6 +1229,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/sqlmap/sqlmap.py
 		sudo ln -s /opt/sqlmap/sqlmap.py /usr/bin/sqlmap
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-sqlmap.txt /usr/share/applications/archsploit-sqlmap.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sqlmap.md >/dev/null 2>&1
 		loadstatus " [+] Installing SQLMap" "OK" "valid"
 	else
@@ -1124,6 +1244,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/subbrute/subbrute.py
 		sudo ln -s /opt/subbrute/subbrute.py /usr/bin/subbrute
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-subbrute.txt /usr/share/applications/archsploit-subbrute.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/subbrute.md >/dev/null 2>&1
 		loadstatus " [+] Installing SubBrute" "OK" "valid"
 	else
@@ -1141,6 +1263,8 @@ function pentest()
 		    cd /tmp/
 		    tar xf tor-browser-linux64-9.0.7_en-US.tar.xz
 		    sudo mv /tmp/tor-browser_en-US /opt/tor-browser
+
+			sudo cp /usr/share/archsploit-shortcuts/archsploit-tor-browser.txt /usr/share/applications/archsploit-tor-browser.desktop
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/tor-browser.md >/dev/null 2>&1
 			loadstatus " [+] Installing TOR Browser" "OK" "valid"
 		else
@@ -1158,6 +1282,8 @@ function pentest()
 		cd /opt/udpflood/
 		sudo make >/dev/null 2>&1
 		sudo ln -s /opt/udpflood/udpflood /usr/bin/udpflood
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-udpflood.txt /usr/share/applications/archsploit-udpflood.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/udpflood.md >/dev/null 2>&1
 		loadstatus " [+] Installing Udpflood" "OK" "valid"
 	else
@@ -1171,6 +1297,8 @@ function pentest()
 	then
 		sudo chmod +x /opt/unicorn/unicorn.py
 		sudo ln -s /opt/unicorn/unicorn.py /usr/bin/unicorn
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-unicorn.txt /usr/share/applications/archsploit-unicorn.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/unicorn.md >/dev/null 2>&1
 		loadstatus " [+] Installing Unicorn" "OK" "valid"
 	else
@@ -1189,6 +1317,8 @@ function pentest()
 		echo 'clear' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
 		echo 'cd /opt/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
 		echo 'sudo /usr/bin/java -jar /opt/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-webscarab.txt /usr/share/applications/archsploit-webscarab.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webscarab.md >/dev/null 2>&1
 		loadstatus " [+] Installing WebScarab" "OK" "valid"
 	else
@@ -1205,6 +1335,8 @@ function pentest()
 		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
 		echo 'clear' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
 		echo 'tree /opt/webshells/' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-webshells.txt /usr/share/applications/archsploit-webshells.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webshells.md >/dev/null 2>&1
 		loadstatus " [+] Installing WebShells" "OK" "valid"
 	else
@@ -1219,6 +1351,8 @@ function pentest()
 		cd /opt/xspy/
 		sudo make >/dev/null 2>&1
 		sudo ln -s /opt/xspy/xspy /usr/bin/xspy
+
+		sudo cp /usr/share/archsploit-shortcuts/archsploit-xspy.txt /usr/share/applications/archsploit-xspy.desktop
 		echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/xspy.md >/dev/null 2>&1
 		loadstatus " [+] Installing Xspy" "OK" "valid"
 	else

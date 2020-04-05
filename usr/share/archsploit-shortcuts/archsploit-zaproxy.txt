@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Categories=Sniffing - Spoofing;
+Exec="/opt/zaproxy/zap.sh"
+Icon=/usr/share/icons/Archsploit/archsploit-zaproxy.png
+Name=Zaproxy
+Terminal=false
+Type=Application

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+#set -e
 
 ## ---------------- ##
 ## Define Variables ##
@@ -154,15 +154,74 @@ function cleaner()
 
 	## Delete System Logs
 	## ------------------
-	true > /home/$USER/.msf4/history
+	if [ -f "/home/$USER/.msf4/history" ];
+	then
+	    true > /home/$USER/.msf4/history
+	fi
+
+	sudo rm -f /home/$USER/000-not-responding.log
+	sudo rm -f /home/$USER/100-informational-continue.log
+	sudo rm -f /home/$USER/101-informational-protocols.log
+	sudo rm -f /home/$USER/200-successful-exist.log
+	sudo rm -f /home/$USER/201-successful-created.log
+	sudo rm -f /home/$USER/202-successful-accepted.log
+	sudo rm -f /home/$USER/203-successful-non-authoritative.log
+	sudo rm -f /home/$USER/204-successful-no-content.log
+	sudo rm -f /home/$USER/205-successful-reset-content.log
+	sudo rm -f /home/$USER/206-successful-partial-content.log
+	sudo rm -f /home/$USER/300-redirection-multiple-choices.log
+	sudo rm -f /home/$USER/301-redirection-moved-permanently.log
+	sudo rm -f /home/$USER/302-redirection-temporarily-different.log
+	sudo rm -f /home/$USER/303-redirection-see-other.log
+	sudo rm -f /home/$USER/304-redirection-not-modified.log
+	sudo rm -f /home/$USER/305-redirection-use-proxy.log
+	sudo rm -f /home/$USER/306-redirection-status-not-defined.log
+	sudo rm -f /home/$USER/307-redirection-temporary-redirect.log
+	sudo rm -f /home/$USER/400-client-error-bad-request.log
+	sudo rm -f /home/$USER/401-client-error-unauthorized.log
+	sudo rm -f /home/$USER/402-client-error-payment-required.log
+	sudo rm -f /home/$USER/403-client-error-forbidden.log
+	sudo rm -f /home/$USER/404-client-error-not-found.log
+	sudo rm -f /home/$USER/405-client-error-method-not-allowed.log
+	sudo rm -f /home/$USER/406-client-error-not-acceptable.log
+	sudo rm -f /home/$USER/407-client-error-proxy-authentication.log
+	sudo rm -f /home/$USER/408-client-error-request-timeout.log
+	sudo rm -f /home/$USER/409-client-error-conflict.log
+	sudo rm -f /home/$USER/410-client-error-gone.log
+	sudo rm -f /home/$USER/411-client-error-length-required.log
+	sudo rm -f /home/$USER/412-client-error-precondition-failed.log
+	sudo rm -f /home/$USER/413-client-error-entity-too-large.log
+	sudo rm -f /home/$USER/414-client-error-uri-too-long.log
+	sudo rm -f /home/$USER/415-client-error-unsupported-media-type.log
+	sudo rm -f /home/$USER/416-client-error-requested-not-satisfiable.log
+	sudo rm -f /home/$USER/417-client-error-expectation-failed.log
+	sudo rm -f /home/$USER/500-server-error-internal-server-error.log
+	sudo rm -f /home/$USER/501-server-error-not-implemented.log
+	sudo rm -f /home/$USER/502-server-error-bad-gateway.log
+	sudo rm -f /home/$USER/503-server-error-service-unavailable.log
+	sudo rm -f /home/$USER/504-server-error-gateway-timeout.log
+	sudo rm -f /home/$USER/505-server-error-version-not-supported.log
+	sudo rm -f /home/$USER/.airsnortrc
+	sudo rm -f /home/$USER/JavaSnoop.properties
+	sudo rm -f /home/$USER/js.log
+	sudo rm -f /home/$USER/magictree.log
 	sudo rm -f /home/$USER/.wget-hsts
-	sudo rm -rf /home/neoslab/.hashcat/
-	sudo rm -rf /home/neoslab/.ngrok2/
+	sudo rm -rf /home/$USER/.BurpSuite
 	sudo rm -rf /home/$USER/.cache/thumbnails/fail
 	sudo rm -rf /home/$USER/.cache/thumbnails/large
 	sudo rm -rf /home/$USER/.cache/thumbnails/normal
+	sudo rm -rf /home/$USER/.hashcat/
+	sudo rm -rf /home/$USER/.JavaSnoop
 	sudo rm -rf /home/$USER/.john
+	sudo rm -rf /home/$USER/.magictree
+	sudo rm -rf /home/$USER/.ngrok2/
 	sudo rm -rf /home/$USER/.sqlmap
+	sudo rm -rf /home/$USER/.ZAP
+
+	sudo rm -f /root/.wget-hsts
+	sudo rm -rf /root/JavaSnoop.properties/
+	sudo rm -rf /root/.JavaSnoop
+
 	sudo rm -f /opt/jexboss/jexboss_*.log
 	sudo rm -rf /opt/jexboss/__pycache__/
 

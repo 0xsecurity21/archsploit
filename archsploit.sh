@@ -875,6 +875,12 @@ function packages()
 	## Copy Github Tools
 	## -----------------
 	cp -r /mnt/tmp/archsploit/opt/* /mnt/opt/
+	loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+	## Copy Archsploit Shortcuts
+	## -------------------------
+	cp -r /mnt/tmp/archsploit/usr/share/archsploit-shortcuts/ /mnt/usr/share/
+	loadstatus " [+] Copy Archsploit Shortcuts" "OK" "valid"
 }
 
 ## Terminate Installation
@@ -949,16 +955,6 @@ function terminate()
 		loadstatus " [+] Custom Themes" "OK" "valid"
 	else
 		loadstatus " [+] Custom Themes" "Error" "issue"
-	fi
-
-	## Install Shortcuts
-	## -----------------
-	if [ -d "/mnt/tmp/archsploit/usr/share/applications" ];
-	then
-		mv /mnt/tmp/archsploit/usr/share/applications/*.desktop /mnt/usr/share/applications/
-		loadstatus " [+] Custom Shortcuts" "OK" "valid"
-	else
-		loadstatus " [+] Custom Shortcuts" "Error" "issue"
 	fi
 
 	## Install Icons

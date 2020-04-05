@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Categories=Cracking;
+Exec=sh -c 'findmyhash --help; $SHELL'
+Icon=/usr/share/icons/Archsploit/archsploit-default.png
+Name=FindMyHash
+Terminal=true
+Type=Application
