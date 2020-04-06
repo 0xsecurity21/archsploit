@@ -549,7 +549,7 @@ function pentest()
 		sudo chmod +x /usr/local/bin/dirbuster
 		echo '#!/bin/bash' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
 		echo 'clear' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
-		echo 'cd /opt/dirbuster/' | sudo tee -a /usr/local/bin/armitage >/dev/null 2>&1
+		echo 'cd /opt/dirbuster/' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
 		echo 'sudo /usr/bin/java -jar /opt/dirbuster/dirbuster.jar' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
 
 		sudo cp /usr/share/archsploit-shortcuts/archsploit-dirbuster.txt /usr/share/applications/archsploit-dirbuster.desktop
