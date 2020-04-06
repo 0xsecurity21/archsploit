@@ -741,72 +741,10 @@ function packages()
 		loadstatus " [+] Python Packages" "OK" "valid"
     fi
 
-	## Pentesting Tools Packages
-	## -------------------------
-	if [ "$extra_cracking" != "null" ];
+	if [ "$pacman_packages_pentest" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $extra_cracking --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Cracking Packages" "OK" "valid"
-    fi
-
-	if [ "$extra_forensics" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $extra_forensics --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Forensics Packages" "OK" "valid"
-    fi
-
-	if [ "$extra_information_gathering" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $extra_information_gathering --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Information Gathering Packages" "OK" "valid"
-    fi
-
-	if [ "$extra_hardwares" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $extra_hardwares --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Hardwares Packages" "OK" "valid"
-    fi
-
-	if [ "$extra_networking" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $extra_networking --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Networking Packages" "OK" "valid"
-    fi
-
-	if [ "$extra_reverse_engineering" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $extra_reverse_engineering --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Reverse Engineering Packages" "OK" "valid"
-    fi
-
-	if [ "$extra_sniffing_spoofing" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $extra_sniffing_spoofing --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Sniffing/Spoofing Packages" "OK" "valid"
-    fi
-
-	if [ "$extra_social_engineering" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $extra_social_engineering --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Socials Engineering Packages" "OK" "valid"
-    fi
-
-	if [ "$extra_stress_testing" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $extra_stress_testing --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Stress Testing Packages" "OK" "valid"
-    fi
-
-	if [ "$extra_web_applications" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $extra_web_applications --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Web Applications Packages" "OK" "valid"
-    fi
-
-	if [ "$extra_wireless" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $extra_wireless --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Wireless Packages" "OK" "valid"
+        arch-chroot /mnt pacman -Syu $pacman_packages_pentest --noconfirm --needed >/dev/null 2>&1
+		loadstatus " [+] Pentest Packages" "OK" "valid"
     fi
 
 	## Install and Configure DnsMasq

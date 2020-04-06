@@ -180,7 +180,6 @@
 * [CMSmap](https://github.com/Dionach/CMSmap/)
 * [DirBuster](https://sourceforge.net/projects/dirbuster/)
 * [Joomscan](https://github.com/rezasp/joomscan/)
-* [Wpscan](https://wpscan.org/)
 
 * * *
 
