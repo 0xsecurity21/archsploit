@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 ## ---------------- ##
 ## Define Variables ##
@@ -127,7 +126,7 @@ function warning()
 function cleaner()
 {
 	echo
-    echo -e "${color_0275d8}# Step: autocleaner()${color_revert}"
+    echo -e "${color_0275d8}# Step: cleaner()${color_revert}"
 	sleep 5
 
 	## Delete Firefox Logs
