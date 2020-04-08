@@ -109,7 +109,7 @@ loadstatus()
 function usage
 {
 	clear
-    echo "usage: archsploit-installer [-c --command] or [-h --help]"
+    echo "usage: torbridge [-c --command] or [-h --help]"
 	echo
 	echo "  -c      - Followed by the command to be executed by the script"
 	echo "  -h      - Display this help menu"

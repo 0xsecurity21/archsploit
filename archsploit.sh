@@ -870,6 +870,16 @@ function terminate()
 		loadstatus " [*] Custom Icons" "!!" "issue"
 	fi
 
+	## Install Applications
+	## --------------------
+	if [ -d "/mnt/tmp/archsploit/usr/share/applications" ];
+	then
+		mv /mnt/tmp/archsploit/usr/share/applications/* /mnt/usr/share/applications/
+		loadstatus " [+] Custom Applications" "OK" "valid"
+	else
+		loadstatus " [*] Custom Applications" "!!" "issue"
+	fi
+
 	## Configure Gnome Shell Gresource
 	## -------------------------------
 	if [ -f "/mnt/tmp/archsploit/usr/share/gnome-shell/gnome-shell-theme.gresource" ];
