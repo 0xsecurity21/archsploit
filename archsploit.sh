@@ -31,9 +31,26 @@ function showbanner()
   	sleep 1s
 }
 
+## Load Header
+## -----------
+function loadheader()
+{
+	echo
+    echo -e "${color_0275d8}${@}${color_revert}"
+	sleep 2
+}
+
+## Load Notice
+## -----------
+function loadnotice()
+{
+	echo -e "${color_5cb85c}${@}${color_revert}"
+	sleep 5
+}
+
 ## Load Status
 ## -----------
-loadstatus()
+function loadstatus()
 {
     color_d9534f=$(tput setaf 1)
     color_5cb85c=$(tput setaf 2)
@@ -120,10 +137,7 @@ function loadconfig()
 ## ----------------------
 function setkeyboard()
 {
-	echo
-    echo -e "${color_0275d8}# Step: setkeyboard()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: setkeyboard()"
 	loadkeys $keyboard
 	loadstatus " [+] Keyboard Settings" "OK" "valid"
 }
@@ -132,10 +146,7 @@ function setkeyboard()
 ## --------------------
 function detectsystem()
 {
-	echo
-    echo -e "${color_0275d8}# Step: detectsystem()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: detectsystem()"
     if [ -d /sys/firmware/efi ];
 	then
         system_mode="uefi"
@@ -173,10 +184,7 @@ function detectsystem()
 ## ----------------------
 function partitions()
 {
-	echo
-    echo -e "${color_0275d8}# Step: partitions()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: partitions()"
     sgdisk --zap-all $hdd_label >/dev/null 2>&1
     wipefs -a $hdd_label >/dev/null 2>&1
 
@@ -286,10 +294,7 @@ function partitions()
 ## -----------
 function loadmirror()
 {
-	echo
-    echo -e "${color_0275d8}# Step: loadmirror()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: loadmirror()"
 	pacman -Syy >/dev/null 2>&1
 	pacman -S "reflector" --noconfirm --needed >/dev/null 2>&1
 	cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
@@ -301,10 +306,7 @@ function loadmirror()
 ## -------------------
 function basesystem()
 {
-	echo
-    echo -e "${color_0275d8}# Step: basesystem()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: basesystem()"
 	pacstrap /mnt base base-devel git linux linux-firmware nano net-tools >/dev/null 2>&1
 	loadstatus " [+] Base System" "OK" "valid"
 }
@@ -313,10 +315,7 @@ function basesystem()
 ## ---------------
 function kernels()
 {
-	echo
-    echo -e "${color_0275d8}# Step: kernels()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: kernels()"
 	arch-chroot /mnt pacman -Syu linux-headers --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Linux Headers" "OK" "valid"
 
@@ -337,10 +336,7 @@ function kernels()
 ## -----------
 function buildfstab()
 {
-	echo
-	echo -e "${color_0275d8}# Step: buildfstab()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: buildfstab()"
 	genfstab -U /mnt >> /mnt/etc/fstab
 	cat /mnt/etc/fstab >/dev/null 2>&1
 
@@ -365,10 +361,7 @@ function buildfstab()
 ## -------------
 function configuration()
 {
-	echo
-	echo -e "${color_0275d8}# Step: configuration()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: configuration()"
 	arch-chroot /mnt timedatectl set-timezone $timezone
 	arch-chroot /mnt hwclock --systohc
 	loadstatus " [+] System Timezone" "OK" "valid"
@@ -404,10 +397,7 @@ function configuration()
 ## ----------------
 function clonerepository()
 {
-	echo
-	echo -e "${color_0275d8}# Step: clonerepository()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: clonerepository()"
 	arch-chroot /mnt git clone https://github.com/archsploit/archsploit >/dev/null 2>&1
 	mv /mnt/archsploit /mnt/tmp
 	loadstatus " [+] Clone Repository" "OK" "valid"
@@ -417,10 +407,7 @@ function clonerepository()
 ## -----------
 function addrelease()
 {
-	echo
-	echo -e "${color_0275d8}# Step: addrelease()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: addrelease()"
 	mkdir -p /mnt/etc/archsploit/release/
 	mkdir -p /mnt/etc/archsploit/packages/
 	echo "Distributor ID: ArchSploit" >> /mnt/etc/archsploit/release/release.md
@@ -435,10 +422,7 @@ function addrelease()
 ## ------------------------
 function virtualmachine()
 {
-	echo
-	echo -e "${color_0275d8}# Step: virtualmachine()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: virtualmachine()"
     if [ -z "$kernels_install" ];
 	then
 		arch-chroot /mnt pacman -Syu virtualbox-guest-utils virtualbox-guest-dkms --noconfirm --needed >/dev/null 2>&1
@@ -453,10 +437,7 @@ function virtualmachine()
 ## --------------------
 function mkinitcpio()
 {
-	echo
-	echo -e "${color_0275d8}# Step: mkinitcpio()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: mkinitcpio()"
 	arch-chroot /mnt pacman -Syu lvm2 --noconfirm --needed >/dev/null 2>&1
 	arch-chroot /mnt sed -i "s/ block / block keyboard keymap /" /etc/mkinitcpio.conf
 	arch-chroot /mnt sed -i "s/ filesystems keyboard / encrypt lvm2 filesystems /" /etc/mkinitcpio.conf
@@ -469,10 +450,7 @@ function mkinitcpio()
 ## ----------------
 function bootloader()
 {
-	echo
-	echo -e "${color_0275d8}# Step: bootloader()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: bootloader()"
 	if [ "$intel_chipset" == "true" -a "$virtualbox" != "true" ];
 	then
         arch-chroot /mnt pacman -Syu intel-ucode --noconfirm --needed >/dev/null 2>&1
@@ -532,10 +510,7 @@ function bootloader()
 ## ------------------
 function multilib()
 {
-	echo
-	echo -e "${color_0275d8}# Step: multilib()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: multilib()"
 	if [ -f "/mnt/tmp/archsploit/etc/pacman.conf" ];
 	then
 		mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
@@ -543,7 +518,7 @@ function multilib()
 		arch-chroot /mnt pacman -Sy >/dev/null 2>&1
 		loadstatus " [+] Multilib Configuration" "OK" "valid"
 	else
-		loadstatus " [+] Multilib Configuration" "Error" "issue"
+		loadstatus " [*] Multilib Configuration" "!!" "issue"
 	fi
 }
 
@@ -551,10 +526,7 @@ function multilib()
 ## --------------------------
 function alsautils()
 {
-	echo
-	echo -e "${color_0275d8}# Step: alsautils()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: alsautils()"
 	arch-chroot /mnt pacman -Syu alsa-utils pulseaudio --noconfirm --needed >/dev/null 2>&1
 	arch-chroot /mnt pacman -Syu alsa-oss alsa-lib --noconfirm --needed >/dev/null 2>&1
 	arch-chroot /mnt amixer sset Master unmute >/dev/null 2>&1
@@ -565,11 +537,8 @@ function alsautils()
 ## -----------------------
 function displaydrivers()
 {
-	echo
-	echo -e "${color_0275d8}# Step: displaydrivers()${color_revert}"
-	sleep 5
-
-    display_drivers="null"
+	loadheader "# Step: displaydrivers()"
+	display_drivers="null"
 	case "$graphical_display" in
         "radeon" )
             display_drivers="xf86-video-ati"
@@ -651,10 +620,7 @@ function install_lxde()
 ## -------------------
 function desktop()
 {
-	echo
-	echo -e "${color_0275d8}# Step: desktop()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: desktop()"
 	case "$desktop_env" in
         "gnome" )
             install_gnome
@@ -687,9 +653,7 @@ function desktop()
 ## ----------------
 function packages()
 {
-	echo
-	echo -e "${color_0275d8}# Step: packages()${color_revert}"
-	sleep 5
+	loadheader "# Step: packages()"
 
 	## Basic Packages
 	## --------------
@@ -759,9 +723,12 @@ function packages()
 	then
 		rm -f /mnt/etc/polipo/config
 		mv /mnt/tmp/archsploit/etc/polipo/config /mnt/etc/polipo/
+		mkdir -p /mnt/var/log/polipo/
+		touch /mnt/var/log/polipo/polipo.log
+		chown -R polipo:polipo /mnt/var/log/polipo/
 		loadstatus " [+] TOR Configuration" "OK" "valid"
 	else
-		loadstatus " [+] TOR Configuration" "Error" "issue"
+		loadstatus " [*] TOR Configuration" "!!" "issue"
 	fi
 
 	## Configure Apache
@@ -773,7 +740,7 @@ function packages()
 		arch-chroot /mnt systemctl enable httpd.service >/dev/null 2>&1
 		loadstatus " [+] Apache Configuration" "OK" "valid"
 	else
-		loadstatus " [+] Apache Configuration" "Error" "issue"
+		loadstatus " [*] Apache Configuration" "!!" "issue"
 	fi
 
 	## Configure MySQL Server
@@ -787,10 +754,10 @@ function packages()
 	mkdir /mnt/var/log/php
 	if [ -d "/mnt/var/log/php" ];
 	then
-		chown http /mnt/var/log/php
+		chown http:root /mnt/var/log/php
 		loadstatus " [+] PHP Logs Directory" "OK" "valid"
 	else
-		loadstatus " [+] PHP Logs Directory" "Error" "issue"
+		loadstatus " [*] PHP Logs Directory" "!!" "issue"
 	fi
 
 	if [ -f "/mnt/tmp/archsploit/etc/httpd/conf/httpd.conf" ];
@@ -799,7 +766,7 @@ function packages()
 		mv /mnt/tmp/archsploit/etc/httpd/conf/httpd.conf /mnt/etc/httpd/conf/
 		loadstatus " [+] PHP Configuration" "OK" "valid"
 	else
-		loadstatus " [+] PHP Configuration" "Error" "issue"
+		loadstatus " [*] PHP Configuration" "!!" "issue"
 	fi
 
 	if [ -f "/mnt/tmp/archsploit/srv/http/info.php" ];
@@ -807,7 +774,7 @@ function packages()
 		mv /mnt/tmp/archsploit/srv/http/info.php /mnt/srv/http/
 		loadstatus " [+] PHP Info File" "OK" "valid"
 	else
-		loadstatus " [+] PHP Info File" "Error" "issue"
+		loadstatus " [*] PHP Info File" "!!" "issue"
 	fi
 
 	## Copy Github Tools
@@ -825,9 +792,7 @@ function packages()
 ## ----------------------
 function terminate()
 {
-	echo
-	echo -e "${color_0275d8}# Step: terminate()${color_revert}"
-	sleep 5
+	loadheader "# Step: terminate()"
 
 	## Configure User Bashrc
 	## ---------------------
@@ -838,7 +803,7 @@ function terminate()
 		chown 1000:users /mnt/home/$user_username/.bashrc
 		loadstatus " [+] Bashrc Configuration" "OK" "valid"
 	else
-		loadstatus " [+] Bashrc Configuration" "Error" "issue"
+		loadstatus " [*] Bashrc Configuration" "!!" "issue"
 	fi
 
 	## Configure Bash History
@@ -859,7 +824,7 @@ function terminate()
 			mv /mnt/tmp/archsploit/usr/share/backgrounds/gnome/${basename} /mnt/usr/share/backgrounds/gnome/
 			loadstatus " [+] Background ~ ${basename}" "OK" "valid"
 		else
-			loadstatus " [+] Background ~ ${basename}" "Error" "issue"
+			loadstatus " [*] Background ~ ${basename}" "!!" "issue"
 		fi
 	done
 
@@ -871,7 +836,7 @@ function terminate()
 		mv /mnt/tmp/archsploit/usr/share/gnome-background-properties/gnome-backgrounds.xml /mnt/usr/share/gnome-background-properties/
 		loadstatus " [+] Gnome Background Properties" "OK" "valid"
 	else
-		loadstatus " [+] Gnome Background Properties" "Error" "issue"
+		loadstatus " [*] Gnome Background Properties" "!!" "issue"
 	fi
 
 	## Install Dash-to-Dock
@@ -882,7 +847,7 @@ function terminate()
 		mv /mnt/tmp/archsploit/usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com /mnt/usr/share/gnome-shell/extensions/
 		loadstatus " [+] Dash to Dock Extension" "OK" "valid"
 	else
-		loadstatus " [+] Dash to Dock Extension" "Error" "issue"
+		loadstatus " [*] Dash to Dock Extension" "!!" "issue"
 	fi
 
 	## Install Themes
@@ -892,7 +857,7 @@ function terminate()
 		mv /mnt/tmp/archsploit/usr/share/themes/* /mnt/usr/share/themes/
 		loadstatus " [+] Custom Themes" "OK" "valid"
 	else
-		loadstatus " [+] Custom Themes" "Error" "issue"
+		loadstatus " [*] Custom Themes" "!!" "issue"
 	fi
 
 	## Install Icons
@@ -902,7 +867,7 @@ function terminate()
 		mv /mnt/tmp/archsploit/usr/share/icons/* /mnt/usr/share/icons/
 		loadstatus " [+] Custom Icons" "OK" "valid"
 	else
-		loadstatus " [+] Custom Icons" "Error" "issue"
+		loadstatus " [*] Custom Icons" "!!" "issue"
 	fi
 
 	## Configure Gnome Shell Gresource
@@ -913,7 +878,7 @@ function terminate()
 		mv /mnt/tmp/archsploit/usr/share/gnome-shell/gnome-shell-theme.gresource /mnt/usr/share/gnome-shell/
 		loadstatus " [+] Gnome Shell Gresource Configuration" "OK" "valid"
 	else
-		loadstatus " [+] Gnome Shell Gresource Configuration" "Error" "issue"
+		loadstatus " [*] Gnome Shell Gresource Configuration" "!!" "issue"
 	fi
 
 	## Configure Gnome Shell Theme
@@ -924,7 +889,7 @@ function terminate()
 		mv /mnt/tmp/archsploit/usr/share/gnome-shell/theme /mnt/usr/share/gnome-shell/
 		loadstatus " [+] Gnome Shell Theme Configuration" "OK" "valid"
 	else
-		loadstatus " [+] Gnome Shell Theme Configuration" "Error" "issue"
+		loadstatus " [*] Gnome Shell Theme Configuration" "!!" "issue"
 	fi
 
 	## Configure ArchSploit-System
@@ -935,7 +900,7 @@ function terminate()
 		chmod +x /mnt/usr/local/bin/archsploit-system
 		loadstatus " [+] Arch system Configuration" "OK" "valid"
 	else
-		loadstatus " [+] Arch system Configuration" "Error" "issue"
+		loadstatus " [*] Arch system Configuration" "!!" "issue"
 	fi
 
 	## Configure ArchSploit-Installer
@@ -946,7 +911,7 @@ function terminate()
 		chmod +x /mnt/usr/local/bin/archsploit-installer
 		loadstatus " [+] Arch Installer Configuration" "OK" "valid"
 	else
-		loadstatus " [+] Arch Installer Configuration" "Error" "issue"
+		loadstatus " [*] Arch Installer Configuration" "!!" "issue"
 	fi
 
 	## Configure Dconf
@@ -958,7 +923,7 @@ function terminate()
 		arch-chroot /mnt dconf update
 		loadstatus " [+] Dconf Configuration" "OK" "valid"
 	else
-		loadstatus " [+] Dconf Configuration" "Error" "issue"
+		loadstatus " [*] Dconf Configuration" "!!" "issue"
 	fi
 
 	## --------------------- ##
@@ -978,10 +943,7 @@ function terminate()
 	rm -rf /mnt/tmp/*
 	loadstatus " [+] Clean Temporary Files" "OK" "valid"
 
-	## Final Notice
-	## ------------
-	echo
-	echo -e "${color_5cb85c}Arch Linux Installed Successfully${color_revert}"
+	loadnotice "ArchSploit Cleaner completed"
 	echo "Don't forget to remove the USB Disk before to boot your system"
 	echo "The system will shutdown within 15 seconds"
 	sleep 15

@@ -12,6 +12,12 @@ color_f0ad4e="\033[01;33m"	# Warnings/Information
 color_0275d8="\033[01;34m"	# Heading
 color_revert="\033[00m"		# Normal
 
+## Text Options
+## ------------
+text_bold="\e[1m"		# Text Bold
+text_line="\e[4m"		# Text Underline
+text_main="\e[0m"		# Text Normal
+
 ## Load Banner
 ## -----------
 function showbanner()
@@ -30,9 +36,26 @@ function showbanner()
   	sleep 1s
 }
 
+## Load Header
+## -----------
+function loadheader()
+{
+	echo
+    echo -e "${color_0275d8}${@}${color_revert}"
+	sleep 2
+}
+
+## Load Notice
+## -----------
+function loadnotice()
+{
+	echo -e "${color_5cb85c}${@}${color_revert}"
+	sleep 5
+}
+
 ## Load Status
 ## -----------
-loadstatus()
+function loadstatus()
 {
     color_d9534f=$(tput setaf 1)
     color_5cb85c=$(tput setaf 2)
@@ -70,10 +93,15 @@ loadstatus()
 function usage
 {
 	clear
-    echo "usage: archsploit-system [-a --action] or [-h --help]"
+    echo "usage: archsploit-system [-c --command] or [-h --help]"
 	echo
-    echo "  -a      Followed by the action to be executed by the script [clean|update|gresource]"
-	echo "  -h      Display this help menu"
+	echo "  -c      - Followed by the command to be executed by the script"
+	echo "  -h      - Display this help menu"
+	echo
+	echo -e "${text_bold}Commands:${text_main}"
+    echo "  clean          - Clean all the system logs and temporary files"
+    echo "  update         - Update all the system packages"
+    echo "  gresource      - Extract the Gnome-Shell theme resource file"
 	echo
     exit 1
 }
@@ -96,6 +124,19 @@ function checkinternet()
 		echo -e "\n"
 		exit 1
 	fi
+}
+
+## Check Root
+## ----------
+function checkroot()
+{
+    if [ $(id -u) -ne 0 ];
+	then
+		echo -e " ${color_d9534f}[!]${color_revert} This script must be run as root"
+		echo -e " ${color_d9534f}[!]${color_revert} Quitting ..."
+		echo
+		exit 1
+    fi
 }
 
 ## Display Warning
@@ -125,9 +166,7 @@ function warning()
 ## ------------
 function cleaner()
 {
-	echo
-    echo -e "${color_0275d8}# Step: cleaner()${color_revert}"
-	sleep 5
+	loadheader "# Step: cleaner()"
 
 	## Delete Firefox Logs
 	## -------------------
@@ -268,13 +307,9 @@ function cleaner()
 	loadstatus " [+] Clean Cache Directories" "OK" "valid"
 	sleep 5
 
-	## Final Notice
-	## ------------
-	echo
-	echo -e "${color_5cb85c}ArchSploit Cleaner completed${color_revert}"
-	echo "The system will shutdown within 10 seconds"
-	sleep 10
-
+	loadnotice "ArchSploit Cleaner completed"
+	echo "The system will shutdown within 5 seconds"
+	sleep 5
 	sudo shutdown now
 }
 
@@ -282,29 +317,20 @@ function cleaner()
 ## ------------
 function updater()
 {
-	echo
-    echo -e "${color_0275d8}# Step: updater()${color_revert}"
-	sleep 5
+	loadheader "# Step: updater()"
 
 	## Update Packages
 	## ---------------
 	sudo pacman -Syyu --noconfirm --needed
 	loadstatus " [+] Update System Packages" "OK" "valid"
-
-	## Final Notice
-	## ------------
-	echo
-	echo -e "${color_5cb85c}ArchSploit Updater completed${color_revert}"
-	sleep 10
+	loadnotice "ArchSploit Updater completed"
 }
 
 ## Load Gresource
 ## --------------
 function gresource()
 {
-	echo
-    echo -e "${color_0275d8}# Step: gresource()${color_revert}"
-	sleep 5
+	loadheader "# Step: gresource()"
 
 	## Extract Gresource
 	## -----------------
@@ -325,11 +351,7 @@ function gresource()
 		gresource extract $basedir $r > $workdir/${r#\/org\/gnome\/shell/}
 	done
 
-	## Final Notice
-	## ------------
-	echo
-	echo -e "${color_5cb85c}ArchSploit Gresource extractor completed${color_revert}"
-	sleep 10
+	loadnotice "ArchSploit Gresource extractor completed"
 }
 
 ## -------- ##
@@ -340,30 +362,32 @@ if [ "$#" -eq  "0" ]
 then
 	usage
 else
-	if [ "$1" == "--action" -o "$1" == "-a" ];
+	if [ "$1" == "--command" -o "$1" == "-c" ];
 	then
-		if [ "$2" == "clean" -o "$2" == "update" -o "$2" == "gresource" ];
-		then
-			clear
-			sudo -v
+		clear
+		showbanner
+		checkinternet
+		warning
 
-			showbanner
-			checkinternet
-			warning
-
-			if [ "$2" == "clean" ];
-		    then
-				cleaner
-		    elif [ "$2" == "update" ];
-		    then
-				updater
-		    elif [ "$2" == "gresource" ];
-		    then
-		        gresource
-			fi
-		else
-			usage
-		fi
+		case "$2" in
+	    clean)
+			checkroot
+	        cleaner
+	        ;;
+	    update)
+			checkroot
+	        update
+	        ;;
+	    gresource)
+			checkroot
+	        gresource
+	        ;;
+		*)
+	        usage
+	        exit 1
+	        ;;
+	    esac
+	    exit 0
 	elif [ "$1" == "--help" -o "$1" == "-h" ];
 	then
 		usage

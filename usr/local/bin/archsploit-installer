@@ -12,6 +12,12 @@ color_f0ad4e="\033[01;33m"	# Warnings/Information
 color_0275d8="\033[01;34m"	# Heading
 color_revert="\033[00m"		# Normal
 
+## Text Options
+## ------------
+text_bold="\e[1m"		# Text Bold
+text_line="\e[4m"		# Text Underline
+text_main="\e[0m"		# Text Normal
+
 ## Load Banner
 ## -----------
 function showbanner()
@@ -30,9 +36,26 @@ function showbanner()
   	sleep 1s
 }
 
+## Load Header
+## -----------
+function loadheader()
+{
+	echo
+    echo -e "${color_0275d8}${@}${color_revert}"
+	sleep 2
+}
+
+## Load Notice
+## -----------
+function loadnotice()
+{
+	echo -e "${color_5cb85c}${@}${color_revert}"
+	sleep 5
+}
+
 ## Load Status
 ## -----------
-loadstatus()
+function loadstatus()
 {
     color_d9534f=$(tput setaf 1)
     color_5cb85c=$(tput setaf 2)
@@ -75,6 +98,12 @@ function usage
     echo "  -p      Package to be installed [sqlsecure|virtualbox|pentest|zaproxy]"
     echo "  -h      Display this help menu"
 	echo
+	echo -e "${text_bold}Packages:${text_main}"
+    echo "  sqlsecure      - Configure SQL Secure authentication"
+    echo "  virtualbox     - Configure VirtualBox module"
+    echo "  pentest        - Install and configure all Github Pentest Tools"
+    echo "  zaproxy        - Install and configure Zaproxy"
+	echo
     exit 1
 }
 
@@ -96,6 +125,19 @@ function checkinternet()
 		echo -e "\n"
 		exit 1
 	fi
+}
+
+## Check Root
+## ----------
+function checkroot()
+{
+    if [ $(id -u) -ne 0 ];
+	then
+		echo -e " ${color_d9534f}[!]${color_revert} This script must be run as root"
+		echo -e " ${color_d9534f}[!]${color_revert} Quitting ..."
+		echo
+		exit 1
+    fi
 }
 
 ## Display Warning
@@ -125,46 +167,28 @@ function warning()
 ## ----------------------
 function sqlsecure()
 {
-	echo
-    echo -e "${color_0275d8}# Step: sqlsecure()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: sqlsecure()"
 	sudo mysql_secure_installation
-
-	## Final Notice
-	## ------------
-	echo
-	echo -e "${color_5cb85c}ArchSploit SQL Secure configured successfully${color_revert}"
-	sleep 10
+	loadnotice "ArchSploit SQL Secure configured successfully"
 }
 
 ## Configure Virtualbox
 ## --------------------
 function virtualbox()
 {
-	echo
-    echo -e "${color_0275d8}# Step: virtualbox()${color_revert}"
-	sleep 5
-
+	loadheader "# Step: virtualbox()"
 	sudo modprobe vboxdrv
     echo 'vboxdrv' | sudo tee /etc/modules-load.d/virtualbox.conf >/dev/null 2>&1
     sudo usermod -aG vboxusers $USER
     loadstatus " [+] Configuring Virtualbox" "OK" "valid"
-
-	## Final Notice
-	## ------------
-	echo
-	echo -e "${color_5cb85c}ArchSploit Virtualbox configured successfully${color_revert}"
-	sleep 10
+	loadnotice "ArchSploit Virtualbox configured successfully"
 }
 
 ## Install Zaproxy
 ## ---------------
 function zaproxy
 {
-	echo
-    echo -e "${color_0275d8}# Step: zaproxy()${color_revert}"
-	sleep 5
+	loadheader "# Step: zaproxy()"
 	if [ ! -f "/etc/archsploit/packages/zaproxy.md" ];
 	then
 		wget -O "/tmp/ZAP_2_9_0_unix.sh" https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2_9_0_unix.sh >/dev/null 2>&1
@@ -178,11 +202,12 @@ function zaproxy
 			sudo rm -f /usr/share/applications/OWASP\ ZAP-0.desktop
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/zaproxy.md >/dev/null 2>&1
 		    loadstatus " [+] Installing Zaproxy" "OK" "valid"
+			loadnotice "ArchSploit Zaproxy installed successfully"
 		else
-			loadstatus " [*] Installing Zaproxy" "NO" "issue"
+			loadstatus " [*] Installing Zaproxy" "!!" "issue"
 		fi
 	else
-		loadstatus " [+] Zaproxy already installed" "OK" "valid"
+		loadstatus " [*] Installing Zaproxy" "!!" "issue"
 	fi
 }
 
@@ -190,9 +215,7 @@ function zaproxy
 ## ---------------------
 function pentest()
 {
-	echo
-    echo -e "${color_0275d8}# Step: pentest()${color_revert}"
-	sleep 5
+	loadheader "# Step: pentest()"
 
 	## Update Packages
 	## ---------------
@@ -260,7 +283,7 @@ function pentest()
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/arachni.md >/dev/null 2>&1
 		    loadstatus " [+] Installing Arachni" "OK" "valid"
 		else
-			loadstatus " [*] Installing Arachni" "NO" "issue"
+			loadstatus " [*] Installing Arachni" "!!" "issue"
 		fi
 	else
 		loadstatus " [+] Arachni already installed" "OK" "valid"
@@ -353,7 +376,7 @@ function pentest()
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/burpsuite.md >/dev/null 2>&1
 			loadstatus " [+] Installing BurpSuite" "OK" "valid"
 		else
-			loadstatus " [*] Installing BurpSuite" "NO" "issue"
+			loadstatus " [*] Installing BurpSuite" "!!" "issue"
 		fi
 	else
 		loadstatus " [+] BurpSuite already installed" "OK" "valid"
@@ -1267,7 +1290,7 @@ function pentest()
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/tor-browser.md >/dev/null 2>&1
 			loadstatus " [+] Installing TOR Browser" "OK" "valid"
 		else
-			loadstatus " [*] Installing TOR Browser" "NO" "issue"
+			loadstatus " [*] Installing TOR Browser" "!!" "issue"
 		fi
 	else
 		loadstatus " [+] TOR Browser already installed" "OK" "valid"
@@ -1362,12 +1385,7 @@ function pentest()
     ## ------------------------
     sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-
-	## Final Notice
-	## ------------
-	echo
-	echo -e "${color_5cb85c}ArchSploit Pentest tools installed successfully${color_revert}"
-	sleep 10
+	loadnotice "ArchSploit Pentest tools installed successfully"
 }
 
 ## -------- ##
@@ -1380,31 +1398,34 @@ then
 else
 	if [ "$1" == "--package" -o "$1" == "-p" ];
 	then
-		if [ "$2" == "sqlsecure" -o "$2" == "virtualbox" -o "$2" == "pentest" -o "$2" == "zaproxy" ];
-		then
-			clear
-			sudo -v
+		clear
+		showbanner
+		checkinternet
+		warning
 
-			showbanner
-			checkinternet
-			warning
-
-			if [ "$2" == "sqlsecure" ];
-		    then
-				sqlsecure
-		    elif [ "$2" == "virtualbox" ];
-		    then
-				virtualbox
-		    elif [ "$2" == "pentest" ];
-		    then
-		        pentest
-			elif [ "$2" == "zaproxy" ];
-		    then
-		        zaproxy
-			fi
-		else
-			usage
-		fi
+		case "$2" in
+	    sqlsecure)
+			checkroot
+	        sqlsecure
+	        ;;
+	    virtualbox)
+			checkroot
+	        virtualbox
+	        ;;
+	    pentest)
+			checkroot
+	        pentest
+	        ;;
+		zaproxy)
+			checkroot
+	        zaproxy
+	        ;;
+		*)
+	        usage
+	        exit 1
+	        ;;
+	    esac
+	    exit 0
 	elif [ "$1" == "--help" -o "$1" == "-h" ];
 	then
 		usage
