@@ -18,31 +18,9 @@ text_bold="\e[1m"		# Text Bold
 text_line="\e[4m"		# Text Underline
 text_main="\e[0m"		# Text Normal
 
-## Packaging
-## ---------
-package="TorBridge"
-version="v1.0.2"
-website="neoslab.com"
-
-## Path Backup Directory
-## ----------------------
-backup_path="/tmp/torbridge"
-
-## TOR Exclude CIDR
-## ----------------
-tor_cidr="192.168.0.0/16 172.16.0.0/12 10.0.0.0/8"
-
-## TOR UUID
-## --------
-tor_uuid="tor"
-
-## TOR Port
-## --------
-tor_port="9040"
-
-## TOR DNS
-## -------
-tor_dns="9053"
+## TorBridge Version
+## -----------------
+version="CheckUrls v1.0.1"
 
 ## Load Banner
 ## -----------
@@ -56,7 +34,7 @@ function showbanner()
 	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
 	echo -e "${color_d9534f}                           |_|            v2.0.2    ${color_revert}"
 	echo
-	echo -e "${color_5cb85c} [i] [Package]: torbridge${color_revert}"
+	echo -e "${color_5cb85c} [i] [Package]: checkurls${color_revert}"
 	echo -e "${color_5cb85c} [i] [Website]: https://neoslab.com${color_revert}"
   	echo
   	sleep 1s
@@ -111,21 +89,24 @@ loadstatus()
 function usage
 {
 	clear
-    echo "usage: torbridge [-c --command] or [-h --help] or [-v --version]"
+    echo "usage: checkurls [-f --file] [-o --output] [-s --sort] [-t --threads] or [-h --help] or [-v --version]"
 	echo
-	echo "  -c      - Followed by the command to be executed by the script"
+	echo "  -f      - The full path of the file containing the URLs to analyze"
+	echo "  -o      - The full path of the directory to use to save the results"
+	echo "  -s      - The sorting method to use during the script process"
+	echo "  -t      - The number of simultaneous threads to execute"
 	echo "  -h      - Display this help menu"
-	echo "  -v      - Display current version of TorBridge"
+	echo "  -v      - Display current version of CheckUrls"
 	echo
-	echo -e "${text_bold}Commands:${text_main}"
-    echo "  start          - Start redirecting all traffic through Tor"
-    echo "  stop           - Stop redirecting all traffic through Tor"
-    echo "  status         - Get Tor service status"
-    echo "  restart        - Restart Tor and traffic rules"
-    echo "  showip         - Display Tor IP address"
-    echo "  switchid       - Switch Tor identity"
-    echo "  changemac      - Change mac addresses of all interfaces"
-    echo "  revertmac      - Revert mac addresses of all interfaces"
+	echo -e "${text_bold}Sorting Methods:${text_main}"
+    echo "  asc          - Process the file using ascending order"
+    echo "  desc         - Process the file using descending order"
+    echo "  rand         - Process the file using random order"
+	echo
+	echo -e "${text_bold}Threads Option:${text_main}"
+    echo "  asc          - Start redirecting all traffic through Tor"
+    echo "  desc         - Stop redirecting all traffic through Tor"
+    echo "  rand         - Get Tor service status"
 	echo
     exit 1
 }
@@ -620,10 +601,7 @@ function showipaddr()
 ## ------------
 function version()
 {
-	echo
-    echo -e "[Package]: ${package}"
-    echo -e "[Version]: ${version}"
-    echo -e "[Website]: ${website}"
+    echo " ${version}"
 	echo
 }
 
@@ -816,6 +794,9 @@ else
 	        checkroot
 	        revertmac
 	        ;;
+	    version)
+	        version
+	        ;;
 	    *)
 	        usage
 	        exit 1
@@ -825,9 +806,6 @@ else
 	elif [ "$1" == "--help" -o "$1" == "-h" ];
 	then
 		usage
-	elif [ "$1" == "--version" -o "$1" == "-v" ];
-	then
-		version
 	else
 		usage
 	fi
