@@ -127,19 +127,6 @@ function checkinternet()
 	fi
 }
 
-## Check Root
-## ----------
-function checkroot()
-{
-    if [ $(id -u) -ne 0 ];
-	then
-		echo -e " ${color_d9534f}[!]${color_revert} This script must be run as root"
-		echo -e " ${color_d9534f}[!]${color_revert} Quitting ..."
-		echo
-		exit 1
-    fi
-}
-
 ## Display Warning
 ## ---------------
 function warning()
@@ -1279,11 +1266,11 @@ function pentest()
 	## ---------------------------
 	if [ ! -f "/etc/archsploit/packages/tor-browser.md" ];
 	then
-		wget -O "/tmp/tor-browser-linux64-9.0.7_en-US.tar.xz" https://www.torproject.org/dist/torbrowser/9.0.7/tor-browser-linux64-9.0.7_en-US.tar.xz >/dev/null 2>&1
-		if [ -f "/tmp/tor-browser-linux64-9.0.7_en-US.tar.xz" ];
+		wget -O "/tmp/tor-browser-linux64-9.0.9_en-US.tar.xz" https://www.torproject.org/dist/torbrowser/9.0.9/tor-browser-linux64-9.0.9_en-US.tar.xz >/dev/null 2>&1
+		if [ -f "/tmp/tor-browser-linux64-9.0.9_en-US.tar.xz" ];
 		then
 		    cd /tmp/
-		    tar xf tor-browser-linux64-9.0.7_en-US.tar.xz
+		    tar xf tor-browser-linux64-9.0.9_en-US.tar.xz
 		    sudo mv /tmp/tor-browser_en-US /opt/tor-browser
 
 			sudo cp /usr/share/archsploit-shortcuts/archsploit-tor-browser.txt /usr/share/applications/archsploit-tor-browser.desktop
@@ -1399,25 +1386,23 @@ else
 	if [ "$1" == "--package" -o "$1" == "-p" ];
 	then
 		clear
+		sudo whoami >/dev/null 2>&1
+
 		showbanner
 		checkinternet
 		warning
 
 		case "$2" in
 	    sqlsecure)
-			checkroot
 	        sqlsecure
 	        ;;
 	    virtualbox)
-			checkroot
 	        virtualbox
 	        ;;
 	    pentest)
-			checkroot
 	        pentest
 	        ;;
 		zaproxy)
-			checkroot
 	        zaproxy
 	        ;;
 		*)
