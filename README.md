@@ -111,7 +111,7 @@ Before you try these alternative Arch Linux installation method, I highly recomm
 
 For those who would like to go further with the help of an automatic installation script for Arch Linux, which has been optimized for the Pentest, I have just created recently on the basis of the excellent work done by [picodot.dev](https://github.com/picodotdev) an installation script which will make the Arch Linux installation process easier.
 
-** What exactly does this script do? **
+**What exactly does this script do?**
 
 This method of installing Arch Linux automates the entire installation process of Arch Linux.
 
