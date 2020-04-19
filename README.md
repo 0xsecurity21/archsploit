@@ -105,11 +105,11 @@ ping archlinux.org -c 3
 
 * * *
 
-###### ARCH LINUX INSTALLATION SCRIPT
+#### ARCH LINUX INSTALLATION SCRIPT
 
 Before you try these alternative Arch Linux installation method, I highly recommend installing Arch Linux in the traditional way from the command line, step-by-step using this [tutorial](https://cybsploit.com/2020/02/23/how-to-install-arch-linux-with-lvm-and-luks-disk-encryption-YzZyRVdDUVZDeHV4MEZYYXBWZU44Zz09) in order for you to gain a deeper understanding of your system and and what goes into installing a desktop Linux operating system.
 
-For those who would like to go further with the help of an automatic installation script for Arch Linux, which has been optimized for the Pentest, I have just created recently on the basis of the excellent work done by [picodot.dev](https://github.com/picodotdev) an installation script available on [Github](https://github.com/archsploit/archsploit) and which will make the Arch Linux installation process easier.
+For those who would like to go further with the help of an automatic installation script for Arch Linux, which has been optimized for the Pentest, I have just created recently on the basis of the excellent work done by [picodot.dev](https://github.com/picodotdev) an installation script which will make the Arch Linux installation process easier.
 
 ** What exactly does this script do? **
 
