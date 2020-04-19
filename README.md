@@ -164,4 +164,4 @@ nano archsploit.conf
 
 For more information on how this automated script works, I encourage you to watch the video below.
 
-[![Video](https://img.youtube.com/vi/tmGLHk2-rBE/0.jpg)](https://www.youtube.com/embed/tmGLHk2-rBE)
+[![Video](https://img.youtube.com/vi/tmGLHk2-rBE/maxresdefault.jpg)](https://www.youtube.com/watch?v=tmGLHk2-rBE)
