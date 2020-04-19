@@ -47,7 +47,7 @@ The block size parameter "`bs`" can be increased, and while it may speed up the 
 
 Once you are ready with your bootable Arch Linux USB drive, shut down your system. Plugin your USB and boot your machine again.
 
-<a class="gallery-item" href="https://neoslab.com/uploads/posts/2020/02/how-to-install-arch-linux-with-lvm-and-luks-disk-encryption-1.png" data-fancybox="How to Install Arch Linux with LVM and LUKS Disk Encryption" data-options="{'caption':'How to Install Arch Linux with LVM and LUKS Disk Encryption'}"><img src="https://neoslab.com/uploads/posts/2020/02/how-to-install-arch-linux-with-lvm-and-luks-disk-encryption-1.png" alt="How to Install Arch Linux with LVM and LUKS Disk Encryption"/></a>
+<a class="gallery-item" href="https://cybsploit.com/uploads/posts/2020/02/how-to-install-arch-linux-with-lvm-and-luks-disk-encryption-1.png" data-fancybox="How to Install Arch Linux with LVM and LUKS Disk Encryption" data-options="{'caption':'How to Install Arch Linux with LVM and LUKS Disk Encryption'}"><img src="https://cybsploit.com/uploads/posts/2020/02/how-to-install-arch-linux-with-lvm-and-luks-disk-encryption-1.png" alt="How to Install Arch Linux with LVM and LUKS Disk Encryption"/></a>
 
 **Important:** You may be unable to boot from live USB if **secure boot** is enabled on your system. In such a case you must first disable the secure boot option from your BIOS panel.
 
@@ -164,4 +164,4 @@ nano archsploit.conf
 
 For more information on how this automated script works, I encourage you to watch the video below.
 
-<iframe src="https://www.youtube.com/embed/tmGLHk2-rBE" allowfullscreen="allowfullscreen" width="800" height="460" frameborder="0"></iframe>
+[![Video](https://img.youtube.com/vi/tmGLHk2-rBE/0.jpg)](https://www.youtube.com/embed/tmGLHk2-rBE)
