@@ -724,7 +724,6 @@ function packages()
 		mv /mnt/tmp/archsploit/etc/polipo/config /mnt/etc/polipo/
 		mkdir -p /mnt/var/log/polipo/
 		touch /mnt/var/log/polipo/polipo.log
-		chown -R polipo:polipo /mnt/var/log/polipo/
 		loadstatus " [+] TOR Configuration" "OK" "valid"
 	else
 		loadstatus " [*] TOR Configuration" "!!" "issue"
