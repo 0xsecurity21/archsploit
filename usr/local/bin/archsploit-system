@@ -395,26 +395,43 @@ function packages_cracking()
 
 	## Install Arch Repository Tools
 	## -----------------------------
-	sudo pacman -S 	hashcat hydra john ncrack ophcrack >/dev/null 2>&1
-	loadstatus " [+] Install Arch Cracking Tools" "OK" "valid"
+	sudo pacman -S hashcat >/dev/null 2>&1
+	loadstatus " [+] Install Hashcat" "OK" "valid"
+
+	sudo pacman -S hydra >/dev/null 2>&1
+	loadstatus " [+] Install Hydra" "OK" "valid"
+
+	sudo pacman -S john >/dev/null 2>&1
+	loadstatus " [+] Install John" "OK" "valid"
+
+	sudo pacman -S ncrack >/dev/null 2>&1
+	loadstatus " [+] Install Ncrack" "OK" "valid"
+
+	sudo pacman -S ophcrack >/dev/null 2>&1
+	loadstatus " [+] Install Ophcrack" "OK" "valid"
 
 	## Install Github Repository Tools
 	## -------------------------------
 	sudo mkdir -p /opt/archsploit/
-	cd /opt/archsploit/
+	cd /tmp/
 	sudo git clone https://github.com/archsploit/packages-cracking
 
-	if [ ! -d "/opt/archsploit/packages-cracking/" ];
+	if [ ! -d "/tmp/packages-cracking/opt/archsploit/cracking/" ];
 	then
+		## Copy Cracking Tools
+		## -------------------
+		sudo cp -r /tmp/packages-cracking/opt/archsploit/cracking/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
 		## CredCrack
 	    ## https://github.com/gojhonny/CredCrack/
 	    ## --------------------------------------
 		if [ ! -f "/etc/archsploit/packages/credcrack.md" ];
 		then
-		    sudo chmod +x /opt/credcrack/credcrack.py
-		    sudo ln -s /opt/credcrack/credcrack.py /usr/bin/credcrack
+		    sudo chmod +x /opt/archsploit/cracking/credcrack/credcrack.py
+		    sudo ln -s /opt/archsploit/cracking/credcrack/credcrack.py /usr/bin/credcrack
 
-			sudo cp /usr/share/archsploit-shortcuts/archsploit-credcrack.txt /usr/share/applications/archsploit-credcrack.desktop
+			sudo cp /tmp/packages-cracking/usr/applications/archsploit-credcrack.desktop /usr/share/applications/archsploit-credcrack.desktop
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credcrack.md >/dev/null 2>&1
 			loadstatus " [+] Installing CredCrack" "OK" "valid"
 		else
@@ -426,10 +443,10 @@ function packages_cracking()
 		## ---------------------------------------------
 		if [ ! -f "/etc/archsploit/packages/findmyhash.md" ];
 		then
-			sudo chmod +x /opt/findmyhash/findmyhash.py
-			sudo ln -s /opt/findmyhash/findmyhash.py /usr/bin/findmyhash
+			sudo chmod +x /opt/archsploit/cracking/findmyhash/findmyhash.py
+			sudo ln -s /opt/archsploit/cracking/findmyhash/findmyhash.py /usr/bin/findmyhash
 
-			sudo cp /usr/share/archsploit-shortcuts/archsploit-findmyhash.txt /usr/share/applications/archsploit-findmyhash.desktop
+			sudo cp /tmp/packages-cracking/usr/applications/archsploit-findmyhash.desktop /usr/share/applications/
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/findmyhash.md >/dev/null 2>&1
 			loadstatus " [+] Installing Findmyhash" "OK" "valid"
 		else
@@ -441,10 +458,10 @@ function packages_cracking()
 		## -----------------------------------------
 		if [ ! -f "/etc/archsploit/packages/hashid.md" ];
 		then
-			sudo chmod +x /opt/hashid/hashid.py
-			sudo ln -s /opt/hashid/hashid.py /usr/bin/hashid
+			sudo chmod +x /opt/archsploit/cracking/hashid/hashid.py
+			sudo ln -s /opt/archsploit/cracking/hashid/hashid.py /usr/bin/hashid
 
-			sudo cp /usr/share/archsploit-shortcuts/archsploit-hashid.txt /usr/share/applications/archsploit-hashid.desktop
+			sudo cp /tmp/packages-cracking/usr/applications/archsploit-hashid.desktop /usr/share/applications/
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashid.md >/dev/null 2>&1
 			loadstatus " [+] Installing HashID" "OK" "valid"
 		else
@@ -456,10 +473,10 @@ function packages_cracking()
 		## -------------------------------------
 		if [ ! -f "/etc/archsploit/packages/hashtag.md" ];
 		then
-			sudo chmod +x /opt/hashtag/hashtag.py
-			sudo ln -s /opt/hashtag/hashtag.py /usr/bin/hashtag
+			sudo chmod +x /opt/archsploit/cracking/hashtag/hashtag.py
+			sudo ln -s /opt/archsploit/cracking/hashtag/hashtag.py /usr/bin/hashtag
 
-			sudo cp /usr/share/archsploit-shortcuts/archsploit-hashtag.txt /usr/share/applications/archsploit-hashtag.desktop
+			sudo cp /tmp/packages-cracking/usr/applications/archsploit-hashtag.desktop /usr/share/applications/
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashtag.md >/dev/null 2>&1
 			loadstatus " [+] Installing HashTag" "OK" "valid"
 		else
@@ -471,50 +488,50 @@ function packages_cracking()
 		## ---------------------------------
 		if [ ! -f "/etc/archsploit/packages/rainbowcrack.md" ];
 		then
-			sudo chmod +x /opt/rainbowcrack/rcrack
-			sudo chmod +x /opt/rainbowcrack/rt2rtc
-			sudo chmod +x /opt/rainbowcrack/rtc2rt
-			sudo chmod +x /opt/rainbowcrack/rtgen
-			sudo chmod +x /opt/rainbowcrack/rtmerge
-			sudo chmod +x /opt/rainbowcrack/rtsort
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rcrack
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rt2rtc
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rtc2rt
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rtgen
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rtmerge
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rtsort
 			sudo touch /usr/local/bin/rcrack
 			sudo chmod +x /usr/local/bin/rcrack
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
-			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
 			echo './rcrack' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
 			sudo touch /usr/local/bin/rt2rtc
 			sudo chmod +x /usr/local/bin/rt2rtc
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
-			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
 			echo './rt2rtc' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
 			sudo touch /usr/local/bin/rtc2rt
 			sudo chmod +x /usr/local/bin/rtc2rt
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
-			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
 			echo './rtc2rt' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
 			sudo touch /usr/local/bin/rtgen
 			sudo chmod +x /usr/local/bin/rtgen
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
-			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
 			echo './rtgen' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
 			sudo touch /usr/local/bin/rtmerge
 			sudo chmod +x /usr/local/bin/rtmerge
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
-			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
 			echo './rtmerge' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
 			sudo touch /usr/local/bin/rtsort
 			sudo chmod +x /usr/local/bin/rtsort
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
-			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
 			echo './rtsort' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
 
-			sudo cp /usr/share/archsploit-shortcuts/archsploit-rcrack.txt /usr/share/applications/archsploit-rcrack.desktop
+			sudo cp /tmp/packages-cracking/usr/applications/archsploit-rcrack.desktop /usr/share/applications/
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/rainbowcrack.md >/dev/null 2>&1
 			loadstatus " [+] Installing Rainbowcrack" "OK" "valid"
 		else
@@ -522,9 +539,11 @@ function packages_cracking()
 		fi
 	fi
 
-	loadnotice "ArchSploit Updater completed"
-
-
+	## Correct User Permissions
+    ## ------------------------
+    sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Cracking packages installed successfully"
 }
 
 ## Install Cryptography Packages
