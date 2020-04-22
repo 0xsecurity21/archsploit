@@ -394,9 +394,9 @@ function configuration()
 
 ## Clone Repository
 ## ----------------
-function clonerepository()
+function clonerepo()
 {
-	loadheader "# Step: clonerepository()"
+	loadheader "# Step: clonerepo()"
 	arch-chroot /mnt git clone https://github.com/archsploit/archsploit >/dev/null 2>&1
 	mv /mnt/archsploit /mnt/tmp
 	loadstatus " [+] Clone Repository" "OK" "valid"
