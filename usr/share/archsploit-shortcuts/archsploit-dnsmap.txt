@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Categories=Gathering;
-Exec=sh -c 'dnsmap --help; $SHELL'
-Icon=/usr/share/icons/Archsploit/archsploit-default.png
-Name=Dnsmap
-Terminal=true
-Type=Application

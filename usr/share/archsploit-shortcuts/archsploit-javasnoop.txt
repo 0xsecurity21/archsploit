@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Categories=Reverse Engineering;
-Exec=/usr/bin/java -jar /opt/javasnoop/javasnoop.jar
-Icon=/usr/share/icons/Archsploit/archsploit-default.png
-Name=Javasnoop
-Terminal=false
-Type=Application

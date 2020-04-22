@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Categories=Reporting;
-Exec=/usr/bin/java -jar /opt/magictree/magictree.jar
-Icon=/usr/share/icons/Archsploit/archsploit-default.png
-Name=Magictree
-Terminal=false
-Type=Application

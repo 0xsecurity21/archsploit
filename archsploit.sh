@@ -24,7 +24,7 @@ function showbanner()
 	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
 	echo -e "${color_d9534f}                           |_|            v2.0.2    ${color_revert}"
 	echo
-	echo -e "${color_5cb85c} [i] [Package]: archsploit-deploy${color_revert}"
+	echo -e "${color_5cb85c} [i] [Package]: archsploit-installer${color_revert}"
 	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"
   	echo
   	sleep 1s
@@ -106,7 +106,7 @@ function checkinternet()
 ## ---------------
 function warning()
 {
-    echo -e "${color_0275d8} ** Welcome to ArchSploit Deploy Script **${color_revert}"
+    echo -e "${color_0275d8} ** Welcome to ArchSploit Installer Script **${color_revert}"
     echo
     echo -e "${color_d9534f} [!] This script will format all your system partitions${color_revert}"
     echo -e "${color_d9534f} [!] All your data and content will be permanently lost${color_revert}"
@@ -716,19 +716,6 @@ function packages()
 	arch-chroot /mnt systemctl enable dnsmasq.service >/dev/null 2>&1
 	loadstatus " [+] DnsMasq Configuration" "OK" "valid"
 
-	## Configure TOR & Polipo
-	## ----------------------
-	if [ -f "/mnt/tmp/archsploit/etc/polipo/config" ];
-	then
-		rm -f /mnt/etc/polipo/config
-		mv /mnt/tmp/archsploit/etc/polipo/config /mnt/etc/polipo/
-		mkdir -p /mnt/var/log/polipo/
-		touch /mnt/var/log/polipo/polipo.log
-		loadstatus " [+] TOR Configuration" "OK" "valid"
-	else
-		loadstatus " [*] TOR Configuration" "!!" "issue"
-	fi
-
 	## Configure Apache
 	## ----------------
 	arch-chroot /mnt sed -i "s/#LoadModule unique_id_module modules/LoadModule unique_id_module modules/" /etc/httpd/conf/httpd.conf
@@ -774,11 +761,6 @@ function packages()
 	else
 		loadstatus " [*] PHP Info File" "!!" "issue"
 	fi
-
-	## Copy Github Tools
-	## -----------------
-	cp -r /mnt/tmp/archsploit/opt/* /mnt/opt/
-	loadstatus " [+] Copy Github Tools" "OK" "valid"
 
 	## Copy Archsploit Shortcuts
 	## -------------------------
@@ -913,10 +895,10 @@ function terminate()
 
 	## Configure ArchSploit-Installer
 	## ------------------------------
-	if [ -f "/mnt/tmp/archsploit/usr/local/bin/archsploit-installer" ];
+	if [ -f "/mnt/tmp/archsploit/usr/local/bin/archsploit-packages" ];
 	then
-		mv /mnt/tmp/archsploit/usr/local/bin/archsploit-installer /mnt/usr/local/bin/archsploit-installer
-		chmod +x /mnt/usr/local/bin/archsploit-installer
+		mv /mnt/tmp/archsploit/usr/local/bin/archsploit-packages /mnt/usr/local/bin/archsploit-packages
+		chmod +x /mnt/usr/local/bin/archsploit-packages
 		loadstatus " [+] Arch Installer Configuration" "OK" "valid"
 	else
 		loadstatus " [*] Arch Installer Configuration" "!!" "issue"

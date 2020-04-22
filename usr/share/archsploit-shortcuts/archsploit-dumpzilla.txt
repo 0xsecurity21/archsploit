@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Categories=Forensics;
-Exec=sh -c 'dumpzilla --help; $SHELL'
-Icon=/usr/share/icons/Archsploit/archsploit-dumpzilla.png
-Name=Dumpzilla
-Terminal=true
-Type=Application

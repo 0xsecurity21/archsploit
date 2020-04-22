@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Categories=Web Applications;
-Exec=/usr/bin/java -jar /opt/burpsuite/burpsuite.jar
-Icon=/usr/share/icons/Archsploit/archsploit-burpsuite.png
-Name=Burpsuite
-Terminal=false
-Type=Application

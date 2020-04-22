@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Categories=Gathering;
-Exec=sh -c 'nullinux --help; $SHELL'
-Icon=/usr/share/icons/Archsploit/archsploit-default.png
-Name=Nullinux
-Terminal=true
-Type=Application
