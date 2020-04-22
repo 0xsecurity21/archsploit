@@ -93,15 +93,40 @@ function loadstatus()
 function usage
 {
 	clear
-    echo "usage: archsploit-system [-c --command] or [-h --help]"
+    echo "usage: archsploit-system [-c --command] or [-p --package] or [-h --help]"
 	echo
 	echo "  -c      - Followed by the command to be executed by the script"
+    echo "  -p      - Followed by the packages category name to be installed by the script"
 	echo "  -h      - Display this help menu"
 	echo
 	echo -e "${text_bold}Commands:${text_main}"
-    echo "  clean          - Clean all the system logs and temporary files"
-    echo "  update         - Update all the system packages"
-    echo "  gresource      - Extract the Gnome-Shell theme resource file"
+    echo "  clean             - Clean all the system logs and temporary files"
+    echo "  update            - Update all the system packages"
+    echo "  gresource         - Extract the Gnome-Shell theme resource file"
+	echo
+	echo -e "${text_bold}Packages:${text_main}"
+	echo "  bluetooth         - Install and configure Bluetooth Tools"
+    echo "  cracking          - Install and configure Cracking Tools"
+    echo "  cryptography      - Install and configure Cryptography Tools"
+    echo "  debugger          - Install and configure Debugger Tools"
+    echo "  exploitation      - Install and configure Exploitation Tools"
+    echo "  fingerprint       - Install and configure Fingerprint Tools"
+    echo "  forensics         - Install and configure Forensics Tools"
+    echo "  gathering         - Install and configure Gathering Tools"
+    echo "  hardware          - Install and configure Hardware Tools"
+    echo "  honeypot          - Install and configure Honeypot Tools"
+    echo "  malware           - Install and configure Malware Tools"
+    echo "  miscs             - Install and configure Miscs Tools"
+    echo "  networking        - Install and configure Networking Tools"
+    echo "  reporting         - Install and configure Reporting Tools"
+    echo "  reverse           - Install and configure Reverse Tools"
+    echo "  scanning          - Install and configure Scanning Tools"
+    echo "  sniffing          - Install and configure Sniffing Tools"
+    echo "  social            - Install and configure Social Tools"
+    echo "  stress-testing    - Install and configure Stress-Testing Tools"
+    echo "  vulnerability     - Install and configure Vulnerability Tools"
+    echo "  webapps           - Install and configure Webapps Tools"
+    echo "  wireless          - Install and configure Wireless Tools"
 	echo
     exit 1
 }
