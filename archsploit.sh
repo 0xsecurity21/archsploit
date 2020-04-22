@@ -25,7 +25,7 @@ function showbanner()
 	echo -e "${color_d9534f}                           |_|            v2.0.2    ${color_revert}"
 	echo
 	echo -e "${color_5cb85c} [i] [Package]: archsploit-deploy${color_revert}"
-	echo -e "${color_5cb85c} [i] [Website]: https://neoslab.com${color_revert}"
+	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"
   	echo
   	sleep 1s
 }
