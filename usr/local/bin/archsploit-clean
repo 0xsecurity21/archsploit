@@ -1,0 +1,279 @@
+#!/usr/bin/env bash
+
+## ---------------- ##
+## Define Variables ##
+## ---------------- ##
+
+## Colour Output
+## -------------
+color_d9534f="\033[01;31m"	# Issues/Errors
+color_5cb85c="\033[01;32m"	# Success
+color_f0ad4e="\033[01;33m"	# Warnings/Information
+color_0275d8="\033[01;34m"	# Heading
+color_revert="\033[00m"		# Normal
+
+## Text Options
+## ------------
+text_bold="\e[1m"		# Text Bold
+text_line="\e[4m"		# Text Underline
+text_main="\e[0m"		# Text Normal
+
+## Load Banner
+## -----------
+function showbanner()
+{
+	clear
+	echo -e "${color_d9534f}                  _               _       _ _       ${color_revert}"
+	echo -e "${color_d9534f}    __ _ _ __ ___| |__  ___ _ __ | | ___ (_) |_     ${color_revert}"
+	echo -e "${color_d9534f}   / _' | '__/ __| '_ \/ __| '_ \| |/ _ \| | __|    ${color_revert}"
+	echo -e "${color_d9534f}  | (_| | | | (__| | | \__ \ |_) | | (_) | | |_     ${color_revert}"
+	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
+	echo -e "${color_d9534f}                           |_|            v2.0.2    ${color_revert}"
+	echo
+	echo -e "${color_5cb85c} [i] [Package]: archsploit-clean${color_revert}"
+	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"
+  	echo
+  	sleep 1s
+}
+
+## Load Header
+## -----------
+function loadheader()
+{
+	echo
+    echo -e "${color_0275d8}${@}${color_revert}"
+	sleep 2
+}
+
+## Load Notice
+## -----------
+function loadnotice()
+{
+	echo -e "${color_5cb85c}${@}${color_revert}"
+	sleep 5
+}
+
+## Load Status
+## -----------
+function loadstatus()
+{
+    color_d9534f=$(tput setaf 1)
+    color_5cb85c=$(tput setaf 2)
+    color_f0ad4e=$(tput setaf 3)
+    color_0275d8=$(tput setaf 4)
+    color_revert=$(tput sgr0)
+
+    message=$1
+    display="[$2]"
+
+    if [ "$3" == "issue" ];
+    then
+        return="$color_d9534f${display}$color_revert"
+    elif [ "$3" == "valid" ];
+    then
+        return="$color_5cb85c${display}$color_revert"
+    elif [ "$3" == "warning" ];
+    then
+        return="$color_f0ad4e${display}$color_revert"
+    elif [ "$3" == "info" ];
+    then
+        return="$color_f0ad4e${display}$color_revert"
+    else
+        return="$color_revert${display}$color_revert"
+    fi
+
+    let COL=$(tput cols)-${#message}+${#return}-${#display}
+
+    echo -n $message
+    printf "%${COL}s\n"  "$return"
+}
+
+## Check Internet status
+## ---------------------
+function checkinternet()
+{
+	for i in {1..10};
+	do
+		ping -c 1 -W ${i} www.google.com &>/dev/null && break;
+	done
+
+	if [[ "$?" -ne 0 ]];
+	then
+		cd /tmp/
+		echo
+		echo -e " ${color_d9534f}[!]${color_revert} An unknown error occured ~ Possible DNS issues or no Internet connection"
+		echo -e " ${color_d9534f}[!]${color_revert} Quitting ..."
+		echo -e "\n"
+		exit 1
+	fi
+}
+
+## Load System Cleaner
+## -------------------
+function cleaner()
+{
+	loadheader "# Step: System Cleaner"
+
+	## Delete Firefox Logs
+	## -------------------
+	sudo rm -rf /home/$USER/.mozilla/firefox/backup/
+	sudo rm -rf /home/$USER/.cache/mozilla/firefox/backup/
+	sudo mkdir -p /home/$USER/.mozilla/firefox/backup/ /home/$USER/.cache/mozilla/firefox/backup/
+	sudo mv /home/$USER/.mozilla/firefox/*.default/*.sqlite  /home/$USER/.mozilla/firefox/backup/ >/dev/null 2>&1
+	sudo mv /home/$USER/.mozilla/firefox/*.default/sessionstore.js /home/$USER/.mozilla/firefox/backup/ >/dev/null 2>&1
+	sudo mv /home/$USER/.cache/mozilla/firefox/*.default/* /home/$USER/.cache/mozilla/firefox/backup/ >/dev/null 2>&1
+	sudo rm -f /home/$USER/.mozilla/firefox/*.default/cookies.sqlite
+	sudo rm -f /home/$USER/.mozilla/firefox/*.default/*.sqlite
+	sudo rm -f /home/$USER/.mozilla/firefox/*default/sessionstore.js
+	sudo rm -rf /home/$USER/.cache/mozilla/firefox/*.default/*
+	loadstatus " [+] Delete Firefox Logs" "OK" "valid"
+	sleep 5
+
+	## Delete Chromium Logs
+	## --------------------
+	sudo rm -rf /home/$USER/.cache/chromium/* >/dev/null 2>&1
+	sudo rm -rf /home/$USER/.config/chromium/Default/* >/dev/null 2>&1
+	loadstatus " [+] Delete Chromium Logs" "OK" "valid"
+	sleep 5
+
+	## Delete System Logs
+	## ------------------
+	if [ -f "/home/$USER/.msf4/history" ];
+	then
+	    true > /home/$USER/.msf4/history
+	fi
+
+	sudo rm -f /home/$USER/000-not-responding.log
+	sudo rm -f /home/$USER/100-informational-continue.log
+	sudo rm -f /home/$USER/101-informational-protocols.log
+	sudo rm -f /home/$USER/200-successful-exist.log
+	sudo rm -f /home/$USER/201-successful-created.log
+	sudo rm -f /home/$USER/202-successful-accepted.log
+	sudo rm -f /home/$USER/203-successful-non-authoritative.log
+	sudo rm -f /home/$USER/204-successful-no-content.log
+	sudo rm -f /home/$USER/205-successful-reset-content.log
+	sudo rm -f /home/$USER/206-successful-partial-content.log
+	sudo rm -f /home/$USER/300-redirection-multiple-choices.log
+	sudo rm -f /home/$USER/301-redirection-moved-permanently.log
+	sudo rm -f /home/$USER/302-redirection-temporarily-different.log
+	sudo rm -f /home/$USER/303-redirection-see-other.log
+	sudo rm -f /home/$USER/304-redirection-not-modified.log
+	sudo rm -f /home/$USER/305-redirection-use-proxy.log
+	sudo rm -f /home/$USER/306-redirection-status-not-defined.log
+	sudo rm -f /home/$USER/307-redirection-temporary-redirect.log
+	sudo rm -f /home/$USER/400-client-error-bad-request.log
+	sudo rm -f /home/$USER/401-client-error-unauthorized.log
+	sudo rm -f /home/$USER/402-client-error-payment-required.log
+	sudo rm -f /home/$USER/403-client-error-forbidden.log
+	sudo rm -f /home/$USER/404-client-error-not-found.log
+	sudo rm -f /home/$USER/405-client-error-method-not-allowed.log
+	sudo rm -f /home/$USER/406-client-error-not-acceptable.log
+	sudo rm -f /home/$USER/407-client-error-proxy-authentication.log
+	sudo rm -f /home/$USER/408-client-error-request-timeout.log
+	sudo rm -f /home/$USER/409-client-error-conflict.log
+	sudo rm -f /home/$USER/410-client-error-gone.log
+	sudo rm -f /home/$USER/411-client-error-length-required.log
+	sudo rm -f /home/$USER/412-client-error-precondition-failed.log
+	sudo rm -f /home/$USER/413-client-error-entity-too-large.log
+	sudo rm -f /home/$USER/414-client-error-uri-too-long.log
+	sudo rm -f /home/$USER/415-client-error-unsupported-media-type.log
+	sudo rm -f /home/$USER/416-client-error-requested-not-satisfiable.log
+	sudo rm -f /home/$USER/417-client-error-expectation-failed.log
+	sudo rm -f /home/$USER/500-server-error-internal-server-error.log
+	sudo rm -f /home/$USER/501-server-error-not-implemented.log
+	sudo rm -f /home/$USER/502-server-error-bad-gateway.log
+	sudo rm -f /home/$USER/503-server-error-service-unavailable.log
+	sudo rm -f /home/$USER/504-server-error-gateway-timeout.log
+	sudo rm -f /home/$USER/505-server-error-version-not-supported.log
+	sudo rm -f /home/$USER/.airsnortrc
+	sudo rm -f /home/$USER/JavaSnoop.properties
+	sudo rm -f /home/$USER/js.log
+	sudo rm -f /home/$USER/magictree.log
+	sudo rm -f /home/$USER/.wget-hsts
+	sudo rm -rf /home/$USER/.BurpSuite
+	sudo rm -rf /home/$USER/.cache/thumbnails/fail
+	sudo rm -rf /home/$USER/.cache/thumbnails/large
+	sudo rm -rf /home/$USER/.cache/thumbnails/normal
+	sudo rm -rf /home/$USER/.hashcat/
+	sudo rm -rf /home/$USER/.JavaSnoop
+	sudo rm -rf /home/$USER/.john
+	sudo rm -rf /home/$USER/.magictree
+	sudo rm -rf /home/$USER/.ngrok2/
+	sudo rm -rf /home/$USER/.sqlmap
+	sudo rm -rf /home/$USER/.ZAP
+
+	sudo rm -f /root/.wget-hsts
+	sudo rm -rf /root/JavaSnoop.properties/
+	sudo rm -rf /root/.JavaSnoop
+
+	sudo rm -f /opt/jexboss/jexboss_*.log
+	sudo rm -rf /opt/jexboss/__pycache__/
+
+	sudo find /var/log/ -type f -name '*.gz' -exec rm -f {} \; >/dev/null 2>&1
+	sudo find /var/log/ -type f -name '*.old' -exec rm -f {} \; >/dev/null 2>&1
+	sudo find /var/log/ -type f -name '*.1' -exec rm -f {} \; >/dev/null 2>&1
+	sudo find /var/log/ -type f -name '*.log' -exec rm -f {} \; >/dev/null 2>&1
+	loadstatus " [+] Delete System Logs" "OK" "valid"
+	sleep 5
+
+	## Delete Files History
+	## --------------------
+	sudo rm -f /home/$USER/.local/share/recently-used.xbel
+	loadstatus " [+] Delete Files History" "OK" "valid"
+	sleep 5
+
+	## Delete SSH Keys
+	## ---------------
+	sudo rm -rf /home/$USER/.ssh/
+	sudo rm -rf /root/.ssh/
+	loadstatus " [+] Delete SSH Keys" "OK" "valid"
+	sleep 5
+
+	## Delete Persistents Files
+	## ------------------------
+	sudo rm -rf /home/$USER/.local/share/Trash/*
+	loadstatus " [+] Delete Persistents Files" "OK" "valid"
+	sleep 5
+
+	## Delete Commands History
+	## -----------------------
+	history -c && history -w
+	loadstatus " [+] Delete Commands History" "OK" "valid"
+	sleep 5
+
+	## Delete Bash Logs
+	## ----------------
+	true > /home/$USER/.bash_history
+	loadstatus " [+] Delete Bash Logs" "OK" "valid"
+	sleep 5
+
+	## Clean Cache Directories
+	## -----------------------
+	sudo pacman -Scc --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Clean Cache Directories" "OK" "valid"
+	sleep 5
+
+	loadnotice "ArchSploit Cleaner completed"
+	echo "The system will shutdown within 5 seconds"
+	sleep 5
+
+	sudo shutdown now
+}
+
+## Launch
+## ------
+function launch()
+{
+	clear
+	sudo whoami >/dev/null 2>&1
+
+	showbanner
+	checkinternet
+	cleaner
+}
+
+## -------- ##
+## Callback ##
+## -------- ##
+
+launch

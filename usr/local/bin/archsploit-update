@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+
+## ---------------- ##
+## Define Variables ##
+## ---------------- ##
+
+## Colour Output
+## -------------
+color_d9534f="\033[01;31m"	# Issues/Errors
+color_5cb85c="\033[01;32m"	# Success
+color_f0ad4e="\033[01;33m"	# Warnings/Information
+color_0275d8="\033[01;34m"	# Heading
+color_revert="\033[00m"		# Normal
+
+## Text Options
+## ------------
+text_bold="\e[1m"		# Text Bold
+text_line="\e[4m"		# Text Underline
+text_main="\e[0m"		# Text Normal
+
+## Load Banner
+## -----------
+function showbanner()
+{
+	clear
+	echo -e "${color_d9534f}                  _               _       _ _       ${color_revert}"
+	echo -e "${color_d9534f}    __ _ _ __ ___| |__  ___ _ __ | | ___ (_) |_     ${color_revert}"
+	echo -e "${color_d9534f}   / _' | '__/ __| '_ \/ __| '_ \| |/ _ \| | __|    ${color_revert}"
+	echo -e "${color_d9534f}  | (_| | | | (__| | | \__ \ |_) | | (_) | | |_     ${color_revert}"
+	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
+	echo -e "${color_d9534f}                           |_|            v2.0.2    ${color_revert}"
+	echo
+	echo -e "${color_5cb85c} [i] [Package]: archsploit-update${color_revert}"
+	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"
+  	echo
+  	sleep 1s
+}
+
+## Load Header
+## -----------
+function loadheader()
+{
+	echo
+    echo -e "${color_0275d8}${@}${color_revert}"
+	sleep 2
+}
+
+## Load Notice
+## -----------
+function loadnotice()
+{
+	echo -e "${color_5cb85c}${@}${color_revert}"
+	sleep 5
+}
+
+## Load Status
+## -----------
+function loadstatus()
+{
+    color_d9534f=$(tput setaf 1)
+    color_5cb85c=$(tput setaf 2)
+    color_f0ad4e=$(tput setaf 3)
+    color_0275d8=$(tput setaf 4)
+    color_revert=$(tput sgr0)
+
+    message=$1
+    display="[$2]"
+
+    if [ "$3" == "issue" ];
+    then
+        return="$color_d9534f${display}$color_revert"
+    elif [ "$3" == "valid" ];
+    then
+        return="$color_5cb85c${display}$color_revert"
+    elif [ "$3" == "warning" ];
+    then
+        return="$color_f0ad4e${display}$color_revert"
+    elif [ "$3" == "info" ];
+    then
+        return="$color_f0ad4e${display}$color_revert"
+    else
+        return="$color_revert${display}$color_revert"
+    fi
+
+    let COL=$(tput cols)-${#message}+${#return}-${#display}
+
+    echo -n $message
+    printf "%${COL}s\n"  "$return"
+}
+
+## Check Internet status
+## ---------------------
+function checkinternet()
+{
+	for i in {1..10};
+	do
+		ping -c 1 -W ${i} www.google.com &>/dev/null && break;
+	done
+
+	if [[ "$?" -ne 0 ]];
+	then
+		cd /tmp/
+		echo
+		echo -e " ${color_d9534f}[!]${color_revert} An unknown error occured ~ Possible DNS issues or no Internet connection"
+		echo -e " ${color_d9534f}[!]${color_revert} Quitting ..."
+		echo -e "\n"
+		exit 1
+	fi
+}
+
+## Load System Updater
+## -------------------
+function updater()
+{
+	loadheader "# Step: System Updater"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+	loadnotice "ArchSploit Updater completed"
+	sleep 5
+}
+
+## Launch
+## ------
+function launch()
+{
+	clear
+	sudo whoami >/dev/null 2>&1
+
+	showbanner
+	checkinternet
+	updater
+}
+
+## -------- ##
+## Callback ##
+## -------- ##
+
+launch

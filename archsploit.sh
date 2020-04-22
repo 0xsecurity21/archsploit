@@ -143,9 +143,9 @@ function setkeyboard()
 
 ## Detect System Config
 ## --------------------
-function detectsystem()
+function detectbuild()
 {
-	loadheader "# Step: detectsystem()"
+	loadheader "# Step: detectbuild()"
     if [ -d /sys/firmware/efi ];
 	then
         system_mode="uefi"
@@ -532,11 +532,11 @@ function alsautils()
 	loadstatus " [+] ALSA Configuration" "OK" "valid"
 }
 
-## Install Display Drivers
-## -----------------------
-function display()
+## Install Screen Drivers
+## ----------------------
+function screendriver()
 {
-	loadheader "# Step: display()"
+	loadheader "# Step: screendriver()"
 	display_drivers="null"
 	case "$graphical_display" in
         "radeon" )
@@ -796,26 +796,48 @@ function terminate()
 		loadstatus " [*] Gnome Shell Theme Configuration" "!!" "issue"
 	fi
 
-	## Configure ArchSploit-System
-	## ---------------------------
-	if [ -f "/mnt/tmp/archsploit/usr/local/bin/archsploit-system" ];
+	## Configure ArchSploit-Clean
+	## --------------------------
+	if [ -f "/mnt/tmp/archsploit/usr/local/bin/archsploit-clean" ];
 	then
-		mv /mnt/tmp/archsploit/usr/local/bin/archsploit-system /mnt/usr/local/bin/archsploit-system
-		chmod +x /mnt/usr/local/bin/archsploit-system
-		loadstatus " [+] Arch system Configuration" "OK" "valid"
+		mv /mnt/tmp/archsploit/usr/local/bin/archsploit-clean /mnt/usr/local/bin/archsploit-clean
+		chmod +x /mnt/usr/local/bin/archsploit-clean
+		loadstatus " [+] Arch Clean Configuration" "OK" "valid"
 	else
-		loadstatus " [*] Arch system Configuration" "!!" "issue"
+		loadstatus " [*] Arch Clean Configuration" "!!" "issue"
 	fi
 
-	## Configure ArchSploit-Installer
+	## Configure ArchSploit-Gresource
 	## ------------------------------
+	if [ -f "/mnt/tmp/archsploit/usr/local/bin/archsploit-gresource" ];
+	then
+		mv /mnt/tmp/archsploit/usr/local/bin/archsploit-gresource /mnt/usr/local/bin/archsploit-gresource
+		chmod +x /mnt/usr/local/bin/archsploit-gresource
+		loadstatus " [+] Arch Gresource Configuration" "OK" "valid"
+	else
+		loadstatus " [*] Arch Gresource Configuration" "!!" "issue"
+	fi
+
+	## Configure ArchSploit-Packages
+	## -----------------------------
 	if [ -f "/mnt/tmp/archsploit/usr/local/bin/archsploit-packages" ];
 	then
 		mv /mnt/tmp/archsploit/usr/local/bin/archsploit-packages /mnt/usr/local/bin/archsploit-packages
 		chmod +x /mnt/usr/local/bin/archsploit-packages
-		loadstatus " [+] Arch Installer Configuration" "OK" "valid"
+		loadstatus " [+] Arch Packages Configuration" "OK" "valid"
 	else
-		loadstatus " [*] Arch Installer Configuration" "!!" "issue"
+		loadstatus " [*] Arch Packages Configuration" "!!" "issue"
+	fi
+
+	## Configure ArchSploit-Update
+	## ---------------------------
+	if [ -f "/mnt/tmp/archsploit/usr/local/bin/archsploit-update" ];
+	then
+		mv /mnt/tmp/archsploit/usr/local/bin/archsploit-update /mnt/usr/local/bin/archsploit-update
+		chmod +x /mnt/usr/local/bin/archsploit-update
+		loadstatus " [+] Arch Update Configuration" "OK" "valid"
+	else
+		loadstatus " [*] Arch Update Configuration" "!!" "issue"
 	fi
 
 	## Configure Dconf
@@ -867,7 +889,7 @@ function launch()
 	checkinternet
     warning
 	setkeyboard
-	detectsystem
+	detectbuild
 	partitions
 	loadmirror
 	basesystem
@@ -886,7 +908,7 @@ function launch()
 	bootloader
 	multilib
 	alsautils
-	display
+	screendriver
 	desktop
 	packages
 	terminate
