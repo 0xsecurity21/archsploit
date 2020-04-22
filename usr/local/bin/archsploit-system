@@ -93,10 +93,10 @@ function loadstatus()
 function usage
 {
 	clear
-    echo "usage: archsploit-system [-c --command] or [-p --package] or [-h --help]"
+    echo "usage: archsploit-system [-c --command] or [-i --install] or [-h --help]"
 	echo
 	echo "  -c      - Followed by the command to be executed by the script"
-    echo "  -p      - Followed by the packages category name to be installed by the script"
+    echo "  -i      - Followed by the packages category name to be installed by the script"
 	echo "  -h      - Display this help menu"
 	echo
 	echo -e "${text_bold}Commands:${text_main}"
@@ -123,7 +123,7 @@ function usage
     echo "  scanning          - Install and configure Scanning Tools"
     echo "  sniffing          - Install and configure Sniffing Tools"
     echo "  social            - Install and configure Social Tools"
-    echo "  stress-testing    - Install and configure Stress-Testing Tools"
+    echo "  stressing         - Install and configure Stress-Testing Tools"
     echo "  vulnerability     - Install and configure Vulnerability Tools"
     echo "  webapps           - Install and configure Webapps Tools"
     echo "  wireless          - Install and configure Wireless Tools"
@@ -174,11 +174,15 @@ function warning()
     esac
 }
 
-## Load Cleaner
-## ------------
-function cleaner()
+## ---------------- ##
+## System Functions ##
+## ---------------- ##
+
+## Load System Cleaner
+## -------------------
+function system_cleaner()
 {
-	loadheader "# Step: cleaner()"
+	loadheader "# Step: System Cleaner"
 
 	## Delete Firefox Logs
 	## -------------------
@@ -326,24 +330,24 @@ function cleaner()
 	sudo shutdown now
 }
 
-## Load Updater
-## ------------
-function updater()
+## Load System Updater
+## -------------------
+function system_updater()
 {
-	loadheader "# Step: updater()"
+	loadheader "# Step: System Updater"
 
-	## Update Packages
-	## ---------------
-	sudo pacman -Syyu --noconfirm --needed
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Update System Packages" "OK" "valid"
 	loadnotice "ArchSploit Updater completed"
 }
 
-## Load Gresource
-## --------------
-function gresource()
+## Load System Gresource
+## ---------------------
+function system_gresource()
 {
-	loadheader "# Step: gresource()"
+	loadheader "# Step: Extract Gresource"
 
 	## Extract Gresource
 	## -----------------
@@ -367,6 +371,302 @@ function gresource()
 	loadnotice "ArchSploit Gresource extractor completed"
 }
 
+## ------------------ ##
+## Packages Functions ##
+## ------------------ ##
+
+## Install Bluetooth Packages
+## --------------------------
+function packages_bluetooth()
+{
+	loadheader "# Step: Install Bluetooth Packages"
+}
+
+## Install Cracking Packages
+## -------------------------
+function packages_cracking()
+{
+	loadheader "# Step: Install Cracking Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S 	hashcat hydra john ncrack ophcrack >/dev/null 2>&1
+	loadstatus " [+] Install Arch Cracking Tools" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /opt/archsploit/
+	sudo git clone https://github.com/archsploit/packages-cracking
+
+	if [ ! -d "/opt/archsploit/packages-cracking/" ];
+	then
+		## CredCrack
+	    ## https://github.com/gojhonny/CredCrack/
+	    ## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/credcrack.md" ];
+		then
+		    sudo chmod +x /opt/credcrack/credcrack.py
+		    sudo ln -s /opt/credcrack/credcrack.py /usr/bin/credcrack
+
+			sudo cp /usr/share/archsploit-shortcuts/archsploit-credcrack.txt /usr/share/applications/archsploit-credcrack.desktop
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credcrack.md >/dev/null 2>&1
+			loadstatus " [+] Installing CredCrack" "OK" "valid"
+		else
+			loadstatus " [+] CredCrack already installed" "OK" "valid"
+		fi
+
+		## Findmyhash
+		## https://code.google.com/archive/p/findmyhash/
+		## ---------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/findmyhash.md" ];
+		then
+			sudo chmod +x /opt/findmyhash/findmyhash.py
+			sudo ln -s /opt/findmyhash/findmyhash.py /usr/bin/findmyhash
+
+			sudo cp /usr/share/archsploit-shortcuts/archsploit-findmyhash.txt /usr/share/applications/archsploit-findmyhash.desktop
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/findmyhash.md >/dev/null 2>&1
+			loadstatus " [+] Installing Findmyhash" "OK" "valid"
+		else
+			loadstatus " [+] Findmyhash already installed" "OK" "valid"
+		fi
+
+		## HashID
+		## http://code.google.com/p/hash-identifier/
+		## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/hashid.md" ];
+		then
+			sudo chmod +x /opt/hashid/hashid.py
+			sudo ln -s /opt/hashid/hashid.py /usr/bin/hashid
+
+			sudo cp /usr/share/archsploit-shortcuts/archsploit-hashid.txt /usr/share/applications/archsploit-hashid.desktop
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashid.md >/dev/null 2>&1
+			loadstatus " [+] Installing HashID" "OK" "valid"
+		else
+			loadstatus " [+] HashID already installed" "OK" "valid"
+		fi
+
+		## HashTag
+		## https://github.com/SmeegeSec/HashTag/
+		## -------------------------------------
+		if [ ! -f "/etc/archsploit/packages/hashtag.md" ];
+		then
+			sudo chmod +x /opt/hashtag/hashtag.py
+			sudo ln -s /opt/hashtag/hashtag.py /usr/bin/hashtag
+
+			sudo cp /usr/share/archsploit-shortcuts/archsploit-hashtag.txt /usr/share/applications/archsploit-hashtag.desktop
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashtag.md >/dev/null 2>&1
+			loadstatus " [+] Installing HashTag" "OK" "valid"
+		else
+			loadstatus " [+] HashTag already installed" "OK" "valid"
+		fi
+
+		## Rainbowcrack
+		## https://project-rainbowcrack.com/
+		## ---------------------------------
+		if [ ! -f "/etc/archsploit/packages/rainbowcrack.md" ];
+		then
+			sudo chmod +x /opt/rainbowcrack/rcrack
+			sudo chmod +x /opt/rainbowcrack/rt2rtc
+			sudo chmod +x /opt/rainbowcrack/rtc2rt
+			sudo chmod +x /opt/rainbowcrack/rtgen
+			sudo chmod +x /opt/rainbowcrack/rtmerge
+			sudo chmod +x /opt/rainbowcrack/rtsort
+			sudo touch /usr/local/bin/rcrack
+			sudo chmod +x /usr/local/bin/rcrack
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+			echo './rcrack' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+			sudo touch /usr/local/bin/rt2rtc
+			sudo chmod +x /usr/local/bin/rt2rtc
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+			echo './rt2rtc' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+			sudo touch /usr/local/bin/rtc2rt
+			sudo chmod +x /usr/local/bin/rtc2rt
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+			echo './rtc2rt' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+			sudo touch /usr/local/bin/rtgen
+			sudo chmod +x /usr/local/bin/rtgen
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+			echo './rtgen' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+			sudo touch /usr/local/bin/rtmerge
+			sudo chmod +x /usr/local/bin/rtmerge
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+			echo './rtmerge' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+			sudo touch /usr/local/bin/rtsort
+			sudo chmod +x /usr/local/bin/rtsort
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+			echo 'cd /opt/rainbowcrack/' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+			echo './rtsort' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+
+			sudo cp /usr/share/archsploit-shortcuts/archsploit-rcrack.txt /usr/share/applications/archsploit-rcrack.desktop
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/rainbowcrack.md >/dev/null 2>&1
+			loadstatus " [+] Installing Rainbowcrack" "OK" "valid"
+		else
+			loadstatus " [+] Rainbowcrack already installed" "OK" "valid"
+		fi
+	fi
+
+	loadnotice "ArchSploit Updater completed"
+
+
+}
+
+## Install Cryptography Packages
+## -----------------------------
+function packages_cryptography()
+{
+	loadheader "# Step: Install Cryptography Packages"
+}
+
+## Install Debugger Packages
+## -------------------------
+function packages_debugger()
+{
+	loadheader "# Step: Install Debugger Packages"
+}
+
+## Install Exploitation Packages
+## -----------------------------
+function packages_exploitation()
+{
+	loadheader "# Step: Install Exploitation Packages"
+}
+
+## Install Fingerprint Packages
+## ----------------------------
+function packages_fingerprint()
+{
+	loadheader "# Step: Install Fingerprint Packages"
+}
+
+## Install Forensics Packages
+## --------------------------
+function packages_forensics()
+{
+	loadheader "# Step: Install Forensics Packages"
+}
+
+## Install Gathering Packages
+## --------------------------
+function packages_gathering()
+{
+	loadheader "# Step: Install Gathering Packages"
+}
+
+## Install Hardware Packages
+## -------------------------
+function packages_hardware()
+{
+	loadheader "# Step: Install Hardware Packages"
+}
+
+## Install Honeypot Packages
+## -------------------------
+function packages_honeypot()
+{
+	loadheader "# Step: Install Honeypot Packages"
+}
+
+## Install Malwares Packages
+## -------------------------
+function packages_malware()
+{
+	loadheader "# Step: Install Malwares Packages"
+}
+
+## Install Miscs Packages
+## ----------------------
+function packages_miscs()
+{
+	loadheader "# Step: Install Miscs Packages"
+}
+
+## Install Networking Packages
+## ---------------------------
+function packages_networking()
+{
+	loadheader "# Step: Install Networking Packages"
+}
+
+## Install Reporting Packages
+## --------------------------
+function packages_reporting()
+{
+	loadheader "# Step: Install Reporting Packages"
+}
+
+## Install Reverse Engineering Packages
+## ------------------------------------
+function packages_reverse()
+{
+	loadheader "# Step: Install Reverse Engineering Packages"
+}
+
+## Install Scanning Packages
+## -------------------------
+function packages_scanning()
+{
+	loadheader "# Step: Install Scanning Packages"
+}
+
+## Install Sniffing Packages
+## -------------------------
+function packages_sniffing()
+{
+	loadheader "# Step: Install Sniffing Packages"
+}
+
+## Install Social Engineering Packages
+## -----------------------------------
+function packages_social()
+{
+	loadheader "# Step: Install Social Engineering Packages"
+}
+
+## Install Stress-Testing Packages
+## -------------------------------
+function packages_stressing()
+{
+	loadheader "# Step: Install Stress-Testing Packages"
+}
+
+## Install Vulnerability Packages
+## ------------------------------
+function packages_vulnerability()
+{
+	loadheader "# Step: Install Vulnerability Packages"
+}
+
+## Install Webapps Packages
+## ------------------------
+function packages_webapps()
+{
+	loadheader "# Step: Install Webapps Packages"
+}
+
+## Install Wireless Packages
+## -------------------------
+function packages_wireless()
+{
+	loadheader "# Step: packages_wireless()"
+}
+
 ## -------- ##
 ## Callback ##
 ## -------- ##
@@ -386,14 +686,120 @@ else
 
 		case "$2" in
 	    clean)
-	        cleaner
+	        system_cleaner
 	        ;;
 	    update)
-	        update
+	        system_updater
 	        ;;
 	    gresource)
-	        gresource
+	        system_gresource
 	        ;;
+		*)
+	        usage
+	        exit 1
+	        ;;
+	    esac
+	    exit 0
+	elif [ "$1" == "--install" -o "$1" == "-i" ];
+	then
+		clear
+		sudo whoami >/dev/null 2>&1
+
+		showbanner
+		checkinternet
+		warning
+
+		case "$2" in
+	    bluetooth)
+			packages_bluetooth
+			;;
+		cracking)
+			packages_cracking
+			;;
+		cryptography)
+			packages_cryptography
+			;;
+		debugger)
+			packages_debugger
+			;;
+		exploitation)
+			packages_exploitation
+			;;
+		fingerprint)
+			packages_fingerprint
+			;;
+		forensics)
+			packages_forensics
+			;;
+		gathering)
+			packages_gathering
+			;;
+		hardware)
+			packages_hardware
+			;;
+		honeypot)
+			packages_honeypot
+			;;
+		malware)
+			packages_malware
+			;;
+		miscs)
+			packages_miscs
+			;;
+		networking)
+			packages_networking
+			;;
+		reporting)
+			packages_reporting
+			;;
+		reverse)
+			packages_reverse
+			;;
+		scanning)
+			packages_scanning
+			;;
+		sniffing)
+			packages_sniffing
+			;;
+		social)
+			packages_social
+			;;
+		stress-testing)
+			packages_stressing
+			;;
+		vulnerability)
+			packages_vulnerability
+			;;
+		webapps)
+			packages_webapps
+			;;
+		wireless)
+			packages_wireless
+			;;
+		all)
+			packages_bluetooth
+			packages_cracking
+			packages_cryptography
+			packages_debugger
+			packages_exploitation
+			packages_fingerprint
+			packages_forensics
+			packages_gathering
+			packages_hardware
+			packages_honeypot
+			packages_malware
+			packages_miscs
+			packages_networking
+			packages_reporting
+			packages_reverse
+			packages_scanning
+			packages_sniffing
+			packages_social
+			packages_stressing
+			packages_vulnerability
+			packages_webapps
+			packages_wireless
+			;;
 		*)
 	        usage
 	        exit 1
