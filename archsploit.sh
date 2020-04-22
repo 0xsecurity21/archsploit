@@ -534,9 +534,9 @@ function alsautils()
 
 ## Install Display Drivers
 ## -----------------------
-function displaydrivers()
+function display()
 {
-	loadheader "# Step: displaydrivers()"
+	loadheader "# Step: display()"
 	display_drivers="null"
 	case "$graphical_display" in
         "radeon" )
@@ -567,85 +567,14 @@ function displaydrivers()
 	loadstatus " [+] Display Drivers" "OK" "valid"
 }
 
-## Install Gnome Desktop
-## ---------------------
-function install_gnome()
-{
-	arch-chroot /mnt pacman -Syu gdm gedit gnome-backgrounds gnome-color-manager gnome-control-center gnome-disk-utility gnome-font-viewer gnome-initial-setup gnome-keyring gnome-logs gnome-menus gnome-remote-desktop gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell gnome-shell-extensions gnome-software gnome-system-monitor gnome-terminal gnome-themes-extra gnome-tweak-tool nautilus --noconfirm --needed >/dev/null 2>&1
-    arch-chroot /mnt systemctl enable gdm.service >/dev/null 2>&1
-}
-
-## Install KDE Desktop
-## -------------------
-function install_kde()
-{
-	arch-chroot /mnt pacman -Syu plasma-meta plasma-wayland-session kde-applications-meta --noconfirm --needed >/dev/null 2>&1
-    arch-chroot /mnt systemctl enable sddm.service >/dev/null 2>&1
-}
-
-## Install XFCE Desktop
-## --------------------
-function install_xfce()
-{
-	arch-chroot /mnt pacman -Syu xfce4 xfce4-goodies lightdm lightdm-gtk-greeter --noconfirm --needed >/dev/null 2>&1
-    arch-chroot /mnt systemctl enable lightdm.service >/dev/null 2>&1
-}
-
-## Install Mate Desktop
-## --------------------
-function install_mate()
-{
-	arch-chroot /mnt pacman -Syu mate mate-extra lightdm lightdm-gtk-greeter --noconfirm --needed >/dev/null 2>&1
-    arch-chroot /mnt systemctl enable lightdm.service >/dev/null 2>&1
-}
-
-## Install Cinnamon Desktop
-## -------------------------
-function install_cinnamon()
-{
-	arch-chroot /mnt pacman -Syu cinnamon lightdm lightdm-gtk-greeter --noconfirm --needed >/dev/null 2>&1
-    arch-chroot /mnt systemctl enable lightdm.service >/dev/null 2>&1
-}
-
-## Install LXDE Desktop
-## --------------------
-function install_lxde()
-{
-	arch-chroot /mnt pacman -Syu lxde lxdm --noconfirm --needed >/dev/null 2>&1
-    arch-chroot /mnt systemctl enable lxdm.service >/dev/null 2>&1
-}
-
 ## Install Desktop GUI
 ## -------------------
 function desktop()
 {
 	loadheader "# Step: desktop()"
-	case "$desktop_env" in
-        "gnome" )
-            install_gnome
-			loadstatus " [+] Gnome Desktop" "OK" "valid"
-            ;;
-        "kde" )
-            install_kde
-			loadstatus " [+] KDE Desktop" "OK" "valid"
-            ;;
-        "xfce" )
-            install_xfce
-			loadstatus " [+] XFCE Desktop" "OK" "valid"
-            ;;
-        "mate" )
-            install_mate
-			loadstatus " [+] Mate Desktop" "OK" "valid"
-            ;;
-		"cinnamon" )
-			install_cinnamon
-			loadstatus " [+] Cinnamon Desktop" "OK" "valid"
-			;;
-		"lxde" )
-			install_lxde
-			loadstatus " [+] LXDE Desktop" "OK" "valid"
-			;;
-    esac
+	arch-chroot /mnt pacman -Syu gdm gedit gnome-backgrounds gnome-color-manager gnome-control-center gnome-disk-utility gnome-font-viewer gnome-initial-setup gnome-keyring gnome-logs gnome-menus gnome-remote-desktop gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell gnome-shell-extensions gnome-software gnome-system-monitor gnome-terminal gnome-themes-extra gnome-tweak-tool nautilus --noconfirm --needed >/dev/null 2>&1
+    arch-chroot /mnt systemctl enable gdm.service >/dev/null 2>&1
+	loadstatus " [+] Desktop" "OK" "valid"
 }
 
 ## Install Packages
@@ -761,11 +690,6 @@ function packages()
 	else
 		loadstatus " [*] PHP Info File" "!!" "issue"
 	fi
-
-	## Copy Archsploit Shortcuts
-	## -------------------------
-	cp -r /mnt/tmp/archsploit/usr/share/archsploit-shortcuts/ /mnt/usr/share/
-	loadstatus " [+] Copy Archsploit Shortcuts" "OK" "valid"
 }
 
 ## Terminate Installation
@@ -848,16 +772,6 @@ function terminate()
 		loadstatus " [+] Custom Icons" "OK" "valid"
 	else
 		loadstatus " [*] Custom Icons" "!!" "issue"
-	fi
-
-	## Install Applications
-	## --------------------
-	if [ -d "/mnt/tmp/archsploit/usr/share/applications" ];
-	then
-		mv /mnt/tmp/archsploit/usr/share/applications/* /mnt/usr/share/applications/
-		loadstatus " [+] Custom Applications" "OK" "valid"
-	else
-		loadstatus " [*] Custom Applications" "!!" "issue"
 	fi
 
 	## Configure Gnome Shell Gresource
@@ -960,7 +874,7 @@ function launch()
 	kernels
 	buildfstab
 	configuration
-	clonerepository
+	clonerepo
 	addrelease
 
 	if [ "$virtualbox" == "true" ];
@@ -972,7 +886,7 @@ function launch()
 	bootloader
 	multilib
 	alsautils
-	displaydrivers
+	display
 	desktop
 	packages
 	terminate
