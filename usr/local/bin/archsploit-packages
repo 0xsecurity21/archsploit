@@ -171,7 +171,8 @@ function install_cracking()
 	## -------------------------------
 	sudo mkdir -p /opt/archsploit/
 	cd /tmp/
-	sudo git clone https://github.com/archsploit/packages-cracking
+	sudo git clone https://github.com/archsploit/packages-cracking >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
 
 	if [ ! -d "/tmp/packages-cracking/opt/archsploit/cracking/" ];
 	then
@@ -341,7 +342,8 @@ function install_exploitation()
 	## -------------------------------
 	sudo mkdir -p /opt/archsploit/
 	cd /tmp/
-	sudo git clone https://github.com/archsploit/packages-exploitation
+	sudo git clone https://github.com/archsploit/packages-exploitation >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
 
 	if [ ! -d "/tmp/packages-exploitation/opt/archsploit/exploitation/" ];
 	then
@@ -540,6 +542,28 @@ function install_exploitation()
 		fi
 	fi
 
+	## Create Applications Directory
+	## -----------------------------
+	if [ ! -f "/usr/share/desktop-directories/archsploit-exploitation.directory" ];
+	then
+		sudo cp /tmp/packages-exploitation/usr/share/desktop-directories/archsploit-exploitation.directory /usr/share/desktop-directories/
+		loadstatus " [+] Creating Applications Directory" "OK" "valid"
+	else
+		loadstatus " [+] Applications Directory already installed" "OK" "valid"
+	fi
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Exploitation']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ name "archsploit-exploitation.directory"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-armitage.desktop', 'archsploit-commix.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-exploitation/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
 	## Correct User Permissions
     ## ------------------------
     sudo chown -R $USER:users /opt/*
@@ -574,7 +598,8 @@ function install_forensics()
 	## -------------------------------
 	sudo mkdir -p /opt/archsploit/
 	cd /tmp/
-	sudo git clone https://github.com/archsploit/packages-forensics
+	sudo git clone https://github.com/archsploit/packages-forensics >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
 
 	if [ ! -d "/tmp/packages-forensics/opt/archsploit/forensics/" ];
 	then
@@ -631,6 +656,28 @@ function install_forensics()
 		fi
 	fi
 
+	## Create Applications Directory
+	## -----------------------------
+	if [ ! -f "/usr/share/desktop-directories/archsploit-forensics.directory" ];
+	then
+		sudo cp /tmp/packages-forensics/usr/share/desktop-directories/archsploit-forensics.directory /usr/share/desktop-directories/
+		loadstatus " [+] Creating Applications Directory" "OK" "valid"
+	else
+		loadstatus " [+] Applications Directory already installed" "OK" "valid"
+	fi
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Forensics']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Forensics/ name "archsploit-forensics.directory"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Forensics/ apps "['archsploit-armitage.desktop', 'archsploit-commix.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-forensics/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
 	## Correct User Permissions
     ## ------------------------
     sudo chown -R $USER:users /opt/*
@@ -683,7 +730,8 @@ function install_gathering()
 	## -------------------------------
 	sudo mkdir -p /opt/archsploit/
 	cd /tmp/
-	sudo git clone https://github.com/archsploit/packages-gathering
+	sudo git clone https://github.com/archsploit/packages-gathering >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
 
 	if [ ! -d "/tmp/packages-gathering/opt/archsploit/gathering/" ];
 	then
@@ -821,6 +869,28 @@ function install_gathering()
 		fi
 	fi
 
+	## Create Applications Directory
+	## -----------------------------
+	if [ ! -f "/usr/share/desktop-directories/archsploit-gathering.directory" ];
+	then
+		sudo cp /tmp/packages-gathering/usr/share/desktop-directories/archsploit-gathering.directory /usr/share/desktop-directories/
+		loadstatus " [+] Creating Applications Directory" "OK" "valid"
+	else
+		loadstatus " [+] Applications Directory already installed" "OK" "valid"
+	fi
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Gathering']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ name "archsploit-gathering.directory"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ apps "['archsploit-automater.desktop', 'archsploit-dnsmap.desktop', 'archsploit-enum4linux.desktop', 'archsploit-enumiax.desktop', 'archsploit-linenum.desktop', 'archsploit-nikto.desktop', 'archsploit-nullinux.desktop', 'archsploit-smtp-user-enum.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-gathering/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
 	## Correct User Permissions
     ## ------------------------
     sudo chown -R $USER:users /opt/*
@@ -849,7 +919,8 @@ function install_hardware()
 	## -------------------------------
 	sudo mkdir -p /opt/archsploit/
 	cd /tmp/
-	sudo git clone https://github.com/archsploit/packages-hardware
+	sudo git clone https://github.com/archsploit/packages-hardware >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
 
 	if [ ! -d "/tmp/packages-hardware/opt/archsploit/hardware/" ];
 	then
@@ -913,7 +984,8 @@ function install_miscs()
 	## -------------------------------
 	sudo mkdir -p /opt/archsploit/
 	cd /tmp/
-	sudo git clone https://github.com/archsploit/packages-miscs
+	sudo git clone https://github.com/archsploit/packages-miscs >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
 
 	if [ ! -d "/tmp/packages-miscs/opt/archsploit/miscs/" ];
 	then
@@ -1108,7 +1180,8 @@ function install_networking()
 	## -------------------------------
 	sudo mkdir -p /opt/archsploit/
 	cd /tmp/
-	sudo git clone https://github.com/archsploit/packages-networking
+	sudo git clone https://github.com/archsploit/packages-networking >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
 
 	if [ ! -d "/tmp/packages-networking/opt/archsploit/networking/" ];
 	then
