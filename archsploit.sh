@@ -869,7 +869,7 @@ function terminate()
 	rm -rf /mnt/tmp/*
 	loadstatus " [+] Clean Temporary Files" "OK" "valid"
 
-	loadnotice "ArchSploit Cleaner completed"
+	loadnotice "ArchSploit Installer completed"
 	echo "Don't forget to remove the USB Disk before to boot your system"
 	echo "The system will shutdown within 15 seconds"
 	sleep 15

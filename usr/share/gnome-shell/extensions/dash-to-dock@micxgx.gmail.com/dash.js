@@ -4,8 +4,6 @@ const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-const Signals = imports.signals;
 const Meta = imports.gi.Meta;
 const Shell = imports.gi.Shell;
 const St = imports.gi.St;
@@ -70,8 +68,11 @@ class DashToDock_MyDashActor extends St.Widget {
             name: 'dash',
             layout_manager: layout,
             clip_to_allocation: true,
-            x_align: this._isHorizontal ? Clutter.ActorAlign.START: Clutter.ActorAlign.FILL,
-            y_align: this._isHorizontal ? Clutter.ActorAlign.FILL: Clutter.ActorAlign.START
+            ...(this._isHorizontal ? {
+                x_align: Clutter.ActorAlign.CENTER,
+            } : {
+                y_align: Clutter.ActorAlign.CENTER,
+            })
         });
 
         // Since we are usually visible but not usually changing, make sure
@@ -81,14 +82,15 @@ class DashToDock_MyDashActor extends St.Widget {
     }
 
     vfunc_allocate(box, flags) {
-        this.set_allocation(box, flags);
-        let contentBox = box;
+        let contentBox = this.get_theme_node().get_content_box(box);
         let availWidth = contentBox.x2 - contentBox.x1;
         let availHeight = contentBox.y2 - contentBox.y1;
 
+        this.set_allocation(box, flags);
+
         let [appIcons, showAppsButton] = this.get_children();
-        let [showAppsMinHeight, showAppsNatHeight] = showAppsButton.get_preferred_height(availWidth);
-        let [showAppsMinWidth, showAppsNatWidth] = showAppsButton.get_preferred_width(availHeight);
+        let [, showAppsNatHeight] = showAppsButton.get_preferred_height(availWidth);
+        let [, showAppsNatWidth] = showAppsButton.get_preferred_width(availHeight);
 
         let offset_x = this._isHorizontal?showAppsNatWidth:0;
         let offset_y = this._isHorizontal?0:showAppsNatHeight;
@@ -109,8 +111,7 @@ class DashToDock_MyDashActor extends St.Widget {
             childBox.x2 = contentBox.x1 + showAppsNatWidth;
             childBox.y2 = contentBox.y1 + showAppsNatHeight;
             showAppsButton.allocate(childBox, flags);
-        }
-        else {
+        } else {
             childBox.x1 = contentBox.x1;
             childBox.y1 = contentBox.y1;
             childBox.x2 = contentBox.x2 - offset_x;
@@ -126,33 +127,24 @@ class DashToDock_MyDashActor extends St.Widget {
     }
 
     vfunc_get_preferred_width(forHeight) {
-        // We want to request the natural height of all our children
-        // as our natural height, so we chain up to StWidget (which
+        // We want to request the natural width of all our children
+        // as our natural width, so we chain up to StWidget (which
         // then calls BoxLayout), but we only request the showApps
         // button as the minimum size
 
-        let [, natWidth] = this.layout_manager.get_preferred_width(this, forHeight);
+        let [, natWidth] = super.vfunc_get_preferred_width(forHeight);
 
         let themeNode = this.get_theme_node();
+        let adjustedForHeight = themeNode.adjust_for_height(forHeight);
         let [, showAppsButton] = this.get_children();
-        let [minWidth, ] = showAppsButton.get_preferred_height(forHeight);
+        let [minWidth] = showAppsButton.get_preferred_width(adjustedForHeight);
+        [minWidth] = themeNode.adjust_preferred_width(minWidth, natWidth);
 
         return [minWidth, natWidth];
     }
 
     vfunc_get_preferred_height(forWidth) {
-        // We want to request the natural height of all our children
-        // as our natural height, so we chain up to StWidget (which
-        // then calls BoxLayout), but we only request the showApps
-        // button as the minimum size
-
-        let [, natHeight] = this.layout_manager.get_preferred_height(this, forWidth);
-
-        let themeNode = this.get_theme_node();
-        let [, showAppsButton] = this.get_children();
-        let [minHeight, ] = showAppsButton.get_preferred_height(forWidth);
-
-        return [minHeight, natHeight];
+        return Dash.DashActor.prototype.vfunc_get_preferred_height.call(this, forWidth);
     }
 });
 
@@ -206,8 +198,8 @@ var MyDash = GObject.registerClass({
         this._container = new MyDashActor();
         this._scrollView = new St.ScrollView({
             name: 'dashtodockDashScrollview',
-            hscrollbar_policy: Gtk.PolicyType.NEVER,
-            vscrollbar_policy: Gtk.PolicyType.NEVER,
+            hscrollbar_policy: St.PolicyType.NEVER,
+            vscrollbar_policy: St.PolicyType.NEVER,
             enable_mouse_scrolling: false
         });
 
@@ -237,24 +229,9 @@ var MyDash = GObject.registerClass({
 
         super._init({
             child: this._container,
-            x_align: Clutter.ActorAlign.FILL,
-            y_align: Clutter.ActorAlign.FILL,
+            x_align: Clutter.ActorAlign.START,
+            y_align: Clutter.ActorAlign.START,
         });
-
-        if (this._isHorizontal) {
-            this.connect('notify::width', () => {
-                if (this._maxHeight != this.width)
-                    this._queueRedisplay();
-                this._maxHeight = this.width;
-            });
-        }
-        else {
-            this.connect('notify::height', () => {
-                if (this._maxHeight != this.height)
-                    this._queueRedisplay();
-                this._maxHeight = this.height;
-            });
-        }
 
         // Update minimization animation target position on allocation of the
         // container and on scrollview change.
@@ -300,6 +277,22 @@ var MyDash = GObject.registerClass({
         ]);
 
         this.connect('destroy', this._onDestroy.bind(this));
+    }
+
+    vfunc_get_preferred_height(forWidth) {
+        let [minHeight, natHeight] = super.vfunc_get_preferred_height.call(this, forWidth);
+        if (!this._isHorizontal && this._maxHeight !== -1 && natHeight > this._maxHeight)
+            return [minHeight, this._maxHeight]
+        else
+            return [minHeight, natHeight]
+    }
+
+    vfunc_get_preferred_width(forHeight) {
+        let [minWidth, natWidth] = super.vfunc_get_preferred_width.call(this, forHeight);
+        if (this._isHorizontal && this._maxHeight !== -1 && natWidth > this._maxHeight)
+            return [minWidth, this._maxHeight]
+        else
+            return [minWidth, natWidth]
     }
 
     _onDestroy() {
@@ -350,8 +343,79 @@ var MyDash = GObject.registerClass({
         return Dash.Dash.prototype._clearEmptyDropTarget.call(this, ...arguments);
     }
 
-    handleDragOver() {
-        return Dash.Dash.prototype.handleDragOver.call(this, ...arguments);
+    setMaxHeight(maxHeight) {
+        if (this._maxHeight != maxHeight)
+            this._queueRedisplay();
+        this._maxHeight = maxHeight;
+    }
+
+    handleDragOver(source, actor, x, y, time) {
+        let ret;
+        if (!this._isHorizontal) {
+            Object.defineProperty(this._box, 'height', {
+                configurable: true,
+                get: () => this._box.get_children().reduce((a, c) => a + c.height, 0),
+            });
+
+            ret = Dash.Dash.prototype.handleDragOver.call(this, source, actor, x, y, time);
+
+            delete this._box.height;
+
+            if (ret == DND.DragMotionResult.CONTINUE)
+                return ret;
+        } else {
+            Object.defineProperty(this._box, 'height', {
+                configurable: true,
+                get: () => this._box.get_children().reduce((a, c) => a + c.width, 0),
+            });
+
+            let replacedPlaceholderHeight = false;
+            if (this._dragPlaceholder) {
+                replacedPlaceholderHeight = true;
+                Object.defineProperty(this._dragPlaceholder, 'height', {
+                    configurable: true,
+                    get: () => this._dragPlaceholder.width,
+                });
+            }
+
+            ret = Dash.Dash.prototype.handleDragOver.call(this, source, actor, y, x, time);
+
+            delete this._box.height;
+            if (replacedPlaceholderHeight && this._dragPlaceholder)
+                delete this._dragPlaceholder.height;
+
+            if (ret == DND.DragMotionResult.CONTINUE)
+                return ret;
+
+            if (this._dragPlaceholder) {
+                this._dragPlaceholder.child.set_width(this.iconSize / 2);
+                this._dragPlaceholder.child.set_height(this.iconSize);
+
+                let pos = this._dragPlaceholderPos;
+                if (this._isHorizontal && (Clutter.get_default_text_direction() == Clutter.TextDirection.RTL))
+                    pos = this._box.get_children() - 1 - pos;
+
+                if (pos != this._dragPlaceholderPos) {
+                    this._dragPlaceholderPos = pos;
+                    this._box.set_child_at_index(this._dragPlaceholder,
+                        this._dragPlaceholderPos)
+                }
+            }
+        }
+
+        if (this._dragPlaceholder) {
+            // Ensure the next and previous icon are visible when moving the placeholder
+            // (I assume there's room for both of them)
+            if (this._dragPlaceholderPos > 0)
+                ensureActorVisibleInScrollView(this._scrollView,
+                    this._box.get_children()[this._dragPlaceholderPos - 1]);
+
+            if (this._dragPlaceholderPos < this._box.get_children().length - 1)
+                ensureActorVisibleInScrollView(this._scrollView,
+                    this._box.get_children()[this._dragPlaceholderPos + 1]);
+        }
+
+        return ret;
     }
 
     acceptDrop() {
@@ -476,7 +540,7 @@ var MyDash = GObject.registerClass({
         // the animation)
         let iconChildren = this._box.get_children().filter(function(actor) {
             return actor.child &&
-                   actor.child.icon &&
+                   !!actor.child.icon &&
                    !actor.animatingOut;
         });
 
@@ -495,7 +559,7 @@ var MyDash = GObject.registerClass({
     }
 
     _itemMenuStateChanged(item, opened) {
-        Dash.Dash.prototype.acceptDrop.call(this, item, opened);
+        Dash.Dash.prototype._itemMenuStateChanged.call(this, item, opened);
 
         if (!opened) {
             // I want to listen from outside when a menu is closed. I used to
@@ -512,7 +576,7 @@ var MyDash = GObject.registerClass({
         // the animation)
         let iconChildren = this._box.get_children().filter(function(actor) {
             return actor.child &&
-                   actor.child.icon &&
+                   !!actor.child.icon &&
                    !actor.animatingOut;
         });
 
@@ -542,27 +606,22 @@ var MyDash = GObject.registerClass({
         let spacing = themeNode.get_length('spacing');
 
         let firstButton = iconChildren[0].child;
-        let firstIcon = firstButton._delegate.icon;
+        let firstIcon = firstButton.icon;
 
         // Enforce the current icon size during the size request
         firstIcon.setIconSize(this.iconSize);
-        let [, iconHeight] = firstIcon.icon.get_preferred_height(-1);
-        let [, buttonHeight] = firstButton.get_preferred_height(-1);
-        let [, iconWidth] = firstIcon.icon.get_preferred_width(-1);
-        let [, buttonWidth] = firstButton.get_preferred_width(-1);
-
+        let [, natHeight] = firstButton.get_preferred_height(-1);
+        let [, natWidth] = firstButton.get_preferred_width(-1);
 
         let scaleFactor = St.ThemeContext.get_for_stage(global.stage).scale_factor;
-        let iconSizes = this._availableIconSizes.map(function(s) {
-            return s * scaleFactor;
-        });
+        let iconSizes = this._availableIconSizes.map(s => s * scaleFactor);
 
         // Subtract icon padding and box spacing from the available height
         if (this._isHorizontal)
-            availHeight -= iconChildren.length * (buttonWidth - iconWidth) +
+            availHeight -= iconChildren.length * (natWidth - this.iconSize * scaleFactor) +
                            (iconChildren.length - 1) * spacing;
         else
-            availHeight -= iconChildren.length * (buttonHeight - iconHeight) +
+            availHeight -= iconChildren.length * (natHeight - this.iconSize * scaleFactor) +
                            (iconChildren.length - 1) * spacing;
 
         let availSize = availHeight / iconChildren.length;
@@ -603,7 +662,6 @@ var MyDash = GObject.registerClass({
             icon.icon.set_size(icon.icon.width * scale,
                                icon.icon.height * scale);
 
-            icon.icon.remove_all_transitions();
             icon.icon.ease({
                 width: targetWidth,
                 height: targetHeight,
@@ -631,7 +689,7 @@ var MyDash = GObject.registerClass({
 
         let children = this._box.get_children().filter(function(actor) {
             return actor.child &&
-                   actor.child.app;
+                   !!actor.child.app;
         });
         // Apps currently in the dash
         let oldApps = children.map(function(actor) {
@@ -863,7 +921,7 @@ var MyDash = GObject.registerClass({
     resetAppIcons() {
         let children = this._box.get_children().filter(function(actor) {
             return actor.child &&
-                actor.child.icon;
+                   !!actor.child.icon;
         });
         for (let i = 0; i < children.length; i++) {
             let item = children[i];

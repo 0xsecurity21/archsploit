@@ -33,7 +33,8 @@ function showbanner()
 	echo -e "${color_5cb85c} [i] [Package]: archsploit-clean${color_revert}"
 	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"
   	echo
-  	sleep 1s
+  	sleep 4s
+	clear
 }
 
 ## Load Header

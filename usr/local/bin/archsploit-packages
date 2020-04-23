@@ -33,7 +33,8 @@ function showbanner()
 	echo -e "${color_5cb85c} [i] [Package]: archsploit-packages${color_revert}"
 	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"
   	echo
-  	sleep 1s
+	sleep 4s
+	clear
 }
 
 ## Load Header
@@ -151,19 +152,19 @@ function install_cracking()
 
 	## Install Arch Repository Tools
 	## -----------------------------
-	sudo pacman -S hashcat >/dev/null 2>&1
+	sudo pacman -S hashcat --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Hashcat" "OK" "valid"
 
-	sudo pacman -S hydra >/dev/null 2>&1
+	sudo pacman -S hydra --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Hydra" "OK" "valid"
 
-	sudo pacman -S john >/dev/null 2>&1
+	sudo pacman -S john --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install John" "OK" "valid"
 
-	sudo pacman -S ncrack >/dev/null 2>&1
+	sudo pacman -S ncrack --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Ncrack" "OK" "valid"
 
-	sudo pacman -S ophcrack >/dev/null 2>&1
+	sudo pacman -S ophcrack --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Ophcrack" "OK" "valid"
 
 	## Install Github Repository Tools
@@ -187,7 +188,7 @@ function install_cracking()
 		    sudo chmod +x /opt/archsploit/cracking/credcrack/credcrack.py
 		    sudo ln -s /opt/archsploit/cracking/credcrack/credcrack.py /usr/bin/credcrack
 
-			sudo cp /tmp/packages-cracking/usr/share/applications/archsploit-credcrack.desktop /usr/share/applications/archsploit-credcrack.desktop
+			sudo cp /tmp/packages-cracking/usr/share/applications/archsploit-credcrack.desktop /usr/share/applications/
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credcrack.md >/dev/null 2>&1
 			loadstatus " [+] Installing CredCrack" "OK" "valid"
 		else
@@ -295,11 +296,34 @@ function install_cracking()
 		fi
 	fi
 
+	## Create Applications Directory
+	## -----------------------------
+	if [ ! -f "/usr/share/desktop-directories/archsploit-cracking.directory" ];
+	then
+		sudo cp /tmp/packages-cracking/usr/share/desktop-directories/archsploit-cracking.directory /usr/share/desktop-directories/
+		loadstatus " [+] Creating Applications Directory" "OK" "valid"
+	else
+		loadstatus " [+] Applications Directory already installed" "OK" "valid"
+	fi
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Cracking']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ name "archsploit-cracking.directory"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ apps "['archsploit-credcrack.desktop', 'archsploit-findmyhash.desktop', 'archsploit-hashid.desktop', 'archsploit-hashtag.desktop', 'archsploit-rcrack.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-cracking/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
 	## Correct User Permissions
     ## ------------------------
     sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
 	loadnotice "ArchSploit Cracking packages installed successfully"
+	echo
 }
 
 ## Install Exploitation Packages
@@ -521,6 +545,7 @@ function install_exploitation()
     sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
 	loadnotice "ArchSploit Exploitation packages installed successfully"
+	echo
 }
 
 ## Install Forensics Packages
@@ -536,13 +561,13 @@ function install_forensics()
 
 	## Install Arch Repository Tools
 	## -----------------------------
-	sudo pacman -S chntpw >/dev/null 2>&1
+	sudo pacman -S chntpw --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Chntpw" "OK" "valid"
 
-	sudo pacman -S extundelete >/dev/null 2>&1
+	sudo pacman -S extundelete --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Extundelete" "OK" "valid"
 
-	sudo pacman -S foremost >/dev/null 2>&1
+	sudo pacman -S foremost --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Foremost" "OK" "valid"
 
 	## Install Github Repository Tools
@@ -611,6 +636,7 @@ function install_forensics()
     sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
 	loadnotice "ArchSploit Forensics packages installed successfully"
+	echo
 }
 
 ## Install Gathering Packages
@@ -626,31 +652,31 @@ function install_gathering()
 
 	## Install Arch Repository Tools
 	## -----------------------------
-	sudo pacman -S arp-scan >/dev/null 2>&1
+	sudo pacman -S arp-scan --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Arp-Scan" "OK" "valid"
 
-	sudo pacman -S dnstracer >/dev/null 2>&1
+	sudo pacman -S dnstracer --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Dnstracer" "OK" "valid"
 
-	sudo pacman -S masscan >/dev/null 2>&1
+	sudo pacman -S masscan --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Masscan" "OK" "valid"
 
-	sudo pacman -S nmap >/dev/null 2>&1
+	sudo pacman -S nmap --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Nmap" "OK" "valid"
 
-	sudo pacman -S p0f >/dev/null 2>&1
+	sudo pacman -S p0f --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install P0f" "OK" "valid"
 
-	sudo pacman -S sslsplit >/dev/null 2>&1
+	sudo pacman -S sslsplit --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Sslsplit" "OK" "valid"
 
-	sudo pacman -S thc-ipv6 >/dev/null 2>&1
+	sudo pacman -S thc-ipv6 --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Thc-ipv6" "OK" "valid"
 
-	sudo pacman -S traceroute >/dev/null 2>&1
+	sudo pacman -S traceroute --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Traceroute" "OK" "valid"
 
-	sudo pacman -S whois >/dev/null 2>&1
+	sudo pacman -S whois --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Whois" "OK" "valid"
 
 	## Install Github Repository Tools
@@ -800,6 +826,7 @@ function install_gathering()
     sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
 	loadnotice "ArchSploit Gathering packages installed successfully"
+	echo
 }
 
 ## Install Hardware Packages
@@ -815,7 +842,7 @@ function install_hardware()
 
 	## Install Arch Repository Tools
 	## -----------------------------
-	sudo pacman -S arduino >/dev/null 2>&1
+	sudo pacman -S arduino --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Arduino" "OK" "valid"
 
 	## Install Github Repository Tools
@@ -868,6 +895,7 @@ function install_hardware()
     sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
 	loadnotice "ArchSploit Hardware packages installed successfully"
+	echo
 }
 
 ## Install Miscs Packages
@@ -997,6 +1025,7 @@ function install_miscs()
     sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
 	loadnotice "ArchSploit Miscs packages installed successfully"
+	echo
 }
 
 ## Install Networking Packages
@@ -1012,67 +1041,67 @@ function install_networking()
 
 	## Install Arch Repository Tools
 	## -----------------------------
-	sudo pacman -S httptunnel >/dev/null 2>&1
+	sudo pacman -S httptunnel --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Httptunnel" "OK" "valid"
 
-	sudo pacman -S i2pd >/dev/null 2>&1
+	sudo pacman -S i2pd --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install I2pd" "OK" "valid"
 
-	sudo pacman -S lftp >/dev/null 2>&1
+	sudo pacman -S lftp --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Lftp" "OK" "valid"
 
-	sudo pacman -S macchanger >/dev/null 2>&1
+	sudo pacman -S macchanger --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Macchanger" "OK" "valid"
 
-	sudo pacman -S medusa >/dev/null 2>&1
+	sudo pacman -S medusa --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Medusa" "OK" "valid"
 
-	sudo pacman -S nbtscan >/dev/null 2>&1
+	sudo pacman -S nbtscan --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Nbtscan" "OK" "valid"
 
-	sudo pacman -S gnu-netcat >/dev/null 2>&1
+	sudo pacman -S gnu-netcat --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install NetCat GNU" "OK" "valid"
 
-	sudo pacman -S nfs-utils >/dev/null 2>&1
+	sudo pacman -S nfs-utils --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install NFS-utils" "OK" "valid"
 
-	sudo pacman -S openssh >/dev/null 2>&1
+	sudo pacman -S openssh --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install OpenSSH" "OK" "valid"
 
-	sudo pacman -S openvpn >/dev/null 2>&1
+	sudo pacman -S openvpn --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install OpenVPN" "OK" "valid"
 
-	sudo pacman -S polipo >/dev/null 2>&1
+	sudo pacman -S polipo --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Polipo" "OK" "valid"
 
-	sudo pacman -S proxychains-ng >/dev/null 2>&1
+	sudo pacman -S proxychains-ng --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Proxychains-ng" "OK" "valid"
 
-	sudo pacman -S ptunnel >/dev/null 2>&1
+	sudo pacman -S ptunnel --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install pTunnel" "OK" "valid"
 
-	sudo pacman -S samba >/dev/null 2>&1
+	sudo pacman -S samba --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Samba" "OK" "valid"
 
-	sudo pacman -S smbclient >/dev/null 2>&1
+	sudo pacman -S smbclient --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Smbclient" "OK" "valid"
 
-	sudo pacman -S sipcalc >/dev/null 2>&1
+	sudo pacman -S sipcalc --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Sipcalc" "OK" "valid"
 
-	sudo pacman -S socat >/dev/null 2>&1
+	sudo pacman -S socat --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Socat" "OK" "valid"
 
-	sudo pacman -S tcpdump >/dev/null 2>&1
+	sudo pacman -S tcpdump --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install TCPdump" "OK" "valid"
 
-	sudo pacman -S tcpreplay >/dev/null 2>&1
+	sudo pacman -S tcpreplay --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install TCPreplay" "OK" "valid"
 
-	sudo pacman -S tor >/dev/null 2>&1
+	sudo pacman -S tor --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Tor" "OK" "valid"
 
-	sudo pacman -S torsocks >/dev/null 2>&1
+	sudo pacman -S torsocks --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Torsocks" "OK" "valid"
 
 	## Install Github Repository Tools
@@ -1157,6 +1186,21 @@ function install_networking()
 			loadstatus " [+] Pwnat already installed" "OK" "valid"
 		fi
 
+		## TorBridge
+		## https://archsploit.org
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/torbridge.md" ];
+		then
+			sudo chmod +x /opt/archsploit/networking/torbridge/torbridge.py
+			sudo ln -s /opt/archsploit/networking/torbridge/torbridge /usr/bin/torbridge
+
+			sudo cp /tmp/packages-networking/usr/share/applications/archsploit-torbridge.desktop /usr/share/applications/
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/torbridge.md >/dev/null 2>&1
+			loadstatus " [+] Installing TorBridge" "OK" "valid"
+		else
+			loadstatus " [+] TorBridge already installed" "OK" "valid"
+		fi
+
 		## WebShells
 		## https://tools.kali.org/
 		## -----------------------
@@ -1194,6 +1238,7 @@ function install_networking()
 	sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
 	loadnotice "ArchSploit Networking packages installed successfully"
+	echo
 }
 
 ## Install Reporting Packages
