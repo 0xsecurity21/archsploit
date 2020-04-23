@@ -165,6 +165,7 @@ function install_cracking()
 	loadstatus " [+] Install Ncrack" "OK" "valid"
 
 	sudo pacman -S ophcrack --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/ophcrack.desktop
 	loadstatus " [+] Install Ophcrack" "OK" "valid"
 
 	## Install Github Repository Tools
@@ -311,7 +312,7 @@ function install_cracking()
 	## ---------------------
 	gsettings set org.gnome.desktop.app-folders folder-children "['Cracking']"
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ name "archsploit-cracking.directory"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ apps "['archsploit-credcrack.desktop', 'archsploit-findmyhash.desktop', 'archsploit-hashid.desktop', 'archsploit-hashtag.desktop', 'archsploit-rcrack.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ apps "['archsploit-credcrack.desktop', 'archsploit-findmyhash.desktop', 'archsploit-hashcat.desktop', 'archsploit-hashid.desktop', 'archsploit-hashtag.desktop', 'archsploit-hydra.desktop', 'archsploit-john.desktop', 'archsploit-ncrack.desktop', 'archsploit-ophcrack.desktop', 'archsploit-rcrack.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
@@ -670,7 +671,7 @@ function install_forensics()
 	## ---------------------
 	gsettings set org.gnome.desktop.app-folders folder-children "['Forensics']"
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Forensics/ name "archsploit-forensics.directory"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Forensics/ apps "['archsploit-armitage.desktop', 'archsploit-commix.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Forensics/ apps "['archsploit-chntpw.desktop', 'archsploit-ddrescue.desktop', 'archsploit-dumpzilla.desktop', 'archsploit-extundelete.desktop', 'archsploit-foremost.desktop', 'archsploit-pdf-parser.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
@@ -883,7 +884,7 @@ function install_gathering()
 	## ---------------------
 	gsettings set org.gnome.desktop.app-folders folder-children "['Gathering']"
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ name "archsploit-gathering.directory"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ apps "['archsploit-automater.desktop', 'archsploit-dnsmap.desktop', 'archsploit-enum4linux.desktop', 'archsploit-enumiax.desktop', 'archsploit-linenum.desktop', 'archsploit-nikto.desktop', 'archsploit-nullinux.desktop', 'archsploit-smtp-user-enum.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ apps "['archsploit-arp-scan.desktop', 'archsploit-automater.desktop', 'archsploit-dnsmap.desktop', 'archsploit-dnstracer.desktop', 'archsploit-enum4linux.desktop', 'archsploit-enumiax.desktop', 'archsploit-linenum.desktop', 'archsploit-masscan.desktop', 'archsploit-nikto.desktop', 'archsploit-nmap.desktop', 'archsploit-nullinux.desktop', 'archsploit-p0f.desktop', 'archsploit-smtp-user-enum.desktop', 'archsploit-sslsplit.desktop', 'archsploit-thc-ipv6.desktop', 'archsploit-traceroute.desktop', 'archsploit-whois.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
@@ -913,6 +914,7 @@ function install_hardware()
 	## Install Arch Repository Tools
 	## -----------------------------
 	sudo pacman -S arduino --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/arduino.desktop
 	loadstatus " [+] Install Arduino" "OK" "valid"
 
 	## Install Github Repository Tools
@@ -960,6 +962,28 @@ function install_hardware()
 			loadstatus " [+] Dex2jar already installed" "OK" "valid"
 		fi
 	fi
+
+	## Create Applications Directory
+	## -----------------------------
+	if [ ! -f "/usr/share/desktop-directories/archsploit-hardware.directory" ];
+	then
+		sudo cp /tmp/packages-hardware/usr/share/desktop-directories/archsploit-hardware.directory /usr/share/desktop-directories/
+		loadstatus " [+] Creating Applications Directory" "OK" "valid"
+	else
+		loadstatus " [+] Applications Directory already installed" "OK" "valid"
+	fi
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Hardware']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ name "archsploit-hardware.directory"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ apps "['archsploit-apktool.desktop', 'archsploit-arduino.desktop', 'archsploit-dex2jar.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-hardware/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
 
 	## Correct User Permissions
     ## ------------------------
@@ -1091,6 +1115,28 @@ function install_miscs()
 			loadstatus " [+] TOR Browser already installed" "OK" "valid"
 		fi
 	fi
+
+	## Create Applications Directory
+	## -----------------------------
+	if [ ! -f "/usr/share/desktop-directories/archsploit-miscs.directory" ];
+	then
+		sudo cp /tmp/packages-miscs/usr/share/desktop-directories/archsploit-miscs.directory /usr/share/desktop-directories/
+		loadstatus " [+] Creating Applications Directory" "OK" "valid"
+	else
+		loadstatus " [+] Applications Directory already installed" "OK" "valid"
+	fi
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Miscs']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Miscs/ name "archsploit-miscs.directory"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Miscs/ apps "['archsploit-coldwar.desktop', 'archsploit-dedsploit.desktop', 'archsploit-dracnmap.desktop', 'archsploit-hammer.desktop', 'archsploit-subbrute.desktop', 'archsploit-tor-browser.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-miscs/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
 
 	## Correct User Permissions
     ## ------------------------
@@ -1305,6 +1351,28 @@ function install_networking()
 	else
 		loadstatus " [*] Polipo Configuration" "!!" "issue"
 	fi
+
+	## Create Applications Directory
+	## -----------------------------
+	if [ ! -f "/usr/share/desktop-directories/archsploit-networking.directory" ];
+	then
+		sudo cp /tmp/packages-networking/usr/share/desktop-directories/archsploit-networking.directory /usr/share/desktop-directories/
+		loadstatus " [+] Creating Applications Directory" "OK" "valid"
+	else
+		loadstatus " [+] Applications Directory already installed" "OK" "valid"
+	fi
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Networking']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Networking/ name "archsploit-networking.directory"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Networking/ apps "['archsploit-cymothoa.desktop', 'archsploit-i2pd.desktop', 'archsploit-lftp.desktop', 'archsploit-macchanger.desktop', 'archsploit-medusa.desktop', 'archsploit-nbtscan.desktop', 'archsploit-netcat.desktop', 'archsploit-nishang.desktop', 'archsploit-openvpn.desktop', 'archsploit-powersploit.desktop', 'archsploit-proxychains.desktop', 'archsploit-ptunnel.desktop', 'archsploit-pwnat.desktop', 'archsploit-sipcalc.desktop', 'archsploit-smbclient.desktop', 'archsploit-socat.desktop', 'archsploit-tcpdump.desktop', 'archsploit-tcpreplay.desktop', 'archsploit-torbridge.desktop', 'archsploit-webshells.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-networking/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
 
 	## Correct User Permissions
 	## ------------------------
