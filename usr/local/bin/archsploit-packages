@@ -182,6 +182,20 @@ function install_cracking()
 		sudo cp -r /tmp/packages-cracking/opt/archsploit/cracking/ /opt/archsploit/
 		loadstatus " [+] Copy Github Tools" "OK" "valid"
 
+		## Brutespray
+		## https://github.com/x90skysn3k/brutespray/
+		## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/brutespray.md" ];
+		then
+			sudo chmod +x /opt/archsploit/cracking/brutespray/brutespray.py
+			sudo ln -s /opt/archsploit/cracking/brutespray/brutespray.py /usr/bin/brutespray
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/brutespray.md >/dev/null 2>&1
+			loadstatus " [+] Installing Brutespray" "OK" "valid"
+		else
+			loadstatus " [+] Brutespray Already Installed" "OK" "valid"
+		fi
+
 		## CredCrack
 	    ## https://github.com/gojhonny/CredCrack/
 	    ## --------------------------------------
@@ -306,7 +320,7 @@ function install_cracking()
 	## ---------------------
 	gsettings set org.gnome.desktop.app-folders folder-children "['Cracking']"
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ name "01 - Cracking"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ apps "['archsploit-credcrack.desktop', 'archsploit-findmyhash.desktop', 'archsploit-hashcat.desktop', 'archsploit-hashid.desktop', 'archsploit-hashtag.desktop', 'archsploit-hydra.desktop', 'archsploit-john.desktop', 'archsploit-ncrack.desktop', 'archsploit-ophcrack.desktop', 'archsploit-rcrack.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ apps "['archsploit-brutespray.desktop', 'archsploit-credcrack.desktop', 'archsploit-findmyhash.desktop', 'archsploit-hashcat.desktop', 'archsploit-hashid.desktop', 'archsploit-hashtag.desktop', 'archsploit-hydra.desktop', 'archsploit-john.desktop', 'archsploit-ncrack.desktop', 'archsploit-ophcrack.desktop', 'archsploit-rcrack.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
@@ -388,6 +402,27 @@ function install_exploitation()
 			loadstatus " [+] Installing Commix" "OK" "valid"
 		else
 			loadstatus " [+] Commix Already Installed" "OK" "valid"
+		fi
+
+		## BeEF Project
+	    ## https://github.com/beefproject/beef/
+	    ## ------------------------------------
+		if [ ! -f "/etc/archsploit/packages/beef.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/exploitation/beef/install
+			cd /opt/archsploit/exploitation/beef/
+			sudo ./install
+			sudo touch /usr/local/bin/beef
+		    sudo chmod +x /usr/local/bin/beef
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
+		    echo 'cd /opt/archsploit/exploitation/beef/' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
+		    echo 'sudo ./beef $@' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/beef.md >/dev/null 2>&1
+			loadstatus " [+] Installing BeEF" "OK" "valid"
+		else
+			loadstatus " [+] BeEF Already Installed" "OK" "valid"
 		fi
 
 		## Jexboss
@@ -545,7 +580,7 @@ function install_exploitation()
 	## ---------------------
 	gsettings set org.gnome.desktop.app-folders folder-children "['Exploitation']"
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ name "02 - Exploitation"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-armitage.desktop', 'archsploit-commix.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-armitage.desktop', 'archsploit-beef.desktop', 'archsploit-commix.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
@@ -921,6 +956,25 @@ function install_hardware()
 			loadstatus " [+] ApkTool Already Installed" "OK" "valid"
 		fi
 
+		## Baksmali
+		## https://github.com/JesusFreke/smali/
+		## ------------------------------------
+		if [ ! -f "/etc/archsploit/packages/baksmali.md" ];
+		then
+			sudo chmod +x /opt/archsploit/hardware/baksmali/baksmali.jar
+			sudo touch /usr/local/bin/baksmali
+			sudo chmod +x /usr/local/bin/baksmali
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
+			echo 'cd /opt/archsploit/hardware/baksmali/' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/hardware/baksmali/baksmali.jar' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/baksmali.md >/dev/null 2>&1
+			loadstatus " [+] Installing Baksmali" "OK" "valid"
+		else
+			loadstatus " [+] Baksmali already installed" "OK" "valid"
+		fi
+
 		## Dex2jar
 		## https://bitbucket.org/pxb1988/Dex2jar
 		## -------------------------------------
@@ -933,6 +987,25 @@ function install_hardware()
 			loadstatus " [+] Installing Dex2jar" "OK" "valid"
 		else
 			loadstatus " [+] Dex2jar Already Installed" "OK" "valid"
+		fi
+
+		## Smali
+		## https://github.com/JesusFreke/smali/
+		## ------------------------------------
+		if [ ! -f "/etc/archsploit/packages/smali.md" ];
+		then
+			sudo chmod +x /opt/archsploit/hardware/smali/smali.jar
+			sudo touch /usr/local/bin/smali
+			sudo chmod +x /usr/local/bin/smali
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/smali >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/smali >/dev/null 2>&1
+			echo 'cd /opt/archsploit/hardware/smali/' | sudo tee -a /usr/local/bin/smali >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/hardware/smali/smali.jar' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smali.md >/dev/null 2>&1
+			loadstatus " [+] Installing Smali" "OK" "valid"
+		else
+			loadstatus " [+] Smali already installed" "OK" "valid"
 		fi
 	fi
 
@@ -949,7 +1022,7 @@ function install_hardware()
 	## ---------------------
 	gsettings set org.gnome.desktop.app-folders folder-children "['Hardware']"
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ name "05 - Hardware"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ apps "['archsploit-apktool.desktop', 'archsploit-arduino.desktop', 'archsploit-dex2jar.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ apps "['archsploit-apktool.desktop', 'archsploit-arduino.desktop', 'archsploit-baksmali.desktop', 'archsploit-dex2jar.desktop', 'archsploit-smali.desktop', ]"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
@@ -1463,6 +1536,24 @@ function install_reverse()
 		sudo cp -r /tmp/packages-reverse/opt/archsploit/reverse/ /opt/archsploit/
 		loadstatus " [+] Copy Github Tools" "OK" "valid"
 
+		## EDB Debugger
+		## https://github.com/eteran/edb-debugger/
+		## ---------------------------------------
+		if [ ! -f "/etc/archsploit/packages/edb-debugger.md" ];
+		then
+			sudo mkdir -p /opt/archsploit/reverse/edb-debugger/build/
+			cd /opt/archsploit/reverse/edb-debugger/build/
+			sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ .. >/dev/null 2>&1
+			sudo make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+			sudo rm -f /usr/local/share/applications/edb.desktop
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/edb-debugger.md >/dev/null 2>&1
+			loadstatus " [+] Installing EDB Debugger" "OK" "valid"
+		else
+			loadstatus " [+] EDB Debugger Already Installed" "OK" "valid"
+		fi
+
 		## Javasnoop
 		## https://code.google.com/archive/p/javasnoop/
 		## --------------------------------------------
@@ -1495,7 +1586,7 @@ function install_reverse()
 	## ---------------------
 	gsettings set org.gnome.desktop.app-folders folder-children "['Reverse']"
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reverse/ name "09 - Reverse"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reverse/ apps "['archsploit-javasnoop.desktop', 'archsploit-radare2.desktop', 'archsploit-valgrind.desktop', 'archsploit-yara.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reverse/ apps "['archsploit-edb-debugger.desktop', 'archsploit-javasnoop.desktop', 'archsploit-radare2.desktop', 'archsploit-valgrind.desktop', 'archsploit-yara.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
@@ -1526,6 +1617,314 @@ function install_sniffing()
 	## -----------------------------
 	sudo pacman -S bettercap --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Bettercap" "OK" "valid"
+
+	sudo pacman -S ettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Ettercap" "OK" "valid"
+
+	sudo pacman -S dsniff --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Dsniff" "OK" "valid"
+
+	sudo pacman -S wireshark-qt --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/wireshark.desktop
+	loadstatus " [+] Install Wireshark-qt" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-sniffing >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-sniffing/opt/archsploit/sniffing/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-sniffing/opt/archsploit/sniffing/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## MITM-Dump
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmdump.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmdump/mitmdump
+			sudo ln -s /opt/archsploit/sniffing/mitmdump/mitmdump /usr/bin/mitmdump
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmdump.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Dump" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Dump Already Installed" "OK" "valid"
+		fi
+
+		## MITM-Proxy
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmproxy.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmproxy/mitmproxy
+			sudo ln -s /opt/archsploit/sniffing/mitmproxy/mitmproxy /usr/bin/mitmproxy
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmproxy.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Proxy" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Proxy Already Installed" "OK" "valid"
+		fi
+
+		## MITM-Web
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmweb.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmweb/mitmweb
+			sudo ln -s /opt/archsploit/sniffing/mitmweb/mitmweb /usr/bin/mitmweb
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmweb.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Web" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Web Already Installed" "OK" "valid"
+		fi
+
+		## SniffJoke
+		## https://github.com/vecna/sniffjoke/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/sniffjoke.md" ];
+		then
+			sudo mkdir -p /opt/archsploit/sniffing/sniffjoke/build
+			cd /opt/archsploit/sniffing/sniffjoke/build/
+			sudo cmake .. >/dev/null 2>&1
+			sudo make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sniffjoke.md >/dev/null 2>&1
+			loadstatus " [+] Installing SniffJoke" "OK" "valid"
+		else
+			loadstatus " [+] SniffJoke Already Installed" "OK" "valid"
+		fi
+
+		## WebScarab
+		## http://dawes.za.net/
+		## --------------------
+		if [ ! -f "/etc/archsploit/packages/webscarab.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/webscarab/webscarab.jar
+			sudo touch /usr/local/bin/webscarab
+			sudo chmod +x /usr/local/bin/webscarab
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'cd /opt/archsploit/sniffing/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/sniffing/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webscarab.md >/dev/null 2>&1
+			loadstatus " [+] Installing WebScarab" "OK" "valid"
+		else
+			loadstatus " [+] WebScarab Already Installed" "OK" "valid"
+		fi
+
+		## Xspy
+		## https://github.com/mnp/xspy/
+		## ----------------------------
+		if [ ! -f "/etc/archsploit/packages/xspy.md" ];
+		then
+			cd /opt/archsploit/sniffing/xspy/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/sniffing/xspy/xspy /usr/bin/xspy
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/xspy.md >/dev/null 2>&1
+			loadstatus " [+] Installing Xspy" "OK" "valid"
+		else
+			loadstatus " [+] Xspy Already Installed" "OK" "valid"
+		fi
+
+		## Zaproxy
+		## https://github.com/zaproxy/zaproxy/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/zaproxy.md" ];
+		then
+			wget -O "/tmp/ZAP_2.9.0_Linux.tar.gz" https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2.9.0_Linux.tar.gz >/dev/null 2>&1
+			if [ -f "/tmp/ZAP_2.9.0_Linux.tar.gz" ];
+			then
+			    cd /tmp/
+				sudo tar -xvf /tmp/ZAP_2.9.0_Linux.tar.gz
+				sudo mv ZAP_2.9.0 /opt/archsploit/sniffing/zaproxy/
+				sudo chmod +x /opt/archsploit/sniffing/zaproxy/zap.sh
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/zaproxy.md >/dev/null 2>&1
+			    loadstatus " [+] Installing Zaproxy" "OK" "valid"
+			else
+				loadstatus " [*] Installing Zaproxy" "!!" "issue"
+			fi
+		else
+			loadstatus " [+] Zaproxy Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-sniffing/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Sniffing']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ name "10 - Sniffing"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-bettercap.desktop', 'archsploit-ettercap.desktop', 'archsploit-mitmdump.desktop', 'archsploit-mitmproxy.desktop', 'archsploit-mitmweb.desktop', 'archsploit-sniffjoke.desktop', 'archsploit-webscarab.desktop', 'archsploit-xspy.desktop', 'archsploit-zaproxy.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-sniffing/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Networking Packages Installed"
+	echo
+}
+
+## Install Social Engineering Packages
+## -----------------------------------
+function install_social()
+{
+	loadheader "# Step: Install Social Engineering Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S httrack --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/WebHTTrack.desktop
+	sudo rm -f /usr/share/applications/WebHTTrack-Websites.desktop
+	loadstatus " [+] Install Httrack" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-social >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-social/opt/archsploit/social/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-social/opt/archsploit/social/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Blackeye
+	    ## https://github.com/thelinuxchoice/blackeye/
+	    ## -------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/blackeye.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/social/blackeye/blackeye.sh
+		    sudo ln -s /opt/archsploit/social/blackeye/blackeye.sh /usr/bin/blackeye
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blackeye.md >/dev/null 2>&1
+			loadstatus " [+] Installing Blackeye" "OK" "valid"
+		else
+			loadstatus " [+] Blackeye Already Installed" "OK" "valid"
+		fi
+
+		## CredSniper
+	    ## https://github.com/ustayready/CredSniper/
+	    ## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/credsniper.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/social/credsniper/credsniper.py
+		    sudo touch /usr/local/bin/credsniper
+		    sudo chmod +x /usr/local/bin/credsniper
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+		    echo 'cd /opt/archsploit/social/credsniper/' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+		    echo 'sudo python credsniper.py $@' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credsniper.md >/dev/null 2>&1
+			loadstatus " [+] Installing CredSniper" "OK" "valid"
+		else
+			loadstatus " [+] CredSniper Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-social/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Social']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ name "11 - Social"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-blackeye.desktop', 'archsploit-credsniper.desktop', 'archsploit-httrack.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-social/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Networking Packages Installed"
+	echo
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Install Stress-Testing Packages
+## -------------------------------
+function install_stressing()
+{
+	loadheader "# Step: Install Stress-Testing Packages"
+
+
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S bettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Bettercap" "OK" "valid"
+
+	sudo pacman -S ettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Ettercap" "OK" "valid"
 
 	sudo pacman -S dsniff --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Dsniff" "OK" "valid"
@@ -1677,7 +2076,7 @@ function install_sniffing()
 	## ---------------------
 	gsettings set org.gnome.desktop.app-folders folder-children "['Sniffing']"
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ name "10 - Sniffing"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-bettercap.desktop', 'archsploit-mitmdump.desktop', 'archsploit-mitmproxy.desktop', 'archsploit-mitmweb.desktop', 'archsploit-sniffjoke.desktop', 'archsploit-webscarab.desktop', 'archsploit-xspy.desktop', 'archsploit-zaproxy.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-bettercap.desktop', 'archsploit-ettercap.desktop', 'archsploit-mitmdump.desktop', 'archsploit-mitmproxy.desktop', 'archsploit-mitmweb.desktop', 'archsploit-sniffjoke.desktop', 'archsploit-webscarab.desktop', 'archsploit-xspy.desktop', 'archsploit-zaproxy.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
@@ -1693,25 +2092,190 @@ function install_sniffing()
 	echo
 }
 
-## Install Social Engineering Packages
-## -----------------------------------
-function install_social()
-{
-	loadheader "# Step: Install Social Engineering Packages"
-}
-
-## Install Stress-Testing Packages
-## -------------------------------
-function install_stressing()
-{
-	loadheader "# Step: Install Stress-Testing Packages"
-}
-
 ## Install Vulnerability Packages
 ## ------------------------------
 function install_vulnerability()
 {
 	loadheader "# Step: Install Vulnerability Packages"
+
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S bettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Bettercap" "OK" "valid"
+
+	sudo pacman -S ettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Ettercap" "OK" "valid"
+
+	sudo pacman -S dsniff --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Dsniff" "OK" "valid"
+
+	sudo pacman -S wireshark-qt --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/wireshark.desktop
+	loadstatus " [+] Install Wireshark-qt" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-sniffing >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-sniffing/opt/archsploit/sniffing/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-sniffing/opt/archsploit/sniffing/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## MITM-Dump
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmdump.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmdump/mitmdump
+			sudo ln -s /opt/archsploit/sniffing/mitmdump/mitmdump /usr/bin/mitmdump
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmdump.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Dump" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Dump Already Installed" "OK" "valid"
+		fi
+
+		## MITM-Proxy
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmproxy.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmproxy/mitmproxy
+			sudo ln -s /opt/archsploit/sniffing/mitmproxy/mitmproxy /usr/bin/mitmproxy
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmproxy.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Proxy" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Proxy Already Installed" "OK" "valid"
+		fi
+
+		## MITM-Web
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmweb.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmweb/mitmweb
+			sudo ln -s /opt/archsploit/sniffing/mitmweb/mitmweb /usr/bin/mitmweb
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmweb.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Web" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Web Already Installed" "OK" "valid"
+		fi
+
+		## SniffJoke
+		## https://github.com/vecna/sniffjoke/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/sniffjoke.md" ];
+		then
+			sudo mkdir -p /opt/archsploit/sniffing/sniffjoke/build
+			cd /opt/archsploit/sniffing/sniffjoke/build/
+			sudo cmake .. >/dev/null 2>&1
+			sudo make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sniffjoke.md >/dev/null 2>&1
+			loadstatus " [+] Installing SniffJoke" "OK" "valid"
+		else
+			loadstatus " [+] SniffJoke Already Installed" "OK" "valid"
+		fi
+
+		## WebScarab
+		## http://dawes.za.net/
+		## --------------------
+		if [ ! -f "/etc/archsploit/packages/webscarab.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/webscarab/webscarab.jar
+			sudo touch /usr/local/bin/webscarab
+			sudo chmod +x /usr/local/bin/webscarab
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'cd /opt/archsploit/sniffing/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/sniffing/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webscarab.md >/dev/null 2>&1
+			loadstatus " [+] Installing WebScarab" "OK" "valid"
+		else
+			loadstatus " [+] WebScarab Already Installed" "OK" "valid"
+		fi
+
+		## Xspy
+		## https://github.com/mnp/xspy/
+		## ----------------------------
+		if [ ! -f "/etc/archsploit/packages/xspy.md" ];
+		then
+			cd /opt/archsploit/sniffing/xspy/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/sniffing/xspy/xspy /usr/bin/xspy
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/xspy.md >/dev/null 2>&1
+			loadstatus " [+] Installing Xspy" "OK" "valid"
+		else
+			loadstatus " [+] Xspy Already Installed" "OK" "valid"
+		fi
+
+		## Zaproxy
+		## https://github.com/zaproxy/zaproxy/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/zaproxy.md" ];
+		then
+			wget -O "/tmp/ZAP_2_9_0_unix.sh" https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2_9_0_unix.sh >/dev/null 2>&1
+			if [ -f "/tmp/ZAP_2_9_0_unix.sh" ];
+			then
+			    cd /tmp/
+				sudo chmod +x /tmp/ZAP_2_9_0_unix.sh
+				sudo ./ZAP_2_9_0_unix.sh
+
+				sudo rm -f /usr/share/applications/OWASP\ ZAP-0.desktop
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/zaproxy.md >/dev/null 2>&1
+			    loadstatus " [+] Installing Zaproxy" "OK" "valid"
+			else
+				loadstatus " [*] Installing Zaproxy" "!!" "issue"
+			fi
+		else
+			loadstatus " [+] Zaproxy Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-sniffing/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Sniffing']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ name "10 - Sniffing"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-bettercap.desktop', 'archsploit-ettercap.desktop', 'archsploit-mitmdump.desktop', 'archsploit-mitmproxy.desktop', 'archsploit-mitmweb.desktop', 'archsploit-sniffjoke.desktop', 'archsploit-webscarab.desktop', 'archsploit-xspy.desktop', 'archsploit-zaproxy.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-sniffing/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Networking Packages Installed"
+	echo
 }
 
 ## Install Webapps Packages
@@ -1719,6 +2283,185 @@ function install_vulnerability()
 function install_webapps()
 {
 	loadheader "# Step: Install Webapps Packages"
+
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S bettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Bettercap" "OK" "valid"
+
+	sudo pacman -S ettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Ettercap" "OK" "valid"
+
+	sudo pacman -S dsniff --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Dsniff" "OK" "valid"
+
+	sudo pacman -S wireshark-qt --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/wireshark.desktop
+	loadstatus " [+] Install Wireshark-qt" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-sniffing >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-sniffing/opt/archsploit/sniffing/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-sniffing/opt/archsploit/sniffing/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## MITM-Dump
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmdump.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmdump/mitmdump
+			sudo ln -s /opt/archsploit/sniffing/mitmdump/mitmdump /usr/bin/mitmdump
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmdump.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Dump" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Dump Already Installed" "OK" "valid"
+		fi
+
+		## MITM-Proxy
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmproxy.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmproxy/mitmproxy
+			sudo ln -s /opt/archsploit/sniffing/mitmproxy/mitmproxy /usr/bin/mitmproxy
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmproxy.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Proxy" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Proxy Already Installed" "OK" "valid"
+		fi
+
+		## MITM-Web
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmweb.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmweb/mitmweb
+			sudo ln -s /opt/archsploit/sniffing/mitmweb/mitmweb /usr/bin/mitmweb
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmweb.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Web" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Web Already Installed" "OK" "valid"
+		fi
+
+		## SniffJoke
+		## https://github.com/vecna/sniffjoke/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/sniffjoke.md" ];
+		then
+			sudo mkdir -p /opt/archsploit/sniffing/sniffjoke/build
+			cd /opt/archsploit/sniffing/sniffjoke/build/
+			sudo cmake .. >/dev/null 2>&1
+			sudo make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sniffjoke.md >/dev/null 2>&1
+			loadstatus " [+] Installing SniffJoke" "OK" "valid"
+		else
+			loadstatus " [+] SniffJoke Already Installed" "OK" "valid"
+		fi
+
+		## WebScarab
+		## http://dawes.za.net/
+		## --------------------
+		if [ ! -f "/etc/archsploit/packages/webscarab.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/webscarab/webscarab.jar
+			sudo touch /usr/local/bin/webscarab
+			sudo chmod +x /usr/local/bin/webscarab
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'cd /opt/archsploit/sniffing/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/sniffing/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webscarab.md >/dev/null 2>&1
+			loadstatus " [+] Installing WebScarab" "OK" "valid"
+		else
+			loadstatus " [+] WebScarab Already Installed" "OK" "valid"
+		fi
+
+		## Xspy
+		## https://github.com/mnp/xspy/
+		## ----------------------------
+		if [ ! -f "/etc/archsploit/packages/xspy.md" ];
+		then
+			cd /opt/archsploit/sniffing/xspy/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/sniffing/xspy/xspy /usr/bin/xspy
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/xspy.md >/dev/null 2>&1
+			loadstatus " [+] Installing Xspy" "OK" "valid"
+		else
+			loadstatus " [+] Xspy Already Installed" "OK" "valid"
+		fi
+
+		## Zaproxy
+		## https://github.com/zaproxy/zaproxy/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/zaproxy.md" ];
+		then
+			wget -O "/tmp/ZAP_2_9_0_unix.sh" https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2_9_0_unix.sh >/dev/null 2>&1
+			if [ -f "/tmp/ZAP_2_9_0_unix.sh" ];
+			then
+			    cd /tmp/
+				sudo chmod +x /tmp/ZAP_2_9_0_unix.sh
+				sudo ./ZAP_2_9_0_unix.sh
+
+				sudo rm -f /usr/share/applications/OWASP\ ZAP-0.desktop
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/zaproxy.md >/dev/null 2>&1
+			    loadstatus " [+] Installing Zaproxy" "OK" "valid"
+			else
+				loadstatus " [*] Installing Zaproxy" "!!" "issue"
+			fi
+		else
+			loadstatus " [+] Zaproxy Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-sniffing/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Sniffing']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ name "10 - Sniffing"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-bettercap.desktop', 'archsploit-ettercap.desktop', 'archsploit-mitmdump.desktop', 'archsploit-mitmproxy.desktop', 'archsploit-mitmweb.desktop', 'archsploit-sniffjoke.desktop', 'archsploit-webscarab.desktop', 'archsploit-xspy.desktop', 'archsploit-zaproxy.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-sniffing/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Networking Packages Installed"
+	echo
 }
 
 ## Install Wireless Packages
@@ -1726,6 +2469,184 @@ function install_webapps()
 function install_wireless()
 {
 	loadheader "# Step: Install Wireless Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S bettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Bettercap" "OK" "valid"
+
+	sudo pacman -S ettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Ettercap" "OK" "valid"
+
+	sudo pacman -S dsniff --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Dsniff" "OK" "valid"
+
+	sudo pacman -S wireshark-qt --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/wireshark.desktop
+	loadstatus " [+] Install Wireshark-qt" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-sniffing >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-sniffing/opt/archsploit/sniffing/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-sniffing/opt/archsploit/sniffing/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## MITM-Dump
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmdump.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmdump/mitmdump
+			sudo ln -s /opt/archsploit/sniffing/mitmdump/mitmdump /usr/bin/mitmdump
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmdump.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Dump" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Dump Already Installed" "OK" "valid"
+		fi
+
+		## MITM-Proxy
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmproxy.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmproxy/mitmproxy
+			sudo ln -s /opt/archsploit/sniffing/mitmproxy/mitmproxy /usr/bin/mitmproxy
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmproxy.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Proxy" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Proxy Already Installed" "OK" "valid"
+		fi
+
+		## MITM-Web
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmweb.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmweb/mitmweb
+			sudo ln -s /opt/archsploit/sniffing/mitmweb/mitmweb /usr/bin/mitmweb
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmweb.md >/dev/null 2>&1
+			loadstatus " [+] Installing MITM-Web" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Web Already Installed" "OK" "valid"
+		fi
+
+		## SniffJoke
+		## https://github.com/vecna/sniffjoke/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/sniffjoke.md" ];
+		then
+			sudo mkdir -p /opt/archsploit/sniffing/sniffjoke/build
+			cd /opt/archsploit/sniffing/sniffjoke/build/
+			sudo cmake .. >/dev/null 2>&1
+			sudo make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sniffjoke.md >/dev/null 2>&1
+			loadstatus " [+] Installing SniffJoke" "OK" "valid"
+		else
+			loadstatus " [+] SniffJoke Already Installed" "OK" "valid"
+		fi
+
+		## WebScarab
+		## http://dawes.za.net/
+		## --------------------
+		if [ ! -f "/etc/archsploit/packages/webscarab.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/webscarab/webscarab.jar
+			sudo touch /usr/local/bin/webscarab
+			sudo chmod +x /usr/local/bin/webscarab
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'cd /opt/archsploit/sniffing/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/sniffing/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webscarab.md >/dev/null 2>&1
+			loadstatus " [+] Installing WebScarab" "OK" "valid"
+		else
+			loadstatus " [+] WebScarab Already Installed" "OK" "valid"
+		fi
+
+		## Xspy
+		## https://github.com/mnp/xspy/
+		## ----------------------------
+		if [ ! -f "/etc/archsploit/packages/xspy.md" ];
+		then
+			cd /opt/archsploit/sniffing/xspy/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/sniffing/xspy/xspy /usr/bin/xspy
+
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/xspy.md >/dev/null 2>&1
+			loadstatus " [+] Installing Xspy" "OK" "valid"
+		else
+			loadstatus " [+] Xspy Already Installed" "OK" "valid"
+		fi
+
+		## Zaproxy
+		## https://github.com/zaproxy/zaproxy/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/zaproxy.md" ];
+		then
+			wget -O "/tmp/ZAP_2_9_0_unix.sh" https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2_9_0_unix.sh >/dev/null 2>&1
+			if [ -f "/tmp/ZAP_2_9_0_unix.sh" ];
+			then
+			    cd /tmp/
+				sudo chmod +x /tmp/ZAP_2_9_0_unix.sh
+				sudo ./ZAP_2_9_0_unix.sh
+
+				sudo rm -f /usr/share/applications/OWASP\ ZAP-0.desktop
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/zaproxy.md >/dev/null 2>&1
+			    loadstatus " [+] Installing Zaproxy" "OK" "valid"
+			else
+				loadstatus " [*] Installing Zaproxy" "!!" "issue"
+			fi
+		else
+			loadstatus " [+] Zaproxy Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-sniffing/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Create System Folders
+	## ---------------------
+	gsettings set org.gnome.desktop.app-folders folder-children "['Sniffing']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ name "10 - Sniffing"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-bettercap.desktop', 'archsploit-ettercap.desktop', 'archsploit-mitmdump.desktop', 'archsploit-mitmproxy.desktop', 'archsploit-mitmweb.desktop', 'archsploit-sniffjoke.desktop', 'archsploit-webscarab.desktop', 'archsploit-xspy.desktop', 'archsploit-zaproxy.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-sniffing/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Networking Packages Installed"
+	echo
 }
 
 ## -------- ##
