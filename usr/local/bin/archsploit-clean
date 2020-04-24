@@ -254,7 +254,7 @@ function cleaner()
 	loadstatus " [+] Clean Cache Directories" "OK" "valid"
 	sleep 5
 
-	loadnotice "ArchSploit Cleaner completed"
+	loadnotice "ArchSploit Cleaner Completed"
 	echo "The system will shutdown within 5 seconds"
 	sleep 5
 

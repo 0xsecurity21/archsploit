@@ -109,9 +109,9 @@ function checkinternet()
 	fi
 }
 
-## Load System Gresource
-## ---------------------
-function gresource()
+## Extract System Gresource
+## ------------------------
+function extractgresource()
 {
 	loadheader "# Step: Extract Gresource"
 
@@ -134,7 +134,7 @@ function gresource()
 		gresource extract $basedir $r > $workdir/${r#\/org\/gnome\/shell/}
 	done
 
-	loadnotice "ArchSploit Gresource extractor completed"
+	loadnotice "ArchSploit Gresource Extractor Completed"
 	sleep 5
 }
 
@@ -147,7 +147,7 @@ function launch()
 
 	showbanner
 	checkinternet
-	gresource
+	extractgresource
 }
 
 ## -------- ##
