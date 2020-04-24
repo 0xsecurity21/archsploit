@@ -135,7 +135,7 @@ function extractgresource()
 	done
 
 	loadnotice "ArchSploit Gresource Extractor Completed"
-	sleep 5
+	sleep 2
 }
 
 ## Launch

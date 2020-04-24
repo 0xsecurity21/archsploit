@@ -120,7 +120,7 @@ function updater()
 	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Update System Packages" "OK" "valid"
 	loadnotice "ArchSploit Updater Completed"
-	sleep 5
+	sleep 2
 }
 
 ## Launch
