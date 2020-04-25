@@ -1336,7 +1336,7 @@ function install_networking()
 		## ----------------------
 		if [ ! -f "/etc/archsploit/packages/torbridge.md" ];
 		then
-			sudo chmod +x /opt/archsploit/networking/torbridge/torbridge.py
+			sudo chmod +x /opt/archsploit/networking/torbridge/torbridge
 			sudo ln -s /opt/archsploit/networking/torbridge/torbridge /usr/local/bin/torbridge
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/torbridge.md >/dev/null 2>&1
 			loadstatus " [+] Installing TorBridge" "OK" "valid"
