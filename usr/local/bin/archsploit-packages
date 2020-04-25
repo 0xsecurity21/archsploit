@@ -37,6 +37,20 @@ function showbanner()
 	clear
 }
 
+## Keep Alive
+## ----------
+function keepalive()
+{
+	sudo -v
+
+	while true;
+	do
+		sudo -n true;
+		sleep 60;
+		kill -0 "$$" || exit;
+	done 2>/dev/null &
+}
+
 ## Load Header
 ## -----------
 function loadheader()
@@ -139,6 +153,36 @@ function checkinternet()
 	fi
 }
 
+## Create System Drawers
+## ---------------------
+function systemdrawers()
+{
+	if [ ! -f "/etc/archsploit/system/folders.md" ];
+	then
+		gsettings set org.gnome.desktop.app-folders folder-children "['Cracking', 'Exploitation', 'Forensics', 'Gathering', 'Hardware', 'Miscs', 'Networking', 'Reporting', 'Reverse', 'Sniffing', 'Social', 'Stressing', 'Vulnerability', 'Webapps', 'Wireless']"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ name "01 - Cracking"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ name "02 - Exploitation"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Forensics/ name "03 - Digital Forensics"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ name "04 - Information Gathering"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ name "05 - Hardware"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Miscs/ name "06 - Miscellaneous"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Networking/ name "07 - Networking"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reporting/ name "08 - Reporting"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reverse/ name "09 - Reverse Engineering"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ name "10 - Sniffing/Spoofing"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Social/ name "11 - Social Engineering"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Stressing/ name "12 - Stress Testing"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Vulnerability/ name "13 - Vulnerability Analysis"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Webapps/ name "14 - Web Applications"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Wireless/ name "15 - Wireless"
+		sudo mkdir /etc/archsploit/system/
+		echo "true" | sudo tee /etc/archsploit/system/folders.md >/dev/null 2>&1
+		loadstatus " [+] Installing System Folders" "OK" "valid"
+	else
+		loadstatus " [+] System Folders Already Installed" "OK" "valid"
+	fi
+}
+
 ## Install Cracking Packages
 ## -------------------------
 function install_cracking()
@@ -189,7 +233,6 @@ function install_cracking()
 		then
 			sudo chmod +x /opt/archsploit/cracking/brutespray/brutespray.py
 			sudo ln -s /opt/archsploit/cracking/brutespray/brutespray.py /usr/bin/brutespray
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/brutespray.md >/dev/null 2>&1
 			loadstatus " [+] Installing Brutespray" "OK" "valid"
 		else
@@ -203,7 +246,6 @@ function install_cracking()
 		then
 		    sudo chmod +x /opt/archsploit/cracking/credcrack/credcrack.py
 		    sudo ln -s /opt/archsploit/cracking/credcrack/credcrack.py /usr/bin/credcrack
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credcrack.md >/dev/null 2>&1
 			loadstatus " [+] Installing CredCrack" "OK" "valid"
 		else
@@ -217,7 +259,6 @@ function install_cracking()
 		then
 			sudo chmod +x /opt/archsploit/cracking/findmyhash/findmyhash.py
 			sudo ln -s /opt/archsploit/cracking/findmyhash/findmyhash.py /usr/bin/findmyhash
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/findmyhash.md >/dev/null 2>&1
 			loadstatus " [+] Installing Findmyhash" "OK" "valid"
 		else
@@ -231,7 +272,6 @@ function install_cracking()
 		then
 			sudo chmod +x /opt/archsploit/cracking/hashid/hashid.py
 			sudo ln -s /opt/archsploit/cracking/hashid/hashid.py /usr/bin/hashid
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashid.md >/dev/null 2>&1
 			loadstatus " [+] Installing HashID" "OK" "valid"
 		else
@@ -245,7 +285,6 @@ function install_cracking()
 		then
 			sudo chmod +x /opt/archsploit/cracking/hashtag/hashtag.py
 			sudo ln -s /opt/archsploit/cracking/hashtag/hashtag.py /usr/bin/hashtag
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashtag.md >/dev/null 2>&1
 			loadstatus " [+] Installing HashTag" "OK" "valid"
 		else
@@ -299,7 +338,6 @@ function install_cracking()
 			echo 'clear' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
 			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
 			echo './rtsort' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/rainbowcrack.md >/dev/null 2>&1
 			loadstatus " [+] Installing Rainbowcrack" "OK" "valid"
 		else
@@ -316,10 +354,8 @@ function install_cracking()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Cracking']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ name "01 - Cracking"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ apps "['archsploit-brutespray.desktop', 'archsploit-credcrack.desktop', 'archsploit-findmyhash.desktop', 'archsploit-hashcat.desktop', 'archsploit-hashid.desktop', 'archsploit-hashtag.desktop', 'archsploit-hydra.desktop', 'archsploit-john.desktop', 'archsploit-ncrack.desktop', 'archsploit-ophcrack.desktop', 'archsploit-rcrack.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -367,10 +403,10 @@ function install_exploitation()
 		if [ ! -f "/etc/archsploit/packages/armitage.md" ];
 		then
 			wget -O /tmp/armitage.tgz http://www.fastandeasyhacking.com/download/armitage150813.tgz
-			if [ ! -f "/tmp/armitage.tgz" ];
+			if [ -f "/tmp/armitage.tgz" ];
 			then
 				cd /tmp/
-				tar -xvzf /tmp/armitage.tgz
+				tar -xvzf /tmp/armitage.tgz >/dev/null 2>&1
 				sudo mv /tmp/armitage /opt/archsploit/exploitation/
 				sudo ln -s /opt/archsploit/exploitation/armitage/armitage /usr/local/bin/armitage
 				sudo ln -s /opt/archsploit/exploitation/armitage/teamserver /usr/local/bin/teamserver
@@ -397,7 +433,6 @@ function install_exploitation()
 		    echo 'clear' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
 		    echo 'cd /opt/archsploit/exploitation/commix/' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
 		    echo 'sudo python commix.py $@' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/commix.md >/dev/null 2>&1
 			loadstatus " [+] Installing Commix" "OK" "valid"
 		else
@@ -418,7 +453,6 @@ function install_exploitation()
 		    echo 'clear' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
 		    echo 'cd /opt/archsploit/exploitation/beef/' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
 		    echo 'sudo ./beef $@' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/beef.md >/dev/null 2>&1
 			loadstatus " [+] Installing BeEF" "OK" "valid"
 		else
@@ -437,7 +471,6 @@ function install_exploitation()
 			echo 'clear' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
 			echo 'cd /opt/archsploit/exploitation/jexboss/' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
 			echo 'sudo python jexboss.py $@' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/jexboss.md >/dev/null 2>&1
 			loadstatus " [+] Installing Jexboss" "OK" "valid"
 		else
@@ -451,7 +484,6 @@ function install_exploitation()
 		then
 			sudo chmod +x /opt/archsploit/exploitation/libenom/libenom.py
 			sudo ln -s /opt/archsploit/exploitation/libenom/libenom.py /usr/bin/libenom
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/libenom.md >/dev/null 2>&1
 			loadstatus " [+] Installing Libenom" "OK" "valid"
 		else
@@ -464,40 +496,39 @@ function install_exploitation()
 		if [ ! -f "/etc/archsploit/packages/metasploit.md" ];
 		then
 			rvmversion=$(curl https://raw.githubusercontent.com/rapid7/metasploit-framework/master/.ruby-version) >/dev/null 2>&1
-
-			gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
-			wget -O /tmp/rvm.sh https://get.rvm.io
+			gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB >/dev/null 2>&1
+			wget -O /tmp/rvm.sh https://get.rvm.io >/dev/null 2>&1
 			cd /tmp/
-			bash rvm.sh stable
+			bash rvm.sh stable >/dev/null 2>&1
 			echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc
 			source ~/.rvm/scripts/rvm
-			rvm install ${rvmversion}
-			rvm use ${rvmversion} --default
+			rvm install ${rvmversion} >/dev/null 2>&1
+			rvm use ${rvmversion} --default >/dev/null 2>&1
 
-			sudo pacman -S postgresql --noconfirm --needed
-			sudo chown -R postgres:postgres /var/lib/postgres/
-			sudo -Hiu postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
-			sudo systemctl start postgresql
-			sudo systemctl enable postgresql
+			sudo pacman -S postgresql --noconfirm --needed >/dev/null 2>&1
+			sudo chown -R postgres:postgres /var/lib/postgres/ >/dev/null 2>&1
+			sudo -Hiu postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data' >/dev/null 2>&1
+			sudo systemctl start postgresql >/dev/null 2>&1
+			sudo systemctl enable postgresql >/dev/null 2>&1
 
 			sudo -Hiu postgres createuser msf -P -S -R -D
 			sudo -Hiu postgres createdb -O msf msf
 
 			cd /opt/
-			sudo git clone https://github.com/rapid7/metasploit-framework metasploit
+			sudo git clone https://github.com/rapid7/metasploit-framework metasploit >/dev/null 2>&1
 			cd /opt/metasploit/
-			gem install wirble sqlite3 bundler
-			bundle install
+			gem install wirble sqlite3 bundler >/dev/null 2>&1
+			bundle install >/dev/null 2>&1
 			sudo touch /opt/metasploit/config/database.yml
-			echo 'production:' | sudo tee -a /opt/metasploit/config/database.yml
-			echo ' adapter: postgresql' | sudo tee -a /opt/metasploit/config/database.yml
-			echo ' database: msf' | sudo tee -a /opt/metasploit/config/database.yml
-			echo ' username: msf' | sudo tee -a /opt/metasploit/config/database.yml
-			echo ' password: msf' | sudo tee -a /opt/metasploit/config/database.yml
-			echo ' host: 127.0.0.1' | sudo tee -a /opt/metasploit/config/database.yml
-			echo ' port: 5432' | sudo tee -a /opt/metasploit/config/database.yml
-			echo ' pool: 75' | sudo tee -a /opt/metasploit/config/database.yml
-			echo ' timeout: 5' | sudo tee -a /opt/metasploit/config/database.yml
+			echo 'production:' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+			echo ' adapter: postgresql' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+			echo ' database: msf' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+			echo ' username: msf' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+			echo ' password: msf' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+			echo ' host: 127.0.0.1' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+			echo ' port: 5432' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+			echo ' pool: 75' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+			echo ' timeout: 5' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
 			sudo sh -c "echo export MSF_DATABASE_CONFIG=/opt/metasploit/config/database.yml >> /etc/profile"
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/metasploit.md >/dev/null 2>&1
 			loadstatus " [+] Installing Metasploit" "OK" "valid"
@@ -511,7 +542,6 @@ function install_exploitation()
 		if [ ! -f "/etc/archsploit/packages/pocsuite3.md" ];
 		then
 			sudo pip3 install pocsuite3 >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pocsuite3.md >/dev/null 2>&1
 			loadstatus " [+] Installing PocSuite3" "OK" "valid"
 		else
@@ -531,7 +561,6 @@ function install_exploitation()
 			echo 'clear' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
 			echo 'cd /opt/archsploit/exploitation/routersploit/' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
 			echo 'sudo ./rsf.py $@' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/routersploit.md >/dev/null 2>&1
 			loadstatus " [+] Installing Routersploit" "OK" "valid"
 		else
@@ -545,7 +574,6 @@ function install_exploitation()
 		then
 			sudo chmod +x /opt/archsploit/exploitation/shellnoob/shellnoob.py
 			sudo ln -s /opt/archsploit/exploitation/shellnoob/shellnoob.py /usr/bin/shellnoob
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/shellnoob.md >/dev/null 2>&1
 			loadstatus " [+] Installing Shellnoob" "OK" "valid"
 		else
@@ -559,7 +587,6 @@ function install_exploitation()
 		then
 			sudo chmod +x /opt/archsploit/exploitation/unicorn/unicorn.py
 			sudo ln -s /opt/archsploit/exploitation/unicorn/unicorn.py /usr/bin/unicorn
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/unicorn.md >/dev/null 2>&1
 			loadstatus " [+] Installing Unicorn" "OK" "valid"
 		else
@@ -576,10 +603,8 @@ function install_exploitation()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Exploitation']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ name "02 - Exploitation"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-armitage.desktop', 'archsploit-beef.desktop', 'archsploit-commix.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -596,8 +621,8 @@ function install_exploitation()
 	echo
 }
 
-## Install Forensics Packages
-## --------------------------
+## Install Digital Forensics Packages
+## ----------------------------------
 function install_forensics()
 {
 	loadheader "# Step: Install Forensics Packages"
@@ -641,7 +666,6 @@ function install_forensics()
 			sudo make >/dev/null 2>&1
 			sudo mv /opt/archsploit/forensics/ddrescue/dd_rescue /opt/archsploit/forensics/ddrescue/ddrescue
 			sudo ln -s /opt/archsploit/forensics/ddrescue/ddrescue /usr/bin/ddrescue
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/ddrescue.md >/dev/null 2>&1
 			loadstatus " [+] Installing Ddrescue" "OK" "valid"
 		else
@@ -655,7 +679,6 @@ function install_forensics()
 		then
 			sudo chmod +x /opt/archsploit/forensics/dumpzilla/dumpzilla.py
 			sudo ln -s /opt/archsploit/forensics/dumpzilla/dumpzilla.py /usr/bin/dumpzilla
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dumpzilla.md >/dev/null 2>&1
 			loadstatus " [+] Installing Dumpzilla" "OK" "valid"
 		else
@@ -669,7 +692,6 @@ function install_forensics()
 		then
 			sudo chmod +x /opt/archsploit/forensics/pdf-parser/pdf-parser.py
 			sudo ln -s /opt/archsploit/forensics/pdf-parser/pdf-parser.py /usr/bin/pdf-parser
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pdf-parser.md >/dev/null 2>&1
 			loadstatus " [+] Installing Pdf-Parser" "OK" "valid"
 		else
@@ -686,10 +708,8 @@ function install_forensics()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Forensics']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Forensics/ name "03 - Forensics"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Forensics/ apps "['archsploit-chntpw.desktop', 'archsploit-ddrescue.desktop', 'archsploit-dumpzilla.desktop', 'archsploit-extundelete.desktop', 'archsploit-foremost.desktop', 'archsploit-pdf-parser.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -706,8 +726,8 @@ function install_forensics()
 	echo
 }
 
-## Install Gathering Packages
-## --------------------------
+## Install Information Gathering Packages
+## --------------------------------------
 function install_gathering()
 {
 	loadheader "# Step: Install Gathering Packages"
@@ -767,7 +787,6 @@ function install_gathering()
 		then
 		    sudo chmod +x /opt/archsploit/gathering/automater/automater.py
 		    sudo ln -s /opt/archsploit/gathering/automater/automater.py /usr/bin/automater
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/automater.md >/dev/null 2>&1
 		    loadstatus " [+] Installing Automater" "OK" "valid"
 		else
@@ -783,7 +802,6 @@ function install_gathering()
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/gathering/dnsmap/dnsmap /usr/bin/dnsmap
 			sudo ln -s /opt/archsploit/gathering/dnsmap/dnsmap-bulk.sh /usr/bin/dnsmap-bulk
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dnsmap.md >/dev/null 2>&1
 			loadstatus " [+] Installing DNSMap" "OK" "valid"
 		else
@@ -797,7 +815,6 @@ function install_gathering()
 		then
 			sudo chmod +x /opt/archsploit/gathering/enum4linux/enum4linux.pl
 			sudo ln -s /opt/archsploit/gathering/enum4linux/enum4linux.pl /usr/bin/enum4linux
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/enum4linux.md >/dev/null 2>&1
 			loadstatus " [+] Installing Enum4Linux" "OK" "valid"
 		else
@@ -812,7 +829,6 @@ function install_gathering()
 			cd /opt/archsploit/gathering/enumiax/
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/gathering/enumiax/enumiax /usr/bin/enumiax
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/enumiax.md >/dev/null 2>&1
 			loadstatus " [+] Installing Enumiax" "OK" "valid"
 		else
@@ -826,7 +842,6 @@ function install_gathering()
 		then
 			sudo chmod +x /opt/archsploit/gathering/linenum/linenum.sh
 			sudo ln -s /opt/archsploit/gathering/linenum/linenum.sh /usr/bin/linenum
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/linenum.md >/dev/null 2>&1
 			loadstatus " [+] Installing LinEnum" "OK" "valid"
 		else
@@ -845,7 +860,6 @@ function install_gathering()
 			echo 'clear' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
 			echo 'cd /opt/archsploit/gathering/nikto/program/' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
 			echo 'sudo ./nikto.pl $@' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nikto.md >/dev/null 2>&1
 			loadstatus " [+] Installing Nikto" "OK" "valid"
 		else
@@ -859,7 +873,6 @@ function install_gathering()
 		then
 			sudo chmod +x /opt/archsploit/gathering/nullinux/nullinux.py
 			sudo ln -s /opt/archsploit/gathering/nullinux/nullinux.py /usr/bin/nullinux
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nullinux.md >/dev/null 2>&1
 			loadstatus " [+] Installing Nullinux" "OK" "valid"
 		else
@@ -873,7 +886,6 @@ function install_gathering()
 		then
 			sudo chmod +x /opt/archsploit/gathering/smtp-user-enum/smtp-user-enum.pl
 			sudo ln -s /opt/archsploit/gathering/smtp-user-enum/smtp-user-enum.pl /usr/bin/smtp-user-enum
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smtp-user-enum.md >/dev/null 2>&1
 			loadstatus " [+] Installing SMTP User Enum" "OK" "valid"
 		else
@@ -890,10 +902,8 @@ function install_gathering()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Gathering']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ name "04 - Gathering"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ apps "['archsploit-arp-scan.desktop', 'archsploit-automater.desktop', 'archsploit-dnsmap.desktop', 'archsploit-dnstracer.desktop', 'archsploit-enum4linux.desktop', 'archsploit-enumiax.desktop', 'archsploit-linenum.desktop', 'archsploit-masscan.desktop', 'archsploit-nikto.desktop', 'archsploit-nmap.desktop', 'archsploit-nullinux.desktop', 'archsploit-p0f.desktop', 'archsploit-smtp-user-enum.desktop', 'archsploit-sslsplit.desktop', 'archsploit-thc-ipv6.desktop', 'archsploit-traceroute.desktop', 'archsploit-whois.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -949,7 +959,6 @@ function install_hardware()
 		    sudo chmod +x /opt/archsploit/hardware/apktool/apktool
 		    sudo chmod +x /opt/archsploit/hardware/apktool/apktool.jar
 		    sudo ln -s /opt/archsploit/hardware/apktool/apktool /usr/bin/apktool
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/apktool.md >/dev/null 2>&1
 		    loadstatus " [+] Installing ApkTool" "OK" "valid"
 		else
@@ -968,7 +977,6 @@ function install_hardware()
 			echo 'clear' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
 			echo 'cd /opt/archsploit/hardware/baksmali/' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/hardware/baksmali/baksmali.jar' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/baksmali.md >/dev/null 2>&1
 			loadstatus " [+] Installing Baksmali" "OK" "valid"
 		else
@@ -982,7 +990,6 @@ function install_hardware()
 		then
 			sudo chmod +x /opt/archsploit/hardware/dex2jar/*.sh
 			sudo ln -s /opt/archsploit/hardware/dex2jar/d2j-dex2jar.sh /usr/bin/dex2jar
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dex2jar.md >/dev/null 2>&1
 			loadstatus " [+] Installing Dex2jar" "OK" "valid"
 		else
@@ -1001,7 +1008,6 @@ function install_hardware()
 			echo 'clear' | sudo tee -a /usr/local/bin/smali >/dev/null 2>&1
 			echo 'cd /opt/archsploit/hardware/smali/' | sudo tee -a /usr/local/bin/smali >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/hardware/smali/smali.jar' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smali.md >/dev/null 2>&1
 			loadstatus " [+] Installing Smali" "OK" "valid"
 		else
@@ -1018,10 +1024,8 @@ function install_hardware()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Hardware']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ name "05 - Hardware"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ apps "['archsploit-apktool.desktop', 'archsploit-arduino.desktop', 'archsploit-baksmali.desktop', 'archsploit-dex2jar.desktop', 'archsploit-smali.desktop', ]"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -1038,8 +1042,8 @@ function install_hardware()
 	echo
 }
 
-## Install Miscs Packages
-## ----------------------
+## Install Miscellaneous Packages
+## ------------------------------
 function install_miscs()
 {
 	loadheader "# Step: Install Miscs Packages"
@@ -1070,7 +1074,6 @@ function install_miscs()
 		then
 		    sudo chmod +x /opt/archsploit/miscs/coldwar/coldwar.py
 		    sudo ln -s /opt/archsploit/miscs/coldwar/coldwar.py /usr/bin/coldwar
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/coldwar.md >/dev/null 2>&1
 			loadstatus " [+] Installing ColdWar" "OK" "valid"
 		else
@@ -1084,7 +1087,6 @@ function install_miscs()
 		then
 		    sudo chmod +x /opt/archsploit/miscs/dedsploit/dedsploit.py
 		    sudo ln -s /opt/archsploit/miscs/dedsploit/dedsploit.py /usr/bin/dedsploit
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dedsploit.md >/dev/null 2>&1
 			loadstatus " [+] Installing Dedsploit" "OK" "valid"
 		else
@@ -1098,7 +1100,6 @@ function install_miscs()
 		then
 			sudo chmod +x /opt/archsploit/miscs/dracnmap/dracnmap.sh
 			sudo ln -s /opt/archsploit/miscs/dracnmap/dracnmap.sh /usr/bin/dracnmap
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dracnmap.md >/dev/null 2>&1
 			loadstatus " [+] Installing Dracnmap" "OK" "valid"
 		else
@@ -1112,7 +1113,6 @@ function install_miscs()
 		then
 			sudo chmod +x /opt/archsploit/miscs/hammer/hammer.py
 			sudo ln -s /opt/archsploit/miscs/hammer/hammer.py /usr/bin/hammer
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hammer.md >/dev/null 2>&1
 			loadstatus " [+] Installing Hammer" "OK" "valid"
 		else
@@ -1126,7 +1126,6 @@ function install_miscs()
 		then
 			sudo chmod +x /opt/archsploit/miscs/subbrute/subbrute.py
 			sudo ln -s /opt/archsploit/miscs/subbrute/subbrute.py /usr/bin/subbrute
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/subbrute.md >/dev/null 2>&1
 			loadstatus " [+] Installing SubBrute" "OK" "valid"
 		else
@@ -1144,7 +1143,6 @@ function install_miscs()
 			    cd /tmp/
 			    tar xf tor-browser-linux64-9.0.9_en-US.tar.xz
 			    sudo mv /tmp/tor-browser_en-US /opt/archsploit/miscs/tor-browser
-
 				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/tor-browser.md >/dev/null 2>&1
 				loadstatus " [+] Installing TOR Browser" "OK" "valid"
 			else
@@ -1164,10 +1162,8 @@ function install_miscs()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Miscs']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Miscs/ name "06 - Miscs"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Miscs/ apps "['archsploit-coldwar.desktop', 'archsploit-dedsploit.desktop', 'archsploit-dracnmap.desktop', 'archsploit-hammer.desktop', 'archsploit-subbrute.desktop', 'archsploit-tor-browser.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -1283,7 +1279,6 @@ function install_networking()
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/networking/cymothoa/bgrep /usr/bin/bgrep
 			sudo ln -s /opt/archsploit/networking/cymothoa/cymothoa /usr/bin/cymothoa
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/cymothoa.md >/dev/null 2>&1
 			loadstatus " [+] Installing Cymothoa" "OK" "valid"
 		else
@@ -1300,7 +1295,6 @@ function install_networking()
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
 			echo 'tree /opt/archsploit/networking/nishang/' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nishang.md >/dev/null 2>&1
 			loadstatus " [+] Installing Nishang" "OK" "valid"
 		else
@@ -1317,7 +1311,6 @@ function install_networking()
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
 			echo 'tree /opt/archsploit/networking/powersploit/' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/powersploit.md >/dev/null 2>&1
 			loadstatus " [+] Installing PowerSploit" "OK" "valid"
 		else
@@ -1332,7 +1325,6 @@ function install_networking()
 			cd /opt/archsploit/networking/pwnat/
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/networking/pwnat/pwnat /usr/bin/pwnat
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pwnat.md >/dev/null 2>&1
 			loadstatus " [+] Installing Pwnat" "OK" "valid"
 		else
@@ -1346,7 +1338,6 @@ function install_networking()
 		then
 			sudo chmod +x /opt/archsploit/networking/torbridge/torbridge.py
 			sudo ln -s /opt/archsploit/networking/torbridge/torbridge /usr/bin/torbridge
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/torbridge.md >/dev/null 2>&1
 			loadstatus " [+] Installing TorBridge" "OK" "valid"
 		else
@@ -1363,7 +1354,6 @@ function install_networking()
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
 			echo 'tree /opt/archsploit/networking/webshells/' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webshells.md >/dev/null 2>&1
 			loadstatus " [+] Installing WebShells" "OK" "valid"
 		else
@@ -1393,10 +1383,8 @@ function install_networking()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Networking']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Networking/ name "07 - Networking"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Networking/ apps "['archsploit-cymothoa.desktop', 'archsploit-i2pd.desktop', 'archsploit-lftp.desktop', 'archsploit-macchanger.desktop', 'archsploit-medusa.desktop', 'archsploit-nbtscan.desktop', 'archsploit-netcat.desktop', 'archsploit-nishang.desktop', 'archsploit-openvpn.desktop', 'archsploit-powersploit.desktop', 'archsploit-proxychains.desktop', 'archsploit-ptunnel.desktop', 'archsploit-pwnat.desktop', 'archsploit-sipcalc.desktop', 'archsploit-smbclient.desktop', 'archsploit-socat.desktop', 'archsploit-tcpdump.desktop', 'archsploit-tcpreplay.desktop', 'archsploit-torbridge.desktop', 'archsploit-webshells.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -1454,7 +1442,6 @@ function install_reporting()
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/reporting/magictree/magictree.jar' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/magictree.md >/dev/null 2>&1
 			loadstatus " [+] Installing MagicTree" "OK" "valid"
 		else
@@ -1468,7 +1455,6 @@ function install_reporting()
 		then
 			sudo chmod +x /opt/archsploit/reporting/metagoofil/metagoofil.py
 			sudo ln -s /opt/archsploit/reporting/metagoofil/metagoofil.py /usr/bin/metagoofil
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/metagoofil.md >/dev/null 2>&1
 			loadstatus " [+] Installing Metagoofil" "OK" "valid"
 		else
@@ -1483,7 +1469,6 @@ function install_reporting()
 			cd /opt/archsploit/reporting/nipper-ng/
 			sudo make >/dev/null 2>&1
 			sudo make install >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nipper-ng.md >/dev/null 2>&1
 			loadstatus " [+] Installing Nipper-NG" "OK" "valid"
 		else
@@ -1500,10 +1485,8 @@ function install_reporting()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Reporting']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reporting/ name "08 - Reporting"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reporting/ apps "['archsploit-dos2unix.desktop', 'archsploit-magictree.desktop', 'archsploit-metagoofil.desktop', 'archsploit-nipper-ng.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -1567,7 +1550,6 @@ function install_reverse()
 			sudo make >/dev/null 2>&1
 			sudo make install >/dev/null 2>&1
 			sudo rm -f /usr/local/share/applications/edb.desktop
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/edb-debugger.md >/dev/null 2>&1
 			loadstatus " [+] Installing EDB Debugger" "OK" "valid"
 		else
@@ -1585,7 +1567,6 @@ function install_reverse()
 			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
 			echo 'clear' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/reverse/javasnoop/javasnoop.jar' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/javasnoop.md >/dev/null 2>&1
 			loadstatus " [+] Installing Javasnoop" "OK" "valid"
 		else
@@ -1602,10 +1583,8 @@ function install_reverse()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Reverse']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reverse/ name "09 - Reverse"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reverse/ apps "['archsploit-edb-debugger.desktop', 'archsploit-javasnoop.desktop', 'archsploit-radare2.desktop', 'archsploit-valgrind.desktop', 'archsploit-yara.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -1622,8 +1601,8 @@ function install_reverse()
 	echo
 }
 
-## Install Sniffing Packages
-## -------------------------
+## Install Sniffing/Spoofing Packages
+## ----------------------------------
 function install_sniffing()
 {
 	loadheader "# Step: Install Sniffing Packages"
@@ -1669,7 +1648,6 @@ function install_sniffing()
 		then
 			sudo chmod +x /opt/archsploit/sniffing/mitmdump/mitmdump
 			sudo ln -s /opt/archsploit/sniffing/mitmdump/mitmdump /usr/bin/mitmdump
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmdump.md >/dev/null 2>&1
 			loadstatus " [+] Installing MITM-Dump" "OK" "valid"
 		else
@@ -1683,7 +1661,6 @@ function install_sniffing()
 		then
 			sudo chmod +x /opt/archsploit/sniffing/mitmproxy/mitmproxy
 			sudo ln -s /opt/archsploit/sniffing/mitmproxy/mitmproxy /usr/bin/mitmproxy
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmproxy.md >/dev/null 2>&1
 			loadstatus " [+] Installing MITM-Proxy" "OK" "valid"
 		else
@@ -1697,7 +1674,6 @@ function install_sniffing()
 		then
 			sudo chmod +x /opt/archsploit/sniffing/mitmweb/mitmweb
 			sudo ln -s /opt/archsploit/sniffing/mitmweb/mitmweb /usr/bin/mitmweb
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmweb.md >/dev/null 2>&1
 			loadstatus " [+] Installing MITM-Web" "OK" "valid"
 		else
@@ -1714,7 +1690,6 @@ function install_sniffing()
 			sudo cmake .. >/dev/null 2>&1
 			sudo make >/dev/null 2>&1
 			sudo make install >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sniffjoke.md >/dev/null 2>&1
 			loadstatus " [+] Installing SniffJoke" "OK" "valid"
 		else
@@ -1733,7 +1708,6 @@ function install_sniffing()
 			echo 'clear' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
 			echo 'cd /opt/archsploit/sniffing/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/sniffing/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webscarab.md >/dev/null 2>&1
 			loadstatus " [+] Installing WebScarab" "OK" "valid"
 		else
@@ -1748,7 +1722,6 @@ function install_sniffing()
 			cd /opt/archsploit/sniffing/xspy/
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/sniffing/xspy/xspy /usr/bin/xspy
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/xspy.md >/dev/null 2>&1
 			loadstatus " [+] Installing Xspy" "OK" "valid"
 		else
@@ -1786,10 +1759,8 @@ function install_sniffing()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Sniffing']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ name "10 - Sniffing"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-bettercap.desktop', 'archsploit-ettercap.desktop', 'archsploit-mitmdump.desktop', 'archsploit-mitmproxy.desktop', 'archsploit-mitmweb.desktop', 'archsploit-sniffjoke.desktop', 'archsploit-webscarab.desktop', 'archsploit-xspy.desktop', 'archsploit-zaproxy.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -1845,7 +1816,6 @@ function install_social()
 		then
 		    sudo chmod +x /opt/archsploit/social/blackeye/blackeye.sh
 		    sudo ln -s /opt/archsploit/social/blackeye/blackeye.sh /usr/bin/blackeye
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blackeye.md >/dev/null 2>&1
 			loadstatus " [+] Installing Blackeye" "OK" "valid"
 		else
@@ -1864,7 +1834,6 @@ function install_social()
 		    echo 'clear' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
 		    echo 'cd /opt/archsploit/social/credsniper/' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
 		    echo 'sudo python credsniper.py $@' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credsniper.md >/dev/null 2>&1
 			loadstatus " [+] Installing CredSniper" "OK" "valid"
 		else
@@ -1883,7 +1852,6 @@ function install_social()
 		    echo 'clear' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
 		    echo 'cd /opt/archsploit/social/gophish/' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
 		    echo 'sudo ./gophish $@' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/gophish.md >/dev/null 2>&1
 			loadstatus " [+] Installing Gophish" "OK" "valid"
 		else
@@ -1897,7 +1865,6 @@ function install_social()
 		then
 		    sudo chmod +x /opt/archsploit/social/seeker/seeker.py
 		    sudo ln -s /opt/archsploit/social/seeker/seeker.py /usr/bin/seeker
-
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/seeker.md >/dev/null 2>&1
 			loadstatus " [+] Installing Seeker" "OK" "valid"
 		else
@@ -1914,10 +1881,8 @@ function install_social()
 		sudo mv ${desktop} /usr/share/applications/
 	done
 
-	## Create System Folders
-	## ---------------------
-	gsettings set org.gnome.desktop.app-folders folder-children "['Social']"
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ name "11 - Social"
+	## Add System Desktop
+	## ------------------
 	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-blackeye.desktop', 'archsploit-credsniper.desktop', 'archsploit-httrack.desktop', 'archsploit-gophish.desktop', 'archsploit-seeker.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
@@ -1973,10 +1938,10 @@ else
 	if [ "$1" == "--install" -o "$1" == "-i" ];
 	then
 		clear
-		sudo whoami >/dev/null 2>&1
-
+		keepalive
 		showbanner
 		checkinternet
+		systemdrawers
 
 		case "$2" in
 		cracking)

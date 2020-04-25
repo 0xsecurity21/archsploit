@@ -37,6 +37,20 @@ function showbanner()
 	clear
 }
 
+## Keep Alive
+## ----------
+function keepalive()
+{
+	sudo -v
+
+	while true;
+	do
+		sudo -n true;
+		sleep 60;
+		kill -0 "$$" || exit;
+	done 2>/dev/null &
+}
+
 ## Load Header
 ## -----------
 function loadheader()
@@ -266,8 +280,7 @@ function cleaner()
 function launch()
 {
 	clear
-	sudo whoami >/dev/null 2>&1
-
+	keepalive
 	showbanner
 	checkinternet
 	cleaner
