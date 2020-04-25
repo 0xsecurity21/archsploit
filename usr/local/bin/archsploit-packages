@@ -1611,7 +1611,7 @@ function install_sniffing()
 
 	sudo pacman -S wireshark-qt --noconfirm --needed >/dev/null 2>&1
 	sudo rm -f /usr/share/applications/wireshark.desktop
-	loadstatus " [+] Install Wireshark-qt" "OK" "valid"
+	loadstatus " [+] Install Wireshark" "OK" "valid"
 
 	## Install Github Repository Tools
 	## -------------------------------
