@@ -437,26 +437,6 @@ function install_exploitation()
 			loadstatus " [+] Commix Already Installed" "OK" "valid"
 		fi
 
-		## BeEF Project
-	    ## https://github.com/beefproject/beef/
-	    ## ------------------------------------
-		if [ ! -f "/etc/archsploit/packages/beef.md" ];
-		then
-		    sudo chmod +x /opt/archsploit/exploitation/beef/install
-			cd /opt/archsploit/exploitation/beef/
-			sudo ./install
-			sudo touch /usr/local/bin/beef
-		    sudo chmod +x /usr/local/bin/beef
-		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
-		    echo 'clear' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
-		    echo 'cd /opt/archsploit/exploitation/beef/' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
-		    echo 'sudo ./beef $@' | sudo tee -a /usr/local/bin/beef >/dev/null 2>&1
-			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/beef.md >/dev/null 2>&1
-			loadstatus " [+] Installing BeEF" "OK" "valid"
-		else
-			loadstatus " [+] BeEF Already Installed" "OK" "valid"
-		fi
-
 		## Jexboss
 		## https://github.com/joaomatosf/jexboss/
 		## --------------------------------------
@@ -1032,7 +1012,7 @@ function install_hardware()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ apps "['archsploit-apktool.desktop', 'archsploit-arduino.desktop', 'archsploit-baksmali.desktop', 'archsploit-dex2jar.desktop', 'archsploit-smali.desktop', ]"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ apps "['archsploit-apktool.desktop', 'archsploit-arduino.desktop', 'archsploit-baksmali.desktop', 'archsploit-dex2jar.desktop', 'archsploit-smali.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
@@ -2169,11 +2149,6 @@ function install_webapps()
 	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Update System Packages" "OK" "valid"
 
-	## Install Arch Repository Tools
-	## -----------------------------
-	sudo pacman -S wpscan --noconfirm --needed >/dev/null 2>&1
-	loadstatus " [+] Install Wpscan" "OK" "valid"
-
 	## Install Github Repository Tools
 	## -------------------------------
 	sudo mkdir -p /opt/archsploit/
@@ -2297,7 +2272,7 @@ function install_webapps()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Webapps/ apps "['archsploit-arachni.desktop', 'archsploit-burpsuite.desktop', 'archsploit-cmsmap.desktop', 'archsploit-dirbuster.desktop', 'archsploit-joomscan.desktop', 'archsploit-wpscan.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Webapps/ apps "['archsploit-arachni.desktop', 'archsploit-burpsuite.desktop', 'archsploit-cmsmap.desktop', 'archsploit-dirbuster.desktop', 'archsploit-joomscan.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
