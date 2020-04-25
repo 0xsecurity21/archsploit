@@ -1723,7 +1723,7 @@ function install_sniffing()
 			if [ -f "/tmp/ZAP_2.9.0_Linux.tar.gz" ];
 			then
 			    cd /tmp/
-				sudo tar -xvf /tmp/ZAP_2.9.0_Linux.tar.gz
+				sudo tar -xvf /tmp/ZAP_2.9.0_Linux.tar.gz >/dev/null 2>&1
 				sudo mv ZAP_2.9.0 /opt/archsploit/sniffing/zaproxy/
 				sudo chmod +x /opt/archsploit/sniffing/zaproxy/zap.sh
 				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/zaproxy.md >/dev/null 2>&1
