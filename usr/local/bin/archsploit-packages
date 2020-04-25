@@ -496,42 +496,48 @@ function install_exploitation()
 			rvmversion=$(curl -s https://raw.githubusercontent.com/rapid7/metasploit-framework/master/.ruby-version)
 			gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB >/dev/null 2>&1
 			wget -O /tmp/rvm.sh https://get.rvm.io >/dev/null 2>&1
-			cd /tmp/
-			bash rvm.sh stable >/dev/null 2>&1
-			echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc
-			source ~/.rvm/scripts/rvm
-			rvm install ${rvmversion} >/dev/null 2>&1
-			rvm use ${rvmversion} --default >/dev/null 2>&1
 
-			sudo pacman -S postgresql --noconfirm --needed >/dev/null 2>&1
-			sudo chown -R postgres:postgres /var/lib/postgres/
-			sudo -Hiu postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data' >/dev/null 2>&1
-			sudo systemctl start postgresql
-			sudo systemctl enable postgresql >/dev/null 2>&1
+			if [ -f "/tmp/rvm.sh" ];
+			then
+				cd /tmp/
+				bash rvm.sh stable >/dev/null 2>&1
+				echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc
+				source ~/.rvm/scripts/rvm
+				rvm install ${rvmversion} >/dev/null 2>&1
+				rvm use ${rvmversion} --default >/dev/null 2>&1
 
-			sudo -Hiu postgres createuser msf
-			sudo -Hiu postgres createdb msf
-			sudo -Hiu postgres psql --command "ALTER USER msf WITH PASSWORD 'msf';" >/dev/null 2>&1
-			sudo -Hiu postgres psql --command "GRANT ALL PRIVILEGES ON DATABASE msf TO msf;" >/dev/null 2>&1
+				sudo pacman -S postgresql --noconfirm --needed >/dev/null 2>&1
+				sudo chown -R postgres:postgres /var/lib/postgres/
+				sudo -Hiu postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data' >/dev/null 2>&1
+				sudo systemctl start postgresql
+				sudo systemctl enable postgresql >/dev/null 2>&1
 
-			cd /opt/
-			sudo git clone https://github.com/rapid7/metasploit-framework metasploit >/dev/null 2>&1
-			cd /opt/metasploit/ >/dev/null 2>&1
-			gem install wirble sqlite3 bundler >/dev/null 2>&1
-			bundle install >/dev/null 2>&1
-			sudo touch /opt/metasploit/config/database.yml
-			echo 'production:' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
-			echo ' adapter: postgresql' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
-			echo ' database: msf' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
-			echo ' username: msf' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
-			echo ' password: msf' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
-			echo ' host: 127.0.0.1' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
-			echo ' port: 5432' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
-			echo ' pool: 75' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
-			echo ' timeout: 5' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
-			sudo sh -c "echo export MSF_DATABASE_CONFIG=/opt/metasploit/config/database.yml >> /etc/profile"
-			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/metasploit.md >/dev/null 2>&1
-			loadstatus " [+] Installing Metasploit" "OK" "valid"
+				sudo -Hiu postgres createuser msf
+				sudo -Hiu postgres createdb msf
+				sudo -Hiu postgres psql --command "ALTER USER msf WITH PASSWORD 'msf';" >/dev/null 2>&1
+				sudo -Hiu postgres psql --command "GRANT ALL PRIVILEGES ON DATABASE msf TO msf;" >/dev/null 2>&1
+
+				cd /opt/
+				sudo git clone https://github.com/rapid7/metasploit-framework metasploit >/dev/null 2>&1
+				cd /opt/metasploit/ >/dev/null 2>&1
+				gem install wirble sqlite3 bundler >/dev/null 2>&1
+				bundle install >/dev/null 2>&1
+				sudo touch /opt/metasploit/config/database.yml
+				echo 'production:' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+				echo ' adapter: postgresql' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+				echo ' database: msf' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+				echo ' username: msf' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+				echo ' password: msf' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+				echo ' host: 127.0.0.1' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+				echo ' port: 5432' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+				echo ' pool: 75' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+				echo ' timeout: 5' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
+				sudo sh -c "echo export MSF_DATABASE_CONFIG=/opt/metasploit/config/database.yml >> /etc/profile"
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/metasploit.md >/dev/null 2>&1
+				loadstatus " [+] Installing Metasploit" "OK" "valid"
+			else
+				loadstatus " [*] Installing Metasploit" "!!" "issue"
+			fi
 		else
 			loadstatus " [+] Metasploit Already Installed" "OK" "valid"
 		fi
