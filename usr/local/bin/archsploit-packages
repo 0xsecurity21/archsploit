@@ -2263,7 +2263,7 @@ function install_webapps()
 
 	## Create Applications Desktop
 	## ---------------------------
-	desktops=/tmp/packages-vulnerability/usr/share/applications/*
+	desktops=/tmp/packages-webapps/usr/share/applications/*
 	for desktop in $desktops
 	do
 		sudo rm -f /usr/share/applications/$(basename ${desktop})
@@ -2398,7 +2398,7 @@ function install_wireless()
 
 	## Create Applications Desktop
 	## ---------------------------
-	desktops=/tmp/packages-vulnerability/usr/share/applications/*
+	desktops=/tmp/packages-wireless/usr/share/applications/*
 	for desktop in $desktops
 	do
 		sudo rm -f /usr/share/applications/$(basename ${desktop})
