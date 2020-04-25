@@ -232,7 +232,7 @@ function install_cracking()
 			sudo chmod +x /opt/archsploit/cracking/brutespray/brutespray.py
 			sudo ln -s /opt/archsploit/cracking/brutespray/brutespray.py /usr/local/bin/brutespray
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/brutespray.md >/dev/null 2>&1
-			loadstatus " [+] Installing Brutespray" "OK" "valid"
+			loadstatus " [+] Install Brutespray" "OK" "valid"
 		else
 			loadstatus " [+] Brutespray Already Installed" "OK" "valid"
 		fi
@@ -245,7 +245,7 @@ function install_cracking()
 		    sudo chmod +x /opt/archsploit/cracking/credcrack/credcrack.py
 		    sudo ln -s /opt/archsploit/cracking/credcrack/credcrack.py /usr/local/bin/credcrack
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credcrack.md >/dev/null 2>&1
-			loadstatus " [+] Installing CredCrack" "OK" "valid"
+			loadstatus " [+] Install CredCrack" "OK" "valid"
 		else
 			loadstatus " [+] CredCrack Already Installed" "OK" "valid"
 		fi
@@ -258,7 +258,7 @@ function install_cracking()
 			sudo chmod +x /opt/archsploit/cracking/findmyhash/findmyhash.py
 			sudo ln -s /opt/archsploit/cracking/findmyhash/findmyhash.py /usr/local/bin/findmyhash
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/findmyhash.md >/dev/null 2>&1
-			loadstatus " [+] Installing Findmyhash" "OK" "valid"
+			loadstatus " [+] Install Findmyhash" "OK" "valid"
 		else
 			loadstatus " [+] Findmyhash Already Installed" "OK" "valid"
 		fi
@@ -271,7 +271,7 @@ function install_cracking()
 			sudo chmod +x /opt/archsploit/cracking/hashid/hashid.py
 			sudo ln -s /opt/archsploit/cracking/hashid/hashid.py /usr/local/bin/hashid
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashid.md >/dev/null 2>&1
-			loadstatus " [+] Installing HashID" "OK" "valid"
+			loadstatus " [+] Install HashID" "OK" "valid"
 		else
 			loadstatus " [+] HashID Already Installed" "OK" "valid"
 		fi
@@ -284,7 +284,7 @@ function install_cracking()
 			sudo chmod +x /opt/archsploit/cracking/hashtag/hashtag.py
 			sudo ln -s /opt/archsploit/cracking/hashtag/hashtag.py /usr/local/bin/hashtag
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashtag.md >/dev/null 2>&1
-			loadstatus " [+] Installing HashTag" "OK" "valid"
+			loadstatus " [+] Install HashTag" "OK" "valid"
 		else
 			loadstatus " [+] HashTag Already Installed" "OK" "valid"
 		fi
@@ -337,7 +337,7 @@ function install_cracking()
 			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
 			echo './rtsort' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/rainbowcrack.md >/dev/null 2>&1
-			loadstatus " [+] Installing Rainbowcrack" "OK" "valid"
+			loadstatus " [+] Install Rainbowcrack" "OK" "valid"
 		else
 			loadstatus " [+] Rainbowcrack Already Installed" "OK" "valid"
 		fi
@@ -411,9 +411,9 @@ function install_exploitation()
 				sh -c "echo java -jar /opt/archsploit/exploitation/armitage/armitage.jar \$\* > /opt/archsploit/exploitation/armitage/armitage"
 				sudo perl -pi -e 's/armitage.jar/\/opt\/archsploit\/exploitation\/armitage\/armitage.jar/g' /opt/archsploit/exploitation/armitage/teamserver
 				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/armitage.md >/dev/null 2>&1
-			    loadstatus " [+] Installing Armitage" "OK" "valid"
+			    loadstatus " [+] Install Armitage" "OK" "valid"
 			else
-				loadstatus " [*] Installing Armitage" "!!" "issue"
+				loadstatus " [*] Install Armitage" "!!" "issue"
 			fi
 		else
 			loadstatus " [+] Armitage Already Installed" "OK" "valid"
@@ -432,7 +432,7 @@ function install_exploitation()
 		    echo 'cd /opt/archsploit/exploitation/commix/' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
 		    echo 'sudo python commix.py $@' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/commix.md >/dev/null 2>&1
-			loadstatus " [+] Installing Commix" "OK" "valid"
+			loadstatus " [+] Install Commix" "OK" "valid"
 		else
 			loadstatus " [+] Commix Already Installed" "OK" "valid"
 		fi
@@ -450,7 +450,7 @@ function install_exploitation()
 			echo 'cd /opt/archsploit/exploitation/jexboss/' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
 			echo 'sudo python jexboss.py $@' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/jexboss.md >/dev/null 2>&1
-			loadstatus " [+] Installing Jexboss" "OK" "valid"
+			loadstatus " [+] Install Jexboss" "OK" "valid"
 		else
 			loadstatus " [+] Jexboss Already Installed" "OK" "valid"
 		fi
@@ -463,7 +463,7 @@ function install_exploitation()
 			sudo chmod +x /opt/archsploit/exploitation/libenom/libenom.py
 			sudo ln -s /opt/archsploit/exploitation/libenom/libenom.py /usr/local/bin/libenom
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/libenom.md >/dev/null 2>&1
-			loadstatus " [+] Installing Libenom" "OK" "valid"
+			loadstatus " [+] Install Libenom" "OK" "valid"
 		else
 			loadstatus " [+] Libenom Already Installed" "OK" "valid"
 		fi
@@ -514,9 +514,9 @@ function install_exploitation()
 				echo ' timeout: 5' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
 				sudo sh -c "echo export MSF_DATABASE_CONFIG=/opt/metasploit/config/database.yml >> /etc/profile"
 				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/metasploit.md >/dev/null 2>&1
-				loadstatus " [+] Installing Metasploit" "OK" "valid"
+				loadstatus " [+] Install Metasploit" "OK" "valid"
 			else
-				loadstatus " [*] Installing Metasploit" "!!" "issue"
+				loadstatus " [*] Install Metasploit" "!!" "issue"
 			fi
 		else
 			loadstatus " [+] Metasploit Already Installed" "OK" "valid"
@@ -529,7 +529,7 @@ function install_exploitation()
 		then
 			sudo pip3 install pocsuite3 >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pocsuite3.md >/dev/null 2>&1
-			loadstatus " [+] Installing PocSuite3" "OK" "valid"
+			loadstatus " [+] Install PocSuite3" "OK" "valid"
 		else
 			loadstatus " [+] PocSuite3 Already Installed" "OK" "valid"
 		fi
@@ -548,7 +548,7 @@ function install_exploitation()
 			echo 'cd /opt/archsploit/exploitation/routersploit/' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
 			echo 'sudo ./rsf.py $@' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/routersploit.md >/dev/null 2>&1
-			loadstatus " [+] Installing Routersploit" "OK" "valid"
+			loadstatus " [+] Install Routersploit" "OK" "valid"
 		else
 			loadstatus " [+] Routersploit Already Installed" "OK" "valid"
 		fi
@@ -561,7 +561,7 @@ function install_exploitation()
 			sudo chmod +x /opt/archsploit/exploitation/shellnoob/shellnoob.py
 			sudo ln -s /opt/archsploit/exploitation/shellnoob/shellnoob.py /usr/local/bin/shellnoob
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/shellnoob.md >/dev/null 2>&1
-			loadstatus " [+] Installing Shellnoob" "OK" "valid"
+			loadstatus " [+] Install Shellnoob" "OK" "valid"
 		else
 			loadstatus " [+] Shellnoob Already Installed" "OK" "valid"
 		fi
@@ -574,7 +574,7 @@ function install_exploitation()
 			sudo chmod +x /opt/archsploit/exploitation/unicorn/unicorn.py
 			sudo ln -s /opt/archsploit/exploitation/unicorn/unicorn.py /usr/local/bin/unicorn
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/unicorn.md >/dev/null 2>&1
-			loadstatus " [+] Installing Unicorn" "OK" "valid"
+			loadstatus " [+] Install Unicorn" "OK" "valid"
 		else
 			loadstatus " [+] Unicorn Already Installed" "OK" "valid"
 		fi
@@ -653,7 +653,7 @@ function install_forensics()
 			sudo mv /opt/archsploit/forensics/ddrescue/dd_rescue /opt/archsploit/forensics/ddrescue/ddrescue
 			sudo ln -s /opt/archsploit/forensics/ddrescue/ddrescue /usr/local/bin/ddrescue
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/ddrescue.md >/dev/null 2>&1
-			loadstatus " [+] Installing Ddrescue" "OK" "valid"
+			loadstatus " [+] Install Ddrescue" "OK" "valid"
 		else
 			loadstatus " [+] Ddrescue Already Installed" "OK" "valid"
 		fi
@@ -666,7 +666,7 @@ function install_forensics()
 			sudo chmod +x /opt/archsploit/forensics/dumpzilla/dumpzilla.py
 			sudo ln -s /opt/archsploit/forensics/dumpzilla/dumpzilla.py /usr/local/bin/dumpzilla
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dumpzilla.md >/dev/null 2>&1
-			loadstatus " [+] Installing Dumpzilla" "OK" "valid"
+			loadstatus " [+] Install Dumpzilla" "OK" "valid"
 		else
 			loadstatus " [+] Dumpzilla Already Installed" "OK" "valid"
 		fi
@@ -679,7 +679,7 @@ function install_forensics()
 			sudo chmod +x /opt/archsploit/forensics/pdf-parser/pdf-parser.py
 			sudo ln -s /opt/archsploit/forensics/pdf-parser/pdf-parser.py /usr/local/bin/pdf-parser
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pdf-parser.md >/dev/null 2>&1
-			loadstatus " [+] Installing Pdf-Parser" "OK" "valid"
+			loadstatus " [+] Install Pdf-Parser" "OK" "valid"
 		else
 			loadstatus " [+] Pdf-Parser Already Installed" "OK" "valid"
 		fi
@@ -774,7 +774,7 @@ function install_gathering()
 		    sudo chmod +x /opt/archsploit/gathering/automater/automater.py
 		    sudo ln -s /opt/archsploit/gathering/automater/automater.py /usr/local/bin/automater
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/automater.md >/dev/null 2>&1
-		    loadstatus " [+] Installing Automater" "OK" "valid"
+		    loadstatus " [+] Install Automater" "OK" "valid"
 		else
 			loadstatus " [+] Automater Already Installed" "OK" "valid"
 		fi
@@ -789,7 +789,7 @@ function install_gathering()
 			sudo ln -s /opt/archsploit/gathering/dnsmap/dnsmap /usr/local/bin/dnsmap
 			sudo ln -s /opt/archsploit/gathering/dnsmap/dnsmap-bulk.sh /usr/local/bin/dnsmap-bulk
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dnsmap.md >/dev/null 2>&1
-			loadstatus " [+] Installing DNSMap" "OK" "valid"
+			loadstatus " [+] Install DNSMap" "OK" "valid"
 		else
 			loadstatus " [+] DNSMap Already Installed" "OK" "valid"
 		fi
@@ -802,7 +802,7 @@ function install_gathering()
 			sudo chmod +x /opt/archsploit/gathering/enum4linux/enum4linux.pl
 			sudo ln -s /opt/archsploit/gathering/enum4linux/enum4linux.pl /usr/local/bin/enum4linux
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/enum4linux.md >/dev/null 2>&1
-			loadstatus " [+] Installing Enum4Linux" "OK" "valid"
+			loadstatus " [+] Install Enum4Linux" "OK" "valid"
 		else
 			loadstatus " [+] Enum4Linux Already Installed" "OK" "valid"
 		fi
@@ -816,7 +816,7 @@ function install_gathering()
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/gathering/enumiax/enumiax /usr/local/bin/enumiax
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/enumiax.md >/dev/null 2>&1
-			loadstatus " [+] Installing Enumiax" "OK" "valid"
+			loadstatus " [+] Install Enumiax" "OK" "valid"
 		else
 			loadstatus " [+] Enumiax Already Installed" "OK" "valid"
 		fi
@@ -829,7 +829,7 @@ function install_gathering()
 			sudo chmod +x /opt/archsploit/gathering/linenum/linenum.sh
 			sudo ln -s /opt/archsploit/gathering/linenum/linenum.sh /usr/local/bin/linenum
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/linenum.md >/dev/null 2>&1
-			loadstatus " [+] Installing LinEnum" "OK" "valid"
+			loadstatus " [+] Install LinEnum" "OK" "valid"
 		else
 			loadstatus " [+] LinEnum Already Installed" "OK" "valid"
 		fi
@@ -847,7 +847,7 @@ function install_gathering()
 			echo 'cd /opt/archsploit/gathering/nikto/program/' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
 			echo 'sudo ./nikto.pl $@' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nikto.md >/dev/null 2>&1
-			loadstatus " [+] Installing Nikto" "OK" "valid"
+			loadstatus " [+] Install Nikto" "OK" "valid"
 		else
 			loadstatus " [+] Nikto Already Installed" "OK" "valid"
 		fi
@@ -860,7 +860,7 @@ function install_gathering()
 			sudo chmod +x /opt/archsploit/gathering/nullinux/nullinux.py
 			sudo ln -s /opt/archsploit/gathering/nullinux/nullinux.py /usr/local/bin/nullinux
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nullinux.md >/dev/null 2>&1
-			loadstatus " [+] Installing Nullinux" "OK" "valid"
+			loadstatus " [+] Install Nullinux" "OK" "valid"
 		else
 			loadstatus " [+] Nullinux Already Installed" "OK" "valid"
 		fi
@@ -873,7 +873,7 @@ function install_gathering()
 			sudo chmod +x /opt/archsploit/gathering/smtp-user-enum/smtp-user-enum.pl
 			sudo ln -s /opt/archsploit/gathering/smtp-user-enum/smtp-user-enum.pl /usr/local/bin/smtp-user-enum
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smtp-user-enum.md >/dev/null 2>&1
-			loadstatus " [+] Installing SMTP User Enum" "OK" "valid"
+			loadstatus " [+] Install SMTP User Enum" "OK" "valid"
 		else
 			loadstatus " [+] SMTP User Enum Already Installed" "OK" "valid"
 		fi
@@ -946,7 +946,7 @@ function install_hardware()
 		    sudo chmod +x /opt/archsploit/hardware/apktool/apktool.jar
 		    sudo ln -s /opt/archsploit/hardware/apktool/apktool /usr/local/bin/apktool
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/apktool.md >/dev/null 2>&1
-		    loadstatus " [+] Installing ApkTool" "OK" "valid"
+		    loadstatus " [+] Install ApkTool" "OK" "valid"
 		else
 			loadstatus " [+] ApkTool Already Installed" "OK" "valid"
 		fi
@@ -964,7 +964,7 @@ function install_hardware()
 			echo 'cd /opt/archsploit/hardware/baksmali/' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/hardware/baksmali/baksmali.jar' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/baksmali.md >/dev/null 2>&1
-			loadstatus " [+] Installing Baksmali" "OK" "valid"
+			loadstatus " [+] Install Baksmali" "OK" "valid"
 		else
 			loadstatus " [+] Baksmali Already Installed" "OK" "valid"
 		fi
@@ -977,7 +977,7 @@ function install_hardware()
 			sudo chmod +x /opt/archsploit/hardware/dex2jar/*.sh
 			sudo ln -s /opt/archsploit/hardware/dex2jar/d2j-dex2jar.sh /usr/local/bin/dex2jar
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dex2jar.md >/dev/null 2>&1
-			loadstatus " [+] Installing Dex2jar" "OK" "valid"
+			loadstatus " [+] Install Dex2jar" "OK" "valid"
 		else
 			loadstatus " [+] Dex2jar Already Installed" "OK" "valid"
 		fi
@@ -995,7 +995,7 @@ function install_hardware()
 			echo 'cd /opt/archsploit/hardware/smali/' | sudo tee -a /usr/local/bin/smali >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/hardware/smali/smali.jar' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smali.md >/dev/null 2>&1
-			loadstatus " [+] Installing Smali" "OK" "valid"
+			loadstatus " [+] Install Smali" "OK" "valid"
 		else
 			loadstatus " [+] Smali Already Installed" "OK" "valid"
 		fi
@@ -1061,7 +1061,7 @@ function install_miscs()
 		    sudo chmod +x /opt/archsploit/miscs/coldwar/coldwar.py
 		    sudo ln -s /opt/archsploit/miscs/coldwar/coldwar.py /usr/local/bin/coldwar
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/coldwar.md >/dev/null 2>&1
-			loadstatus " [+] Installing ColdWar" "OK" "valid"
+			loadstatus " [+] Install ColdWar" "OK" "valid"
 		else
 			loadstatus " [+] ColdWar Already Installed" "OK" "valid"
 		fi
@@ -1074,7 +1074,7 @@ function install_miscs()
 		    sudo chmod +x /opt/archsploit/miscs/dedsploit/dedsploit.py
 		    sudo ln -s /opt/archsploit/miscs/dedsploit/dedsploit.py /usr/local/bin/dedsploit
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dedsploit.md >/dev/null 2>&1
-			loadstatus " [+] Installing Dedsploit" "OK" "valid"
+			loadstatus " [+] Install Dedsploit" "OK" "valid"
 		else
 			loadstatus " [+] Dedsploit Already Installed" "OK" "valid"
 		fi
@@ -1087,7 +1087,7 @@ function install_miscs()
 			sudo chmod +x /opt/archsploit/miscs/dracnmap/dracnmap.sh
 			sudo ln -s /opt/archsploit/miscs/dracnmap/dracnmap.sh /usr/local/bin/dracnmap
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dracnmap.md >/dev/null 2>&1
-			loadstatus " [+] Installing Dracnmap" "OK" "valid"
+			loadstatus " [+] Install Dracnmap" "OK" "valid"
 		else
 			loadstatus " [+] Dracnmap Already Installed" "OK" "valid"
 		fi
@@ -1100,7 +1100,7 @@ function install_miscs()
 			sudo chmod +x /opt/archsploit/miscs/hammer/hammer.py
 			sudo ln -s /opt/archsploit/miscs/hammer/hammer.py /usr/local/bin/hammer
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hammer.md >/dev/null 2>&1
-			loadstatus " [+] Installing Hammer" "OK" "valid"
+			loadstatus " [+] Install Hammer" "OK" "valid"
 		else
 			loadstatus " [+] Hammer Already Installed" "OK" "valid"
 		fi
@@ -1113,7 +1113,7 @@ function install_miscs()
 			sudo chmod +x /opt/archsploit/miscs/subbrute/subbrute.py
 			sudo ln -s /opt/archsploit/miscs/subbrute/subbrute.py /usr/local/bin/subbrute
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/subbrute.md >/dev/null 2>&1
-			loadstatus " [+] Installing SubBrute" "OK" "valid"
+			loadstatus " [+] Install SubBrute" "OK" "valid"
 		else
 			loadstatus " [+] SubBrute Already Installed" "OK" "valid"
 		fi
@@ -1130,9 +1130,9 @@ function install_miscs()
 			    tar xf tor-browser-linux64-9.0.9_en-US.tar.xz
 			    sudo mv /tmp/tor-browser_en-US /opt/archsploit/miscs/tor-browser
 				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/tor-browser.md >/dev/null 2>&1
-				loadstatus " [+] Installing TOR Browser" "OK" "valid"
+				loadstatus " [+] Install TOR Browser" "OK" "valid"
 			else
-				loadstatus " [*] Installing TOR Browser" "!!" "issue"
+				loadstatus " [*] Install TOR Browser" "!!" "issue"
 			fi
 		else
 			loadstatus " [+] TOR Browser Already Installed" "OK" "valid"
@@ -1266,7 +1266,7 @@ function install_networking()
 			sudo ln -s /opt/archsploit/networking/cymothoa/bgrep /usr/local/bin/bgrep
 			sudo ln -s /opt/archsploit/networking/cymothoa/cymothoa /usr/local/bin/cymothoa
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/cymothoa.md >/dev/null 2>&1
-			loadstatus " [+] Installing Cymothoa" "OK" "valid"
+			loadstatus " [+] Install Cymothoa" "OK" "valid"
 		else
 			loadstatus " [+] Cymothoa Already Installed" "OK" "valid"
 		fi
@@ -1282,7 +1282,7 @@ function install_networking()
 			echo 'clear' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
 			echo 'tree /opt/archsploit/networking/nishang/' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nishang.md >/dev/null 2>&1
-			loadstatus " [+] Installing Nishang" "OK" "valid"
+			loadstatus " [+] Install Nishang" "OK" "valid"
 		else
 			loadstatus " [+] Nishang Already Installed" "OK" "valid"
 		fi
@@ -1298,7 +1298,7 @@ function install_networking()
 			echo 'clear' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
 			echo 'tree /opt/archsploit/networking/powersploit/' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/powersploit.md >/dev/null 2>&1
-			loadstatus " [+] Installing PowerSploit" "OK" "valid"
+			loadstatus " [+] Install PowerSploit" "OK" "valid"
 		else
 			loadstatus " [+] PowerSploit Already Installed" "OK" "valid"
 		fi
@@ -1312,7 +1312,7 @@ function install_networking()
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/networking/pwnat/pwnat /usr/local/bin/pwnat
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pwnat.md >/dev/null 2>&1
-			loadstatus " [+] Installing Pwnat" "OK" "valid"
+			loadstatus " [+] Install Pwnat" "OK" "valid"
 		else
 			loadstatus " [+] Pwnat Already Installed" "OK" "valid"
 		fi
@@ -1325,7 +1325,7 @@ function install_networking()
 			sudo chmod +x /opt/archsploit/networking/torbridge/torbridge
 			sudo ln -s /opt/archsploit/networking/torbridge/torbridge /usr/local/bin/torbridge
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/torbridge.md >/dev/null 2>&1
-			loadstatus " [+] Installing TorBridge" "OK" "valid"
+			loadstatus " [+] Install TorBridge" "OK" "valid"
 		else
 			loadstatus " [+] TorBridge Already Installed" "OK" "valid"
 		fi
@@ -1341,7 +1341,7 @@ function install_networking()
 			echo 'clear' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
 			echo 'tree /opt/archsploit/networking/webshells/' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webshells.md >/dev/null 2>&1
-			loadstatus " [+] Installing WebShells" "OK" "valid"
+			loadstatus " [+] Install WebShells" "OK" "valid"
 		else
 			loadstatus " [+] WebShells Already Installed" "OK" "valid"
 		fi
@@ -1429,7 +1429,7 @@ function install_reporting()
 			echo 'clear' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/reporting/magictree/magictree.jar' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/magictree.md >/dev/null 2>&1
-			loadstatus " [+] Installing MagicTree" "OK" "valid"
+			loadstatus " [+] Install MagicTree" "OK" "valid"
 		else
 			loadstatus " [+] MagicTree Already Installed" "OK" "valid"
 		fi
@@ -1442,7 +1442,7 @@ function install_reporting()
 			sudo chmod +x /opt/archsploit/reporting/metagoofil/metagoofil.py
 			sudo ln -s /opt/archsploit/reporting/metagoofil/metagoofil.py /usr/local/bin/metagoofil
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/metagoofil.md >/dev/null 2>&1
-			loadstatus " [+] Installing Metagoofil" "OK" "valid"
+			loadstatus " [+] Install Metagoofil" "OK" "valid"
 		else
 			loadstatus " [+] Metagoofil Already Installed" "OK" "valid"
 		fi
@@ -1456,7 +1456,7 @@ function install_reporting()
 			sudo make >/dev/null 2>&1
 			sudo make install >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nipper-ng.md >/dev/null 2>&1
-			loadstatus " [+] Installing Nipper-NG" "OK" "valid"
+			loadstatus " [+] Install Nipper-NG" "OK" "valid"
 		else
 			loadstatus " [+] Nipper-NG Already Installed" "OK" "valid"
 		fi
@@ -1537,7 +1537,7 @@ function install_reverse()
 			sudo make install >/dev/null 2>&1
 			sudo rm -f /usr/local/share/applications/edb.desktop
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/edb-debugger.md >/dev/null 2>&1
-			loadstatus " [+] Installing EDB Debugger" "OK" "valid"
+			loadstatus " [+] Install EDB Debugger" "OK" "valid"
 		else
 			loadstatus " [+] EDB Debugger Already Installed" "OK" "valid"
 		fi
@@ -1554,7 +1554,7 @@ function install_reverse()
 			echo 'clear' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/reverse/javasnoop/javasnoop.jar' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/javasnoop.md >/dev/null 2>&1
-			loadstatus " [+] Installing Javasnoop" "OK" "valid"
+			loadstatus " [+] Install Javasnoop" "OK" "valid"
 		else
 			loadstatus " [+] Javasnoop Already Installed" "OK" "valid"
 		fi
@@ -1635,7 +1635,7 @@ function install_sniffing()
 			sudo chmod +x /opt/archsploit/sniffing/mitmdump/mitmdump
 			sudo ln -s /opt/archsploit/sniffing/mitmdump/mitmdump /usr/local/bin/mitmdump
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmdump.md >/dev/null 2>&1
-			loadstatus " [+] Installing MITM-Dump" "OK" "valid"
+			loadstatus " [+] Install MITM-Dump" "OK" "valid"
 		else
 			loadstatus " [+] MITM-Dump Already Installed" "OK" "valid"
 		fi
@@ -1648,7 +1648,7 @@ function install_sniffing()
 			sudo chmod +x /opt/archsploit/sniffing/mitmproxy/mitmproxy
 			sudo ln -s /opt/archsploit/sniffing/mitmproxy/mitmproxy /usr/local/bin/mitmproxy
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmproxy.md >/dev/null 2>&1
-			loadstatus " [+] Installing MITM-Proxy" "OK" "valid"
+			loadstatus " [+] Install MITM-Proxy" "OK" "valid"
 		else
 			loadstatus " [+] MITM-Proxy Already Installed" "OK" "valid"
 		fi
@@ -1661,7 +1661,7 @@ function install_sniffing()
 			sudo chmod +x /opt/archsploit/sniffing/mitmweb/mitmweb
 			sudo ln -s /opt/archsploit/sniffing/mitmweb/mitmweb /usr/local/bin/mitmweb
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmweb.md >/dev/null 2>&1
-			loadstatus " [+] Installing MITM-Web" "OK" "valid"
+			loadstatus " [+] Install MITM-Web" "OK" "valid"
 		else
 			loadstatus " [+] MITM-Web Already Installed" "OK" "valid"
 		fi
@@ -1677,7 +1677,7 @@ function install_sniffing()
 			sudo make >/dev/null 2>&1
 			sudo make install >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sniffjoke.md >/dev/null 2>&1
-			loadstatus " [+] Installing SniffJoke" "OK" "valid"
+			loadstatus " [+] Install SniffJoke" "OK" "valid"
 		else
 			loadstatus " [+] SniffJoke Already Installed" "OK" "valid"
 		fi
@@ -1695,7 +1695,7 @@ function install_sniffing()
 			echo 'cd /opt/archsploit/sniffing/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/sniffing/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webscarab.md >/dev/null 2>&1
-			loadstatus " [+] Installing WebScarab" "OK" "valid"
+			loadstatus " [+] Install WebScarab" "OK" "valid"
 		else
 			loadstatus " [+] WebScarab Already Installed" "OK" "valid"
 		fi
@@ -1709,7 +1709,7 @@ function install_sniffing()
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/sniffing/xspy/xspy /usr/local/bin/xspy
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/xspy.md >/dev/null 2>&1
-			loadstatus " [+] Installing Xspy" "OK" "valid"
+			loadstatus " [+] Install Xspy" "OK" "valid"
 		else
 			loadstatus " [+] Xspy Already Installed" "OK" "valid"
 		fi
@@ -1727,9 +1727,9 @@ function install_sniffing()
 				sudo mv ZAP_2.9.0 /opt/archsploit/sniffing/zaproxy/
 				sudo chmod +x /opt/archsploit/sniffing/zaproxy/zap.sh
 				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/zaproxy.md >/dev/null 2>&1
-			    loadstatus " [+] Installing Zaproxy" "OK" "valid"
+			    loadstatus " [+] Install Zaproxy" "OK" "valid"
 			else
-				loadstatus " [*] Installing Zaproxy" "!!" "issue"
+				loadstatus " [*] Install Zaproxy" "!!" "issue"
 			fi
 		else
 			loadstatus " [+] Zaproxy Already Installed" "OK" "valid"
@@ -1803,7 +1803,7 @@ function install_social()
 		    sudo chmod +x /opt/archsploit/social/blackeye/blackeye.sh
 		    sudo ln -s /opt/archsploit/social/blackeye/blackeye.sh /usr/local/bin/blackeye
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blackeye.md >/dev/null 2>&1
-			loadstatus " [+] Installing Blackeye" "OK" "valid"
+			loadstatus " [+] Install Blackeye" "OK" "valid"
 		else
 			loadstatus " [+] Blackeye Already Installed" "OK" "valid"
 		fi
@@ -1821,7 +1821,7 @@ function install_social()
 		    echo 'cd /opt/archsploit/social/credsniper/' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
 		    echo 'sudo python credsniper.py $@' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credsniper.md >/dev/null 2>&1
-			loadstatus " [+] Installing CredSniper" "OK" "valid"
+			loadstatus " [+] Install CredSniper" "OK" "valid"
 		else
 			loadstatus " [+] CredSniper Already Installed" "OK" "valid"
 		fi
@@ -1839,7 +1839,7 @@ function install_social()
 		    echo 'cd /opt/archsploit/social/gophish/' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
 		    echo 'sudo ./gophish $@' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/gophish.md >/dev/null 2>&1
-			loadstatus " [+] Installing Gophish" "OK" "valid"
+			loadstatus " [+] Install Gophish" "OK" "valid"
 		else
 			loadstatus " [+] Gophish Already Installed" "OK" "valid"
 		fi
@@ -1852,7 +1852,7 @@ function install_social()
 		    sudo chmod +x /opt/archsploit/social/seeker/seeker.py
 		    sudo ln -s /opt/archsploit/social/seeker/seeker.py /usr/local/bin/seeker
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/seeker.md >/dev/null 2>&1
-			loadstatus " [+] Installing Seeker" "OK" "valid"
+			loadstatus " [+] Install Seeker" "OK" "valid"
 		else
 			loadstatus " [+] Seeker Already Installed" "OK" "valid"
 		fi
@@ -1927,7 +1927,7 @@ function install_stressing()
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/stress-testing/iaxflood/iaxflood /usr/local/bin/iaxflood
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/iaxflood.md >/dev/null 2>&1
-			loadstatus " [+] Installing Iaxflood" "OK" "valid"
+			loadstatus " [+] Install Iaxflood" "OK" "valid"
 		else
 			loadstatus " [+] Iaxflood Already Installed" "OK" "valid"
 		fi
@@ -1941,7 +1941,7 @@ function install_stressing()
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/stress-testing/rtpflood/rtpflood /usr/local/bin/rtpflood
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/rtpflood.md >/dev/null 2>&1
-			loadstatus " [+] Installing Rtpflood" "OK" "valid"
+			loadstatus " [+] Install Rtpflood" "OK" "valid"
 		else
 			loadstatus " [+] Rtpflood Already Installed" "OK" "valid"
 		fi
@@ -1955,7 +1955,7 @@ function install_stressing()
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/stress-testing/udpflood/udpflood /usr/local/bin/udpflood
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/udpflood.md >/dev/null 2>&1
-			loadstatus " [+] Installing Udpflood" "OK" "valid"
+			loadstatus " [+] Install Udpflood" "OK" "valid"
 		else
 			loadstatus " [+] Udpflood Already Installed" "OK" "valid"
 		fi
@@ -2026,7 +2026,7 @@ function install_vulnerability()
 		    echo 'cd /opt/archsploit/vulnerability/bed/' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
 		    echo 'perl bed.pl $@' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/bed.md >/dev/null 2>&1
-		    loadstatus " [+] Installing Bed" "OK" "valid"
+		    loadstatus " [+] Install Bed" "OK" "valid"
 		else
 			loadstatus " [+] Bed Already Installed" "OK" "valid"
 		fi
@@ -2043,7 +2043,7 @@ function install_vulnerability()
 			echo 'clear' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/vulnerability/jsql-injection/jsql-injection.jar' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/jsql-injection.md >/dev/null 2>&1
-			loadstatus " [+] Installing JSQL-Injection" "OK" "valid"
+			loadstatus " [+] Install JSQL-Injection" "OK" "valid"
 		else
 			loadstatus " [+] JSQL-Injection Already Installed" "OK" "valid"
 		fi
@@ -2061,7 +2061,7 @@ function install_vulnerability()
 			echo 'cd /opt/archsploit/vulnerability/oscanner/' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
 			echo './oscanner.sh $@' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/oscanner.md >/dev/null 2>&1
-			loadstatus " [+] Installing Oscanner" "OK" "valid"
+			loadstatus " [+] Install Oscanner" "OK" "valid"
 		else
 			loadstatus " [+] Oscanner Already Installed" "OK" "valid"
 		fi
@@ -2076,7 +2076,7 @@ function install_vulnerability()
 			sudo make >/dev/null 2>&1
 			sudo make install >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sfuzz.md >/dev/null 2>&1
-			loadstatus " [+] Installing Sfuzz" "OK" "valid"
+			loadstatus " [+] Install Sfuzz" "OK" "valid"
 		else
 			loadstatus " [+] Sfuzz Already Installed" "OK" "valid"
 		fi
@@ -2092,7 +2092,7 @@ function install_vulnerability()
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/vulnerability/sidguesser/sidguess /usr/local/bin/sidguess
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sidguesser.md >/dev/null 2>&1
-			loadstatus " [+] Installing SidGuesser" "OK" "valid"
+			loadstatus " [+] Install SidGuesser" "OK" "valid"
 		else
 			loadstatus " [+] SidGuesser Already Installed" "OK" "valid"
 		fi
@@ -2105,7 +2105,7 @@ function install_vulnerability()
 			sudo chmod +x /opt/archsploit/vulnerability/sqlmap/sqlmap.py
 			sudo ln -s /opt/archsploit/vulnerability/sqlmap/sqlmap.py /usr/local/bin/sqlmap
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sqlmap.md >/dev/null 2>&1
-			loadstatus " [+] Installing SQLMap" "OK" "valid"
+			loadstatus " [+] Install SQLMap" "OK" "valid"
 		else
 			loadstatus " [+] SQLMap Already Installed" "OK" "valid"
 		fi
@@ -2182,9 +2182,9 @@ function install_webapps()
 			    echo 'cd /opt/archsploit/webapps/arachni/bin/' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
 			    echo 'sudo ./arachni $@' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
 				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/arachni.md >/dev/null 2>&1
-			    loadstatus " [+] Installing Arachni" "OK" "valid"
+			    loadstatus " [+] Install Arachni" "OK" "valid"
 			else
-				loadstatus " [*] Installing Arachni" "!!" "issue"
+				loadstatus " [*] Install Arachni" "!!" "issue"
 			fi
 		else
 			loadstatus " [+] Arachni Already Installed" "OK" "valid"
@@ -2208,9 +2208,9 @@ function install_webapps()
 			    echo 'cd /opt/archsploit/webapps/burpsuite/' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
 			    echo 'sudo /usr/bin/java -jar /opt/archsploit/webapps/burpsuite/burpsuite.jar' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
 				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/burpsuite.md >/dev/null 2>&1
-				loadstatus " [+] Installing BurpSuite" "OK" "valid"
+				loadstatus " [+] Install BurpSuite" "OK" "valid"
 			else
-				loadstatus " [*] Installing BurpSuite" "!!" "issue"
+				loadstatus " [*] Install BurpSuite" "!!" "issue"
 			fi
 		else
 			loadstatus " [+] BurpSuite Already Installed" "OK" "valid"
@@ -2224,7 +2224,7 @@ function install_webapps()
 		    sudo chmod +x /opt/archsploit/webapps/cmsmap/cmsmap.py
 		    sudo ln -s /opt/archsploit/webapps/cmsmap/cmsmap.py /usr/local/bin/cmsmap
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/cmsmap.md >/dev/null 2>&1
-			loadstatus " [+] Installing CMSMap" "OK" "valid"
+			loadstatus " [+] Install CMSMap" "OK" "valid"
 		else
 			loadstatus " [+] CMSMap Already Installed" "OK" "valid"
 		fi
@@ -2242,7 +2242,7 @@ function install_webapps()
 			echo 'cd /opt/archsploit/webapps/dirbuster/' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
 			echo 'sudo /usr/bin/java -jar /opt/archsploit/webapps/dirbuster/dirbuster.jar' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dirbuster.md >/dev/null 2>&1
-			loadstatus " [+] Installing DirBuster" "OK" "valid"
+			loadstatus " [+] Install DirBuster" "OK" "valid"
 		else
 			loadstatus " [+] DirBuster Already Installed" "OK" "valid"
 		fi
@@ -2255,7 +2255,7 @@ function install_webapps()
 			sudo chmod +x /opt/archsploit/webapps/joomscan/joomscan.pl
 			sudo ln -s /opt/archsploit/webapps/joomscan/joomscan.pl /usr/local/bin/joomscan
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/joomscan.md >/dev/null 2>&1
-			loadstatus " [+] Installing Joomscan" "OK" "valid"
+			loadstatus " [+] Install Joomscan" "OK" "valid"
 		else
 			loadstatus " [+] Joomscan Already Installed" "OK" "valid"
 		fi
@@ -2349,9 +2349,9 @@ function install_wireless()
 		    sudo make >/dev/null 2>&1
 		    sudo make install >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/airsnort.md >/dev/null 2>&1
-		    loadstatus " [+] Installing Airsnort" "OK" "valid"
+		    loadstatus " [+] Install Airsnort" "OK" "valid"
 		else
-			loadstatus " [+] Airsnort already installed" "OK" "valid"
+			loadstatus " [+] Airsnort Already Installed" "OK" "valid"
 		fi
 
 		## Blueranger
@@ -2362,9 +2362,9 @@ function install_wireless()
 		    sudo chmod +x /opt/archsploit/wireless/blueranger/blueranger.sh
 		    sudo ln -s /opt/archsploit/wireless/blueranger/blueranger.sh /usr/bin/blueranger
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blueranger.md >/dev/null 2>&1
-			loadstatus " [+] Installing Blueranger" "OK" "valid"
+			loadstatus " [+] Install Blueranger" "OK" "valid"
 		else
-			loadstatus " [+] Blueranger already installed" "OK" "valid"
+			loadstatus " [+] Blueranger Already Installed" "OK" "valid"
 		fi
 
 		## Crackle
@@ -2376,9 +2376,9 @@ function install_wireless()
 			sudo make >/dev/null 2>&1
 			sudo make install >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/crackle.md >/dev/null 2>&1
-			loadstatus " [+] Installing Crackle" "OK" "valid"
+			loadstatus " [+] Install Crackle" "OK" "valid"
 		else
-			loadstatus " [+] Crackle already installed" "OK" "valid"
+			loadstatus " [+] Crackle Already Installed" "OK" "valid"
 		fi
 
 		## EapMd5pass
@@ -2390,9 +2390,9 @@ function install_wireless()
 			sudo make >/dev/null 2>&1
 			sudo ln -s /opt/archsploit/wireless/eapmd5pass/eapmd5pass /usr/bin/eapmd5pass
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/eapmd5pass.md >/dev/null 2>&1
-			loadstatus " [+] Installing EapMd5pass" "OK" "valid"
+			loadstatus " [+] Install EapMd5pass" "OK" "valid"
 		else
-			loadstatus " [+] EapMd5pass already installed" "OK" "valid"
+			loadstatus " [+] EapMd5pass Already Installed" "OK" "valid"
 		fi
 	fi
 
