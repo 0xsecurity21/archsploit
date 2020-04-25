@@ -110,10 +110,11 @@ function usage
 	clear
     echo "usage: archsploit-system [-i --install] or [-h --help]"
 	echo
-	echo "  -i      - Followed by the packages category name to be installed by the script"
+	echo "  -i      - Followed by the packages category to be installed"
 	echo "  -h      - Display this help menu"
 	echo
 	echo -e "${text_bold}Packages:${text_main}"
+    echo "  all               - Install and configure All Tools"
     echo "  cracking          - Install and configure Cracking Tools"
     echo "  exploitation      - Install and configure Exploitation Tools"
     echo "  forensics         - Install and configure Forensics Tools"
