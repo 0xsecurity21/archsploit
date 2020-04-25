@@ -158,7 +158,7 @@ function checkinternet()
 ## ---------------------
 function systemdrawers()
 {
-	if [ ! -f "/etc/archsploit/system/folders.md" ];
+	if [ ! -f "/etc/archsploit/system/drawers.md" ];
 	then
 		gsettings set org.gnome.desktop.app-folders folder-children "['Cracking', 'Exploitation', 'Forensics', 'Gathering', 'Hardware', 'Miscs', 'Networking', 'Reporting', 'Reverse', 'Sniffing', 'Social', 'Stressing', 'Vulnerability', 'Webapps', 'Wireless']"
 		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ name "01 - Cracking"
@@ -177,10 +177,10 @@ function systemdrawers()
 		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Webapps/ name "14 - Web Applications"
 		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Wireless/ name "15 - Wireless"
 		sudo mkdir /etc/archsploit/system/
-		echo "true" | sudo tee /etc/archsploit/system/folders.md >/dev/null 2>&1
-		loadstatus " [+] Installing System Folders" "OK" "valid"
+		echo "true" | sudo tee /etc/archsploit/system/drawers.md >/dev/null 2>&1
+		loadstatus " [+] Installing System Drawers" "OK" "valid"
 	else
-		loadstatus " [+] System Folders Already Installed" "OK" "valid"
+		loadstatus " [+] System Drawers Already Installed" "OK" "valid"
 	fi
 }
 
@@ -1907,6 +1907,122 @@ function install_social()
 function install_stressing()
 {
 	loadheader "# Step: Install Stress-Testing Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S hping --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Hping" "OK" "valid"
+
+	sudo pacman -S slowhttptest --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Slowhttptest" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-stress-testing >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-social/opt/archsploit/social/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-social/opt/archsploit/social/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Blackeye
+	    ## https://github.com/thelinuxchoice/blackeye/
+	    ## -------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/blackeye.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/social/blackeye/blackeye.sh
+		    sudo ln -s /opt/archsploit/social/blackeye/blackeye.sh /usr/bin/blackeye
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blackeye.md >/dev/null 2>&1
+			loadstatus " [+] Installing Blackeye" "OK" "valid"
+		else
+			loadstatus " [+] Blackeye Already Installed" "OK" "valid"
+		fi
+
+		## CredSniper
+	    ## https://github.com/ustayready/CredSniper/
+	    ## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/credsniper.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/social/credsniper/credsniper.py
+		    sudo touch /usr/local/bin/credsniper
+		    sudo chmod +x /usr/local/bin/credsniper
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+		    echo 'cd /opt/archsploit/social/credsniper/' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+		    echo 'sudo python credsniper.py $@' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credsniper.md >/dev/null 2>&1
+			loadstatus " [+] Installing CredSniper" "OK" "valid"
+		else
+			loadstatus " [+] CredSniper Already Installed" "OK" "valid"
+		fi
+
+		## Gophish
+	    ## https://github.com/gophish/gophish
+	    ## ----------------------------------
+		if [ ! -f "/etc/archsploit/packages/gophish.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/social/gophish/gophish
+		    sudo touch /usr/local/bin/gophish
+		    sudo chmod +x /usr/local/bin/gophish
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
+		    echo 'cd /opt/archsploit/social/gophish/' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
+		    echo 'sudo ./gophish $@' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/gophish.md >/dev/null 2>&1
+			loadstatus " [+] Installing Gophish" "OK" "valid"
+		else
+			loadstatus " [+] Gophish Already Installed" "OK" "valid"
+		fi
+
+		## Seeker
+	    ## https://github.com/thewhiteh4t/seeker/
+	    ## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/seeker.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/social/seeker/seeker.py
+		    sudo ln -s /opt/archsploit/social/seeker/seeker.py /usr/bin/seeker
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/seeker.md >/dev/null 2>&1
+			loadstatus " [+] Installing Seeker" "OK" "valid"
+		else
+			loadstatus " [+] Seeker Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-social/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-blackeye.desktop', 'archsploit-credsniper.desktop', 'archsploit-httrack.desktop', 'archsploit-gophish.desktop', 'archsploit-seeker.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-social/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Networking Packages Installed"
+	echo
 }
 
 ## Install Vulnerability Packages
