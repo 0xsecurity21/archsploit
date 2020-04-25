@@ -1928,73 +1928,53 @@ function install_stressing()
 	sudo git clone https://github.com/archsploit/packages-stress-testing >/dev/null 2>&1
 	loadstatus " [+] Cloning Github Repository" "OK" "valid"
 
-	if [ -d "/tmp/packages-social/opt/archsploit/social/" ];
+	if [ -d "/tmp/packages-stress-testing/opt/archsploit/stress-testing/" ];
 	then
 		## Copy Tools Packages
 		## -------------------
-		sudo cp -r /tmp/packages-social/opt/archsploit/social/ /opt/archsploit/
+		sudo cp -r /tmp/packages-stress-testing/opt/archsploit/stress-testing/ /opt/archsploit/
 		loadstatus " [+] Copy Github Tools" "OK" "valid"
 
-		## Blackeye
-	    ## https://github.com/thelinuxchoice/blackeye/
-	    ## -------------------------------------------
-		if [ ! -f "/etc/archsploit/packages/blackeye.md" ];
+		## Iaxflood
+		## http://www.hackingexposedvoip.com/sec_tools.html
+		## ------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/iaxflood.md" ];
 		then
-		    sudo chmod +x /opt/archsploit/social/blackeye/blackeye.sh
-		    sudo ln -s /opt/archsploit/social/blackeye/blackeye.sh /usr/bin/blackeye
-			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blackeye.md >/dev/null 2>&1
-			loadstatus " [+] Installing Blackeye" "OK" "valid"
+			cd /opt/archsploit/stress-testing/iaxflood/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/stress-testing/iaxflood/iaxflood /usr/bin/iaxflood
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/iaxflood.md >/dev/null 2>&1
+			loadstatus " [+] Installing Iaxflood" "OK" "valid"
 		else
-			loadstatus " [+] Blackeye Already Installed" "OK" "valid"
+			loadstatus " [+] Iaxflood Already Installed" "OK" "valid"
 		fi
 
-		## CredSniper
-	    ## https://github.com/ustayready/CredSniper/
-	    ## -----------------------------------------
-		if [ ! -f "/etc/archsploit/packages/credsniper.md" ];
+		## Rtpflood
+		## http://www.hackingexposedvoip.com/sec_tools.html
+		## ------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/rtpflood.md" ];
 		then
-		    sudo chmod +x /opt/archsploit/social/credsniper/credsniper.py
-		    sudo touch /usr/local/bin/credsniper
-		    sudo chmod +x /usr/local/bin/credsniper
-		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
-		    echo 'clear' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
-		    echo 'cd /opt/archsploit/social/credsniper/' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
-		    echo 'sudo python credsniper.py $@' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
-			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credsniper.md >/dev/null 2>&1
-			loadstatus " [+] Installing CredSniper" "OK" "valid"
+			cd /opt/archsploit/stress-testing/rtpflood/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/stress-testing/rtpflood/rtpflood /usr/bin/rtpflood
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/rtpflood.md >/dev/null 2>&1
+			loadstatus " [+] Installing Rtpflood" "OK" "valid"
 		else
-			loadstatus " [+] CredSniper Already Installed" "OK" "valid"
+			loadstatus " [+] Rtpflood Already Installed" "OK" "valid"
 		fi
 
-		## Gophish
-	    ## https://github.com/gophish/gophish
-	    ## ----------------------------------
-		if [ ! -f "/etc/archsploit/packages/gophish.md" ];
+		## Udpflood
+		## http://www.hackingexposedvoip.com/sec_tools.html
+		## ------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/udpflood.md" ];
 		then
-		    sudo chmod +x /opt/archsploit/social/gophish/gophish
-		    sudo touch /usr/local/bin/gophish
-		    sudo chmod +x /usr/local/bin/gophish
-		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
-		    echo 'clear' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
-		    echo 'cd /opt/archsploit/social/gophish/' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
-		    echo 'sudo ./gophish $@' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
-			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/gophish.md >/dev/null 2>&1
-			loadstatus " [+] Installing Gophish" "OK" "valid"
+			cd /opt/archsploit/stress-testing/udpflood/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/stress-testing/udpflood/udpflood /usr/bin/udpflood
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/udpflood.md >/dev/null 2>&1
+			loadstatus " [+] Installing Udpflood" "OK" "valid"
 		else
-			loadstatus " [+] Gophish Already Installed" "OK" "valid"
-		fi
-
-		## Seeker
-	    ## https://github.com/thewhiteh4t/seeker/
-	    ## --------------------------------------
-		if [ ! -f "/etc/archsploit/packages/seeker.md" ];
-		then
-		    sudo chmod +x /opt/archsploit/social/seeker/seeker.py
-		    sudo ln -s /opt/archsploit/social/seeker/seeker.py /usr/bin/seeker
-			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/seeker.md >/dev/null 2>&1
-			loadstatus " [+] Installing Seeker" "OK" "valid"
-		else
-			loadstatus " [+] Seeker Already Installed" "OK" "valid"
+			loadstatus " [+] Udpflood Already Installed" "OK" "valid"
 		fi
 	fi
 
@@ -2009,12 +1989,12 @@ function install_stressing()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-blackeye.desktop', 'archsploit-credsniper.desktop', 'archsploit-httrack.desktop', 'archsploit-gophish.desktop', 'archsploit-seeker.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-hping.desktop', 'archsploit-iaxflood.desktop', 'archsploit-rtpflood.desktop', 'archsploit-slowhttptest.desktop', 'archsploit-udpflood.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
 	## ----------------------
-	sudo rm -rf /tmp/packages-social/
+	sudo rm -rf /tmp/packages-stress-testing/
 	loadstatus " [+] Removing Temporary Files" "OK" "valid"
 
 	## Correct User Permissions
