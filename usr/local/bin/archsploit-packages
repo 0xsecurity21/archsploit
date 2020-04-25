@@ -506,13 +506,15 @@ function install_exploitation()
 			rvm use ${rvmversion} --default >/dev/null 2>&1
 
 			sudo pacman -S postgresql --noconfirm --needed >/dev/null 2>&1
-			sudo chown -R postgres:postgres /var/lib/postgres/ >/dev/null 2>&1
+			sudo chown -R postgres:postgres /var/lib/postgres/
 			sudo -Hiu postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data' >/dev/null 2>&1
-			sudo systemctl start postgresql >/dev/null 2>&1
+			sudo systemctl start postgresql
 			sudo systemctl enable postgresql >/dev/null 2>&1
 
-			sudo -Hiu postgres createuser msf -P -S -R -D
-			sudo -Hiu postgres createdb -O msf msf
+			sudo -Hiu postgres createuser msf
+			sudo -Hiu postgres createdb msf
+			sudo -Hiu postgres psql --command "ALTER USER msf WITH PASSWORD 'msf';" >/dev/null 2>&1
+			sudo -Hiu postgres psql --command "GRANT ALL PRIVILEGES ON DATABASE msf TO msf;" >/dev/null 2>&1
 
 			cd /opt/
 			sudo git clone https://github.com/rapid7/metasploit-framework metasploit >/dev/null 2>&1
