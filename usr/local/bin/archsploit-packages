@@ -2312,6 +2312,134 @@ function install_webapps()
 function install_wireless()
 {
 	loadheader "# Step: Install Wireless Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S aircrack-ng --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Aircrack-ng" "OK" "valid"
+
+	sudo pacman -S cowpatty --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Cowpatty" "OK" "valid"
+
+	sudo pacman -S hostapd --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Hostapd" "OK" "valid"
+
+	sudo pacman -S kismet --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Kismet" "OK" "valid"
+
+	sudo pacman -S mdk3 --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Mdk3" "OK" "valid"
+
+	sudo pacman -S pixiewps --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install PixieWPS" "OK" "valid"
+
+	sudo pacman -S pyrit --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Pyrit" "OK" "valid"
+
+	sudo pacman -S reaver --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Reaver" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-wireless >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-wireless/opt/archsploit/wireless/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-wireless/opt/archsploit/wireless/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Airsnort
+	    ## https://sourceforge.net/projects/airsnort/
+	    ## ------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/airsnort.md" ];
+		then
+		    cd /opt/archsploit/wireless/airsnort/
+		    sudo ./configure >/dev/null 2>&1
+		    sudo make >/dev/null 2>&1
+		    sudo make install >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/airsnort.md >/dev/null 2>&1
+		    loadstatus " [+] Installing Airsnort" "OK" "valid"
+		else
+			loadstatus " [+] Airsnort already installed" "OK" "valid"
+		fi
+
+		## Blueranger
+	    ## http://www.hackfromacave.com/projects/blueranger.html
+	    ## -----------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/blueranger.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/wireless/blueranger/blueranger.sh
+		    sudo ln -s /opt/archsploit/wireless/blueranger/blueranger.sh /usr/bin/blueranger
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blueranger.md >/dev/null 2>&1
+			loadstatus " [+] Installing Blueranger" "OK" "valid"
+		else
+			loadstatus " [+] Blueranger already installed" "OK" "valid"
+		fi
+
+		## Crackle
+	    ## https://github.com/mikeryan/crackle/
+	    ## ------------------------------------
+		if [ ! -f "/etc/archsploit/packages/crackle.md" ];
+		then
+			cd /opt/archsploit/wireless/crackle/
+			sudo make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/crackle.md >/dev/null 2>&1
+			loadstatus " [+] Installing Crackle" "OK" "valid"
+		else
+			loadstatus " [+] Crackle already installed" "OK" "valid"
+		fi
+
+		## EapMd5pass
+		## http://www.willhackforsushi.com/
+		## --------------------------------
+		if [ ! -f "/etc/archsploit/packages/eapmd5pass.md" ];
+		then
+			cd /opt/archsploit/wireless/eapmd5pass/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/wireless/eapmd5pass/eapmd5pass /usr/bin/eapmd5pass
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/eapmd5pass.md >/dev/null 2>&1
+			loadstatus " [+] Installing EapMd5pass" "OK" "valid"
+		else
+			loadstatus " [+] EapMd5pass already installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-social/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Wireless/ apps "['archsploit-aircrack-ng.desktop', 'archsploit-airsnort.desktop', 'archsploit-blueranger.desktop', 'archsploit-cowpatty.desktop', 'archsploit-crackle.desktop', 'archsploit-eapmd5pass.desktop', 'archsploit-hostapd.desktop', 'archsploit-kismet.desktop', 'archsploit-mdk3.desktop', 'archsploit-pixiewps.desktop', 'archsploit-pyrit.desktop', 'archsploit-reaver.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-wireless/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Networking Packages Installed"
+	echo
 }
 
 ## -------- ##
