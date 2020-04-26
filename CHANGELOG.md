@@ -10,13 +10,13 @@ Correction of compiling bugs into severals packages
 - EDB Debbuger
 - Dsniff
 - Sniffjoke
-- Gophish setup error
+- Gophish
 
 * * *
 
 **2.0.1 (2020-04-20)**
 
-Error in the "archsploit-xxx.desktop" file - Needed to correct the value of `terminal` from `false` to `true`
+Error in the "archsploit-xxx.desktop" file - Needed to change the `terminal` value from `false` to `true`
 
 ###### AFFECTED DESKTOP FILES
 
@@ -28,7 +28,7 @@ Error in the "archsploit-xxx.desktop" file - Needed to correct the value of `ter
 
 **2.0.0 (2020-04-04)**
 
-Error in the "archsploit-xxx.desktop" file - Needed to correct the parameter from `--help` to `-h`
+Error in the "archsploit-xxx.desktop" file - Needed to correct the parameter passed into `Exec` value from `--help` to `-h`
 
 ###### AFFECTED DESKTOP FILES
 
