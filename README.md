@@ -161,7 +161,7 @@ For more information on how this automated script works, I encourage you to watc
 
 **Installation of the Pentest Packages**
 
-This project has been optimized for the Pentesters
+Designed to be fast, easy to use and provide a minimal yet complete desktop environment. Archsploit let's you choice which Pentest Packages you want to install on your target system. Once you have completed the installation, you will be able to select which packages category you want to setup in your environment. In order to do it, simply log into your machine, open your terminal and use the following commands.
 
 ```bash
 # List all available Pentest Packages
