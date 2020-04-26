@@ -155,10 +155,6 @@ nano archsploit.conf
 ./archsploit.sh
 ```
 
-For more information on how this automated script works, I encourage you to watch the video below.
-
-[![Video](https://img.youtube.com/vi/tmGLHk2-rBE/maxresdefault.jpg)](https://www.youtube.com/watch?v=tmGLHk2-rBE)
-
 **Installation of the Pentest Packages**
 
 Designed to be fast, easy to use and provide a minimal yet complete desktop environment. Archsploit let's you choice which Pentest Packages you want to install on your target system. Once you have completed the installation, you will be able to select which packages category you want to setup in your environment. In order to do it, simply log into your machine, open your terminal and use the following commands.
@@ -173,3 +169,9 @@ archsploit-packages -i <category>
 # Install all packages categories
 archsploit-packages -i all
 ```
+
+* * *
+
+For more information on how this automated script works, I encourage you to watch the video below.
+
+[![Video](https://img.youtube.com/vi/Akn5yMBwgCw/maxresdefault.jpg)](https://www.youtube.com/watch?v=Akn5yMBwgCw)
