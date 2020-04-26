@@ -1,4 +1,4 @@
-**2.0.2 (2020-04-26)**
+##### 2.0.2 (2020-04-26)
 
 [fixed] Correction of error found on `/usr/local/bin/archsploit-clean`
 [fixed] Correction made on **Hammer** package
