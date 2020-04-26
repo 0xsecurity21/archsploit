@@ -177,3 +177,5 @@ For more information on how this automated script works, I encourage you to watc
 [![Video](https://img.youtube.com/vi/Akn5yMBwgCw/maxresdefault.jpg)](https://www.youtube.com/watch?v=Akn5yMBwgCw)
 
 [![Video](https://img.youtube.com/vi/V7GkTPeBTRI/maxresdefault.jpg)](https://www.youtube.com/watch?v=V7GkTPeBTRI)
+
+[![Video](https://img.youtube.com/vi/EoFSs8Kuuuk/maxresdefault.jpg)](https://www.youtube.com/watch?v=EoFSs8Kuuuk)

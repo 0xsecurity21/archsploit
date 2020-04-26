@@ -1532,16 +1532,21 @@ function install_reverse()
 		then
 			cd /opt/archsploit/reverse/
 			sudo git clone https://github.com/eteran/edb-debugger/ >/dev/null 2>&1
-			cd /opt/archsploit/reverse/edb-debugger/
-			sudo git submodule update --init --recursive >/dev/null 2>&1
-			sudo mkdir -p /opt/archsploit/reverse/edb-debugger/build/
-			cd /opt/archsploit/reverse/edb-debugger/build/
-			sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ .. >/dev/null 2>&1
-			sudo make >/dev/null 2>&1
-			sudo make install >/dev/null 2>&1
-			sudo rm -f /usr/local/share/applications/edb.desktop
-			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/edb-debugger.md >/dev/null 2>&1
-			loadstatus " [+] Install EDB Debugger" "OK" "valid"
+			if [ -d "/opt/archsploit/reverse/edb-debugger/" ];
+			then
+				cd /opt/archsploit/reverse/edb-debugger/
+				sudo git submodule update --init --recursive >/dev/null 2>&1
+				sudo mkdir -p /opt/archsploit/reverse/edb-debugger/build/
+				cd /opt/archsploit/reverse/edb-debugger/build/
+				sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ .. >/dev/null 2>&1
+				sudo make >/dev/null 2>&1
+				sudo make install >/dev/null 2>&1
+				sudo rm -f /usr/local/share/applications/edb.desktop
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/edb-debugger.md >/dev/null 2>&1
+				loadstatus " [+] Install EDB Debugger" "OK" "valid"
+			else
+				loadstatus " [*] Install EDB Debugger" "!!" "issue"
+			fi
 		else
 			loadstatus " [+] EDB Debugger Already Installed" "OK" "valid"
 		fi
