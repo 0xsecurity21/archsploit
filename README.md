@@ -175,3 +175,5 @@ archsploit-packages -i all
 For more information on how this automated script works, I encourage you to watch the video below.
 
 [![Video](https://img.youtube.com/vi/Akn5yMBwgCw/maxresdefault.jpg)](https://www.youtube.com/watch?v=Akn5yMBwgCw)
+
+[![Video](https://img.youtube.com/vi/V7GkTPeBTRI/maxresdefault.jpg)](https://www.youtube.com/watch?v=V7GkTPeBTRI)
