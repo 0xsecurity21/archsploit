@@ -1,10 +1,10 @@
 #### CHANGELOG
 
-###### 2.0.2 (2020-04-26)
+**2.0.2 (2020-04-26)**
 
 Correction of compiling bugs into severals packages
 
-**AFFECTED PACKAGES:**
+###### AFFECTED PACKAGES
 
 - Hammer
 - EDB Debbuger
@@ -14,11 +14,11 @@ Correction of compiling bugs into severals packages
 
 * * *
 
-###### 2.0.1 (2020-04-20)
+**2.0.1 (2020-04-20)**
 
 Error in the "archsploit-xxx.desktop" file - Needed to correct the value of `terminal` from `false` to `true`
 
-**AFFECTED DESKTOP FILES:**
+###### AFFECTED DESKTOP FILES
 
 - archsploit-baksmali.desktop
 - archsploit-smali.desktop
@@ -26,11 +26,11 @@ Error in the "archsploit-xxx.desktop" file - Needed to correct the value of `ter
 
 * * *
 
-###### 2.0.0 (2020-04-04)
+**2.0.0 (2020-04-04)**
 
 Error in the "archsploit-xxx.desktop" file - Needed to correct the parameter from `--help` to `-h`
 
-**AFFECTED DESKTOP FILES:**
+###### AFFECTED DESKTOP FILES
 
 - archsploit-pocsuite.desktop
 - archsploit-foremost.desktop
