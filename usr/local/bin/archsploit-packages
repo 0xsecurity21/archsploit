@@ -1530,6 +1530,9 @@ function install_reverse()
 		## ---------------------------------------
 		if [ ! -f "/etc/archsploit/packages/edb-debugger.md" ];
 		then
+			sudo git clone https://github.com/eteran/edb-debugger/ >/dev/null 2>&1
+			cd /opt/archsploit/reverse/edb-debugger/
+			sudo git submodule update --init --recursive >/dev/null 2>&1
 			sudo mkdir -p /opt/archsploit/reverse/edb-debugger/build/
 			cd /opt/archsploit/reverse/edb-debugger/build/
 			sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ .. >/dev/null 2>&1
@@ -1747,7 +1750,7 @@ function install_sniffing()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-bettercap.desktop', 'archsploit-ettercap.desktop', 'archsploit-mitmdump.desktop', 'archsploit-mitmproxy.desktop', 'archsploit-mitmweb.desktop', 'archsploit-sniffjoke.desktop', 'archsploit-webscarab.desktop', 'archsploit-wireshark.desktop', 'archsploit-xspy.desktop', 'archsploit-zaproxy.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-bettercap.desktop', 'archsploit-dsniff.desktop', 'archsploit-ettercap.desktop', 'archsploit-mitmdump.desktop', 'archsploit-mitmproxy.desktop', 'archsploit-mitmweb.desktop', 'archsploit-sniffjoke.desktop', 'archsploit-webscarab.desktop', 'archsploit-wireshark.desktop', 'archsploit-xspy.desktop', 'archsploit-zaproxy.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
