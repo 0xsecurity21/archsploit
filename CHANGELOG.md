@@ -1,5 +1,3 @@
-#### CHANGELOG
-
 **2.0.2 (2020-04-26)**
 
 Correction of compiling bugs into severals packages
