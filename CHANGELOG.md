@@ -11,19 +11,17 @@
 
 * * *
 
-**2.0.1 (2020-04-20)**
+##### 2.0.1 (2020-04-20)
 
-Error in the "archsploit-xxx.desktop" file - Needed to change the `terminal` value from `false` to `true`
-
-###### AFFECTED DESKTOP FILES
-
-- archsploit-baksmali.desktop
-- archsploit-smali.desktop
-- archsploit-ettercap.desktop
+```
+[fixed] Modified `/usr/share/applications/archsploit-baksmali.desktop` terminal value from `false` to `true`
+[fixed] Modified `/usr/share/applications/archsploit-ettercap.desktop` terminal value from `false` to `true`
+[fixed] Modified `/usr/share/applications/archsploit-smali.desktop` terminal value from `false` to `true`
+```
 
 * * *
 
-**2.0.0 (2020-04-04)**
+##### 2.0.0 (2020-04-04)
 
 Error in the "archsploit-xxx.desktop" file - Needed to correct the parameter passed into `Exec` value from `--help` to `-h`
 
