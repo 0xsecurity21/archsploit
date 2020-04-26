@@ -4,7 +4,7 @@
 
 Correction of compiling bugs into severals packages
 
-**Affected Packages:**
+**AFFECTED PACKAGES:**
 
 - Hammer
 - EDB Debbuger
@@ -12,21 +12,25 @@ Correction of compiling bugs into severals packages
 - Sniffjoke
 - Gophish setup error
 
+* * *
+
 ###### 2.0.1 (2020-04-20)
 
 Error in the "archsploit-xxx.desktop" file - Needed to correct the value of `terminal` from `false` to `true`
 
-**Affected Desktop Files:**
+**AFFECTED DESKTOP FILES:**
 
 - archsploit-baksmali.desktop
 - archsploit-smali.desktop
 - archsploit-ettercap.desktop
 
+* * *
+
 ###### 2.0.0 (2020-04-04)
 
 Error in the "archsploit-xxx.desktop" file - Needed to correct the parameter from `--help` to `-h`
 
-**Affected Desktop Files:**
+**AFFECTED DESKTOP FILES:**
 
 - archsploit-pocsuite.desktop
 - archsploit-foremost.desktop
