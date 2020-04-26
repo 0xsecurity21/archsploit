@@ -12,9 +12,14 @@
 
 **2.0.1 (2020-04-20)**
 
-- Correction made on `/usr/share/applications/archsploit-baksmali.desktop` - Changed the `terminal` value from `false` to `true`
-- Correction made on `/usr/share/applications/archsploit-smali.desktop` - Changed the `terminal` value from `false` to `true`
-- Correction made on `/usr/share/applications/archsploit-ettercap.desktop` - Changed the `terminal` value from `false` to `true`
+- Correction made on `/usr/share/applications/archsploit-baksmali.desktop`
+Changed the `terminal` value from `false` to `true`
+
+- Correction made on `/usr/share/applications/archsploit-smali.desktop`
+Changed the `terminal` value from `false` to `true`
+
+- Correction made on `/usr/share/applications/archsploit-ettercap.desktop`
+Changed the `terminal` value from `false` to `true`
 
 * * *
 
