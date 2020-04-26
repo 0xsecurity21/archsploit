@@ -1530,6 +1530,7 @@ function install_reverse()
 		## ---------------------------------------
 		if [ ! -f "/etc/archsploit/packages/edb-debugger.md" ];
 		then
+			cd /opt/archsploit/reverse/
 			sudo git clone https://github.com/eteran/edb-debugger/ >/dev/null 2>&1
 			cd /opt/archsploit/reverse/edb-debugger/
 			sudo git submodule update --init --recursive >/dev/null 2>&1
