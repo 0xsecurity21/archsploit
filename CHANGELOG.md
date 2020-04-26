@@ -1,11 +1,13 @@
 ##### 2.0.2 (2020-04-26)
 
-[fixed] Correction of error found on `/usr/local/bin/archsploit-clean`
+```
+[fixed] Correction of error found on '/usr/local/bin/archsploit-clean'
 [fixed] Correction made on **Hammer** package
 [fixed] Correction made on **EDB Debbuger** package
 [fixed] Correction made on **Dsniff** package
 [fixed] Correction made on **Sniffjoke** package
 [fixed] Correction made on **Gophish** package
+```
 
 * * *
 
