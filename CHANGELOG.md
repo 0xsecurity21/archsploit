@@ -8,12 +8,12 @@
 ##### 2.0.2 (2020-04-26)
 
 ```
-[fixed] Error found on `/usr/local/bin/archsploit-clean`
-[fixed] Error found on `Hammer` package
-[fixed] Error found on `EDB Debbuger` package
-[fixed] Error found on `Dsniff` package
-[fixed] Error found on `Sniffjoke` package
-[fixed] Error found on `Gophish` package
+[fixed] `/usr/local/bin/archsploit-clean`
+[fixed] `Hammer` package
+[fixed] `EDB Debbuger` package
+[fixed] `Dsniff` package
+[fixed] `Sniffjoke` package
+[fixed] `Gophish` package
 ```
 
 * * *
