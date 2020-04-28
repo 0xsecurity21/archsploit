@@ -1355,6 +1355,7 @@ function install_networking()
 		sudo mv /tmp/packages-networking/etc/polipo/config /etc/polipo/
 		sudo mkdir -p /var/log/polipo/
 		sudo touch /var/log/polipo/polipo.log
+		sudo chown -R polipo:users /var/log/polipo/
 		loadstatus " [+] Polipo Configuration" "OK" "valid"
 	else
 		loadstatus " [*] Polipo Configuration" "!!" "issue"
