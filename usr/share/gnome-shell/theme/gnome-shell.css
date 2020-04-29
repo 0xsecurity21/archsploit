@@ -525,9 +525,10 @@ StScrollBar {
         background-color: #1d72d8;
         color: #fff; }
   .calendar .calendar-day-with-events {
-    color: white;
-    font-weight: bold;
     background-image: url("resource:///org/gnome/shell/theme/calendar-today.svg"); }
+    .calendar .calendar-day-with-events.calendar-work-day {
+      color: white;
+      font-weight: bold; }
   .calendar .calendar-other-month-day {
     color: rgba(238, 238, 236, 0.5); }
   .calendar .calendar-week-number {
@@ -2095,15 +2096,12 @@ StScrollBar {
   background: black;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.6); }
 
-#lockDialogGroup {
-  background-color: #313131; }
-
-#lockDialogGroup {
-  background: #313131 url("resource:///org/gnome/shell/theme/texture.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-}
+  #lockDialogGroup {
+    background: #313131 url("resource:///org/gnome/shell/theme/texture.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
 
 #unlockDialogNotifications StButton#vhandle, #unlockDialogNotifications StButton#hhandle {
   background-color: rgba(53, 53, 53, 0.3); }
