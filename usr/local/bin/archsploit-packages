@@ -1123,11 +1123,11 @@ function install_miscs()
 		## ---------------------------
 		if [ ! -f "/etc/archsploit/packages/tor-browser.md" ];
 		then
-			wget -O "/tmp/tor-browser-linux64-9.0.9_en-US.tar.xz" https://www.torproject.org/dist/torbrowser/9.0.9/tor-browser-linux64-9.0.9_en-US.tar.xz >/dev/null 2>&1
-			if [ -f "/tmp/tor-browser-linux64-9.0.9_en-US.tar.xz" ];
+			wget -O "/tmp/tor-browser-linux64-9.0.10_en-US.tar.xz" https://www.torproject.org/dist/torbrowser/9.0.10/tor-browser-linux64-9.0.10_en-US.tar.xz >/dev/null 2>&1
+			if [ -f "/tmp/tor-browser-linux64-9.0.10_en-US.tar.xz" ];
 			then
 			    cd /tmp/
-			    tar xf tor-browser-linux64-9.0.9_en-US.tar.xz
+			    tar xf tor-browser-linux64-9.0.10_en-US.tar.xz
 			    sudo mv /tmp/tor-browser_en-US /opt/archsploit/miscs/tor-browser
 				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/tor-browser.md >/dev/null 2>&1
 				loadstatus " [+] Install TOR Browser" "OK" "valid"
