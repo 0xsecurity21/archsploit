@@ -28,7 +28,7 @@ function showbanner()
 	echo -e "${color_d9534f}   / _' | '__/ __| '_ \/ __| '_ \| |/ _ \| | __|    ${color_revert}"
 	echo -e "${color_d9534f}  | (_| | | | (__| | | \__ \ |_) | | (_) | | |_     ${color_revert}"
 	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
-	echo -e "${color_d9534f}                           |_|            v2.0.2    ${color_revert}"
+	echo -e "${color_d9534f}                           |_|            v2.0.3    ${color_revert}"
 	echo
 	echo -e "${color_5cb85c} [i] [Package]: archsploit-packages${color_revert}"
 	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"
@@ -437,6 +437,21 @@ function install_exploitation()
 			loadstatus " [+] Commix Already Installed" "OK" "valid"
 		fi
 
+		## ExploitDB
+		## https://github.com/offensive-security/exploitdb
+		## -----------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/exploitdb.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/exploitation/
+			sudo git clone https://github.com/offensive-security/exploitdb
+			sudo chmod +x /opt/archsploit/exploitation/exploitdb/searchsploit
+			sudo ln -s /opt/archsploit/exploitation/exploitdb/searchsploit /usr/local/bin/searchsploit
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/exploitdb.md >/dev/null 2>&1
+			loadstatus " [+] Install Exploit-DB" "OK" "valid"
+		else
+			loadstatus " [+] Exploit-DB Already Installed" "OK" "valid"
+		fi
+
 		## Jexboss
 		## https://github.com/joaomatosf/jexboss/
 		## --------------------------------------
@@ -591,7 +606,7 @@ function install_exploitation()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-armitage.desktop', 'archsploit-commix.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-armitage.desktop', 'archsploit-commix.desktop', 'archsploit-exploitdb.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files

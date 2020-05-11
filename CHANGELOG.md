@@ -1,8 +1,7 @@
-##### 2.0.3 (2020-05-01)
+##### 2.0.3 (2020-05-11)
 
 ```
 [added] `Exploit-DB` package
-[added] `BeEF Project` package
 [updated] `Torbridge` package
 ```
 
