@@ -100,7 +100,7 @@ If you need to change the keyboard layout, you can do it using "`loadkeys`" comm
 loadkeys fr-latin1
 ```
 
-**Connect to the internet using Ethernet Cable**
+**Connect to the Internet using Ethernet Cable**
 
 Ensure your network interface is listed and enabled invoking the "`ip`" command:
 
@@ -146,7 +146,7 @@ When you are ready, you will need to grab and configure the installation script.
 
 ```bash
 # Download the script and configuration file using wget
-wget -O - https://archsploit.org/download.sh | bash
+wget -O - https://raw.githubusercontent.com/archsploit/archsploit/master/download.sh | bash
 
 # Edit the archsploit.conf script with nano
 nano archsploit.conf
