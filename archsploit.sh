@@ -136,7 +136,7 @@ function loadconfig()
 ## ----------------------
 function setkeyboard()
 {
-	loadheader "# Step: setkeyboard()"
+	loadheader "# Step: Set Keyboard"
 	loadkeys $keyboard
 	loadstatus " [+] Keyboard Settings" "OK" "valid"
 }
@@ -145,7 +145,7 @@ function setkeyboard()
 ## --------------------
 function detectbuild()
 {
-	loadheader "# Step: detectbuild()"
+	loadheader "# Step: Detect Build"
     if [ -d /sys/firmware/efi ];
 	then
         system_mode="uefi"
@@ -183,7 +183,7 @@ function detectbuild()
 ## ----------------------
 function partitions()
 {
-	loadheader "# Step: partitions()"
+	loadheader "# Step: Create Partitions"
     sgdisk --zap-all $hdd_label >/dev/null 2>&1
     wipefs -a $hdd_label >/dev/null 2>&1
 
@@ -289,13 +289,22 @@ function partitions()
     fi
 }
 
+## Create Log File
+## ---------------
+function createlogs()
+{
+	loadheader "# Step: Create Logs File"
+	touch /mnt/tmp/setup.log
+	loadstatus " [+] Logs File Created" "OK" "valid"
+}
+
 ## Load Mirror
 ## -----------
 function loadmirror()
 {
-	loadheader "# Step: loadmirror()"
+	loadheader "# Step: Load Mirror"
 	pacman -Syy >/dev/null 2>&1
-	pacman -S "reflector" --noconfirm --needed
+	pacman -S "reflector" --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 	cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 	reflector -c "FR" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist
 	loadstatus " [+] Configure Mirror" "OK" "valid"
@@ -305,7 +314,7 @@ function loadmirror()
 ## -------------------
 function basesystem()
 {
-	loadheader "# Step: basesystem()"
+	loadheader "# Step: Install Base System"
 	pacstrap /mnt base base-devel git linux linux-firmware nano net-tools >/dev/null 2>&1
 	loadstatus " [+] Base System" "OK" "valid"
 }
@@ -314,19 +323,19 @@ function basesystem()
 ## ---------------
 function kernels()
 {
-	loadheader "# Step: kernels()"
-	arch-chroot /mnt pacman -Syu linux-headers --noconfirm --needed
+	loadheader "# Step: Install Kernels"
+	arch-chroot /mnt pacman -Syu linux-headers --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 	loadstatus " [+] Linux Headers" "OK" "valid"
 
 	if [ -n "$kernels_install" ];
 	then
-		arch-chroot /mnt pacman -Syu $kernels_install --noconfirm --needed
+		arch-chroot /mnt pacman -Syu $kernels_install --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] Linux Custom Kernels" "OK" "valid"
     fi
 
 	if [ -n "$kernels_headers" ];
 	then
-		arch-chroot /mnt pacman -Syu $kernels_headers --noconfirm --needed
+		arch-chroot /mnt pacman -Syu $kernels_headers --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] Linux Custom Headers" "OK" "valid"
     fi
 }
@@ -335,7 +344,7 @@ function kernels()
 ## -----------
 function buildfstab()
 {
-	loadheader "# Step: buildfstab()"
+	loadheader "# Step: Build Fstab"
 	genfstab -U /mnt >> /mnt/etc/fstab
 	cat /mnt/etc/fstab >/dev/null 2>&1
 
@@ -360,7 +369,7 @@ function buildfstab()
 ## -------------
 function configuration()
 {
-	loadheader "# Step: configuration()"
+	loadheader "# Step: Setup Configuration"
 	arch-chroot /mnt timedatectl set-timezone $timezone
 	arch-chroot /mnt hwclock --systohc
 	loadstatus " [+] System Timezone" "OK" "valid"
@@ -374,7 +383,7 @@ function configuration()
 	loadstatus " [+] System Language" "OK" "valid"
 
 	echo "$user_hostname" > /mnt/etc/hostname
-	arch-chroot /mnt pacman -Syu dhcpcd networkmanager --noconfirm --needed
+	arch-chroot /mnt pacman -Syu dhcpcd networkmanager --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 	arch-chroot /mnt systemctl enable NetworkManager.service >/dev/null 2>&1
 	arch-chroot /mnt systemctl enable dhcpcd.service >/dev/null 2>&1
 
@@ -387,7 +396,7 @@ function configuration()
 	printf "$root_password\n$root_password" | arch-chroot /mnt passwd >/dev/null 2>&1
 	arch-chroot /mnt useradd -m -g users -G wheel,storage,optical,power -s /bin/bash $user_username
 	printf "$user_password\n$user_password" | arch-chroot /mnt passwd $user_username >/dev/null 2>&1
-	arch-chroot /mnt pacman -Syu bash-completion sudo xdg-user-dirs --noconfirm --needed
+	arch-chroot /mnt pacman -Syu bash-completion sudo xdg-user-dirs --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 	arch-chroot /mnt sed -i "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers
 	loadstatus " [+] System Users" "OK" "valid"
 }
@@ -396,7 +405,7 @@ function configuration()
 ## ----------------
 function clonerepo()
 {
-	loadheader "# Step: clonerepo()"
+	loadheader "# Step: Clone Repository"
 	arch-chroot /mnt git clone https://github.com/archsploit/archsploit >/dev/null 2>&1
 	mv /mnt/archsploit /mnt/tmp
 	loadstatus " [+] Clone Repository" "OK" "valid"
@@ -406,7 +415,7 @@ function clonerepo()
 ## -----------
 function addrelease()
 {
-	loadheader "# Step: addrelease()"
+	loadheader "# Step: Add Release"
 	mkdir -p /mnt/etc/archsploit/release/
 	mkdir -p /mnt/etc/archsploit/packages/
 	echo "Distributor ID: ArchSploit" >> /mnt/etc/archsploit/release/release.md
@@ -421,13 +430,13 @@ function addrelease()
 ## ------------------------
 function virtualmachine()
 {
-	loadheader "# Step: virtualmachine()"
+	loadheader "# Step: Optimize Virtual Machine"
     if [ -z "$kernels_install" ];
 	then
-		arch-chroot /mnt pacman -Syu virtualbox-guest-utils virtualbox-guest-dkms --noconfirm --needed
+		arch-chroot /mnt pacman -Syu virtualbox-guest-utils virtualbox-guest-dkms --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] Standard VM Kernels" "OK" "valid"
     else
-		arch-chroot /mnt pacman -Syu virtualbox-guest-utils virtualbox-guest-modules-arch --noconfirm --needed
+		arch-chroot /mnt pacman -Syu virtualbox-guest-utils virtualbox-guest-modules-arch --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] Custom VM Kernels" "OK" "valid"
     fi
 }
@@ -436,8 +445,8 @@ function virtualmachine()
 ## --------------------
 function mkinitcpio()
 {
-	loadheader "# Step: mkinitcpio()"
-	arch-chroot /mnt pacman -Syu lvm2 --noconfirm --needed
+	loadheader "# Step: Configure Mkinitcpio"
+	arch-chroot /mnt pacman -Syu lvm2 --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 	arch-chroot /mnt sed -i "s/ block / block keyboard keymap /" /etc/mkinitcpio.conf
 	arch-chroot /mnt sed -i "s/ filesystems keyboard / encrypt lvm2 filesystems /" /etc/mkinitcpio.conf
 	arch-chroot /mnt sed -i "s/#COMPRESSION=\"${kernels_deflate}\"/COMPRESSION=\"${kernels_deflate}\"/" /etc/mkinitcpio.conf
@@ -449,10 +458,10 @@ function mkinitcpio()
 ## ----------------
 function bootloader()
 {
-	loadheader "# Step: bootloader()"
+	loadheader "# Step: Setup Bootloader"
 	if [ "$intel_chipset" == "true" -a "$virtualbox" != "true" ];
 	then
-        arch-chroot /mnt pacman -Syu intel-ucode --noconfirm --needed
+        arch-chroot /mnt pacman -Syu intel-ucode --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] Intel Microcode" "OK" "valid"
     fi
 
@@ -473,7 +482,7 @@ function bootloader()
 		grub_cmdline_linux=$(echo cryptdevice=PARTUUID=${partuuid}:lvm)
     fi
 
-	arch-chroot /mnt pacman -Syu grub dosfstools --noconfirm --needed
+	arch-chroot /mnt pacman -Syu grub dosfstools --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 	arch-chroot /mnt sed -i "s/GRUB_DEFAULT=0/GRUB_DEFAULT=saved/" /etc/default/grub
 	arch-chroot /mnt sed -i "s/#GRUB_SAVEDEFAULT=\"true\"/GRUB_SAVEDEFAULT=\"true\"/" /etc/default/grub
 	arch-chroot /mnt sed -i -E "s/GRUB_CMDLINE_LINUX_DEFAULT=\"(.*)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet splash fastboot\"/" /etc/default/grub
@@ -484,7 +493,7 @@ function bootloader()
 
 	if [ "$system_mode" == "uefi" ];
 	then
-		arch-chroot /mnt pacman -Syu efibootmgr --noconfirm --needed
+		arch-chroot /mnt pacman -Syu efibootmgr --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		arch-chroot /mnt grub-install --target=x86_64-efi --bootloader-id=grub --efi-directory=/boot --recheck >/dev/null 2>&1
 		loadstatus " [+] UEFI Bootloader" "OK" "valid"
     fi
@@ -509,7 +518,7 @@ function bootloader()
 ## ------------------
 function multilib()
 {
-	loadheader "# Step: multilib()"
+	loadheader "# Step: Configure MultiLib"
 	if [ -f "/mnt/tmp/archsploit/etc/pacman.conf" ];
 	then
 		mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
@@ -525,9 +534,9 @@ function multilib()
 ## --------------------------
 function alsautils()
 {
-	loadheader "# Step: alsautils()"
-	arch-chroot /mnt pacman -Syu alsa-utils pulseaudio --noconfirm --needed
-	arch-chroot /mnt pacman -Syu alsa-oss alsa-lib --noconfirm --needed
+	loadheader "# Step: Install and Configure ALSA"
+	arch-chroot /mnt pacman -Syu alsa-utils pulseaudio --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
+	arch-chroot /mnt pacman -Syu alsa-oss alsa-lib --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 	arch-chroot /mnt amixer sset Master unmute >/dev/null 2>&1
 	loadstatus " [+] ALSA Configuration" "OK" "valid"
 }
@@ -536,7 +545,7 @@ function alsautils()
 ## ----------------------
 function screendriver()
 {
-	loadheader "# Step: screendriver()"
+	loadheader "# Step: Install Screen Drivers"
 	display_drivers="null"
 	case "$graphical_display" in
         "radeon" )
@@ -553,15 +562,15 @@ function screendriver()
             ;;
     esac
 
-	arch-chroot /mnt pacman -Syu mesa mesa-libgl --noconfirm --needed
+	arch-chroot /mnt pacman -Syu mesa mesa-libgl --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 	loadstatus " [+] Mesa Packages" "OK" "valid"
 
-	arch-chroot /mnt pacman -Syu xorg xorg-server --noconfirm --needed
+	arch-chroot /mnt pacman -Syu xorg xorg-server --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 	loadstatus " [+] Xorg Packages" "OK" "valid"
 
 	if [ "$display_drivers" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $display_drivers --noconfirm --needed
+        arch-chroot /mnt pacman -Syu $display_drivers --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
     fi
 
 	loadstatus " [+] Display Drivers" "OK" "valid"
@@ -571,8 +580,8 @@ function screendriver()
 ## -------------------
 function desktop()
 {
-	loadheader "# Step: desktop()"
-	arch-chroot /mnt pacman -Syu gdm gedit gnome-backgrounds gnome-color-manager gnome-control-center gnome-disk-utility gnome-font-viewer gnome-initial-setup gnome-keyring gnome-logs gnome-menus gnome-remote-desktop gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell gnome-shell-extensions gnome-software gnome-system-monitor gnome-terminal gnome-themes-extra gnome-tweak-tool nautilus --noconfirm --needed
+	loadheader "# Step: Install Desktop()"
+	arch-chroot /mnt pacman -Syu gdm gedit gnome-backgrounds gnome-color-manager gnome-control-center gnome-disk-utility gnome-font-viewer gnome-initial-setup gnome-keyring gnome-logs gnome-menus gnome-remote-desktop gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell gnome-shell-extensions gnome-software gnome-system-monitor gnome-terminal gnome-themes-extra gnome-tweak-tool nautilus --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
     arch-chroot /mnt systemctl enable gdm.service >/dev/null 2>&1
 	loadstatus " [+] Desktop" "OK" "valid"
 }
@@ -581,11 +590,11 @@ function desktop()
 ## ----------------
 function packages()
 {
-	loadheader "# Step: packages()"
+	loadheader "# Step: Install Packages()"
 
 	## Basic Packages
 	## --------------
-	arch-chroot /mnt pacman -Syu git --noconfirm --needed
+	arch-chroot /mnt pacman -Syu git --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 	arch-chroot /mnt sed -i "s/%wheel ALL=(ALL) ALL/%wheel ALL=(ALL) NOPASSWD: ALL/" /etc/sudoers
     arch-chroot /mnt bash -c "echo -e \"$user_password\n$user_password\n$user_password\n$user_password\n\" | su $user_username -c \"cd /home/$user_username && git clone https://aur.archlinux.org/yay.git && (cd yay && makepkg -si --noconfirm) && rm -rf yay\"" >/dev/null 2>&1
     arch-chroot /mnt sed -i "s/%wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers
@@ -593,43 +602,50 @@ function packages()
 
 	if [ "$hdd_system" == "btrfs" ];
 	then
-		arch-chroot /mnt pacman -Syu btrfs-progs --noconfirm --needed
+		arch-chroot /mnt pacman -Syyu --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
+		arch-chroot /mnt pacman -S btrfs-progs --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] BTRFS Packages" "OK" "valid"
 	fi
 
 	if [ "$pacman_packages_roller" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_roller --noconfirm --needed
+		arch-chroot /mnt pacman -Syyu --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
+        arch-chroot /mnt pacman -S $pacman_packages_roller --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] File Roller Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_common" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_common --noconfirm --needed
+		arch-chroot /mnt pacman -Syyu --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
+        arch-chroot /mnt pacman -S $pacman_packages_common --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] Common Tools Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_utilities" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_utilities --noconfirm --needed
+		arch-chroot /mnt pacman -Syyu --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
+        arch-chroot /mnt pacman -S $pacman_packages_utilities --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] Utilities Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_security" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_security --noconfirm --needed
+		arch-chroot /mnt pacman -Syyu --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
+        arch-chroot /mnt pacman -S $pacman_packages_security --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] Security Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_developer" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_developer --noconfirm --needed
+		arch-chroot /mnt pacman -Syyu --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
+        arch-chroot /mnt pacman -S $pacman_packages_developer --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] Developer Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_python" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_python --noconfirm --needed
+		arch-chroot /mnt pacman -Syyu --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
+        arch-chroot /mnt pacman -S $pacman_packages_python --noconfirm --needed | tee -a /mnt/tmp/setup.log >/dev/null 2>&1
 		loadstatus " [+] Python Packages" "OK" "valid"
     fi
 
@@ -690,7 +706,7 @@ function packages()
 ## ----------------------
 function terminate()
 {
-	loadheader "# Step: terminate()"
+	loadheader "# Step: Terminate Installation"
 
 	## Configure User Bashrc
 	## ---------------------
@@ -858,6 +874,11 @@ function terminate()
 	find /mnt/var/log/ -type f -name '*.log' -exec sudo rm -f {} \; >/dev/null 2>&1
 	loadstatus " [+] Clean System Logs" "OK" "valid"
 
+	## Copy Setup Logs File
+	## ---------------------
+	cp /mnt/tmp/setup.log /tmp/
+	loadstatus " [+] Copy Setup Logs File" "OK" "valid"
+
 	## Delete Temporary Folders and Files
 	## ----------------------------------
 	rm -rf /mnt/tmp/*
@@ -865,12 +886,11 @@ function terminate()
 
 	loadnotice "ArchSploit Installer Completed"
 	echo "Don't forget to remove the USB Disk before to boot your system"
-	echo "The system will shutdown within 15 seconds"
-	sleep 15
+	echo "You can now `shutdown` or `reboot` your system"
+	sleep 5
 
 	umount -R /mnt/boot
     umount -R /mnt
-    shutdown now
 }
 
 ## Launch
@@ -886,6 +906,7 @@ function launch()
 	detectbuild
 	partitions
 	loadmirror
+	createlogs
 	basesystem
 	kernels
 	buildfstab
