@@ -633,12 +633,6 @@ function packages()
 		loadstatus " [+] Python Packages" "OK" "valid"
     fi
 
-	if [ "$pacman_packages_pentest" != "null" ];
-	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_pentest --noconfirm --needed >/dev/null 2>&1
-		loadstatus " [+] Pentest Packages" "OK" "valid"
-    fi
-
 	## Install and Configure DnsMasq
 	## -----------------------------
 	arch-chroot /mnt sed -i "s/#port=5353/port=5353/" /etc/dnsmasq.conf
