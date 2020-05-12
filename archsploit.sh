@@ -905,8 +905,8 @@ function launch()
 	setkeyboard
 	detectbuild
 	partitions
-	loadmirror
 	createlogs
+	loadmirror
 	basesystem
 	kernels
 	buildfstab
