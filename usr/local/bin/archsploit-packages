@@ -441,8 +441,8 @@ function install_exploitation()
 		## -----------------------------------------------
 		if [ ! -f "/etc/archsploit/packages/exploitdb.md" ];
 		then
-		    sudo chmod +x /opt/archsploit/exploitation/
-			sudo git clone https://github.com/offensive-security/exploitdb
+		    sudo git clone https://github.com/offensive-security/exploitdb >/dev/null 2>&1
+			sudo mv /tmp/exploitdb/ /opt/archsploit/exploitation/
 			sudo chmod +x /opt/archsploit/exploitation/exploitdb/searchsploit
 			sudo ln -s /opt/archsploit/exploitation/exploitdb/searchsploit /usr/local/bin/searchsploit
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/exploitdb.md >/dev/null 2>&1
@@ -721,7 +721,7 @@ function install_forensics()
     ## ------------------------
     sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Forensics Packages Installed"
+	loadnotice "ArchSploit Digital Forensics Packages Installed"
 }
 
 ## Install Information Gathering Packages
@@ -914,7 +914,7 @@ function install_gathering()
     ## ------------------------
     sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Gathering Packages Installed"
+	loadnotice "ArchSploit Information Gathering Packages Installed"
 }
 
 ## Install Hardware Packages
@@ -1172,7 +1172,7 @@ function install_miscs()
     ## ------------------------
     sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Miscs Packages Installed"
+	loadnotice "ArchSploit Miscellaneous Packages Installed"
 }
 
 ## Install Networking Packages
@@ -1494,7 +1494,7 @@ function install_reporting()
 	## ------------------------
 	sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Networking Packages Installed"
+	loadnotice "ArchSploit Reporting Packages Installed"
 }
 
 ## Install Reverse Engineering Packages
@@ -1600,7 +1600,7 @@ function install_reverse()
 	## ------------------------
 	sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Networking Packages Installed"
+	loadnotice "ArchSploit Reverse Engineering Packages Installed"
 }
 
 ## Install Sniffing/Spoofing Packages
@@ -1775,7 +1775,7 @@ function install_sniffing()
 	## ------------------------
 	sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Networking Packages Installed"
+	loadnotice "ArchSploit Sniffing/Spoofing Packages Installed"
 }
 
 ## Install Social Engineering Packages
@@ -1896,7 +1896,7 @@ function install_social()
 	## ------------------------
 	sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Networking Packages Installed"
+	loadnotice "ArchSploit Social Engineering Packages Installed"
 }
 
 ## Install Stress-Testing Packages
@@ -1998,7 +1998,7 @@ function install_stressing()
 	## ------------------------
 	sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Networking Packages Installed"
+	loadnotice "ArchSploit Stress-Testing Packages Installed"
 }
 
 ## Install Vulnerability Packages
@@ -2147,7 +2147,7 @@ function install_vulnerability()
 	## ------------------------
 	sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Networking Packages Installed"
+	loadnotice "ArchSploit Vulnerability Packages Installed"
 }
 
 ## Install Web Applications Packages
@@ -2296,7 +2296,7 @@ function install_webapps()
 	## ------------------------
 	sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Networking Packages Installed"
+	loadnotice "ArchSploit Web Applications Packages Installed"
 }
 
 ## Install Wireless Packages
@@ -2430,7 +2430,7 @@ function install_wireless()
 	## ------------------------
 	sudo chown -R $USER:users /opt/*
 	loadstatus " [+] Correct User Permissions" "OK" "valid"
-	loadnotice "ArchSploit Networking Packages Installed"
+	loadnotice "ArchSploit Wireless Packages Installed"
 }
 
 ## -------- ##

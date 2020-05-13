@@ -846,6 +846,16 @@ function terminate()
 		loadstatus " [*] Dconf Configuration" "!!" "issue"
 	fi
 
+	## Clean Deskop Launchers
+	## ----------------------
+	rm -f /mnt/usr/share/applications/lstopo.desktop
+	rm -f /mnt/usr/share/applications/java-java-openjdk.desktop
+	rm -f /mnt/usr/share/applications/jconsole-java-openjdk.desktop
+	rm -f /mnt/usr/share/applications/jshell-java-openjdk.desktop
+	rm -f /mnt/usr/share/applications/qv4l2.desktop
+	rm -f /mnt/usr/share/applications/qvidcap.desktop
+	loadstatus " [+] Clean Deskop Launchers" "OK" "valid"
+
 	## --------------------- ##
 	## CLEAN TEMPORARY FILES ##
 	## --------------------- ##
