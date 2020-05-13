@@ -875,11 +875,12 @@ function terminate()
 
 	loadnotice "ArchSploit Installer Completed"
 	echo "Don't forget to remove the USB Disk before to boot your system"
-	echo "You can now `shutdown` or `reboot` your system"
+	echo "Your system will reboot within 5 seconds"
 	sleep 5
 
 	umount -R /mnt/boot
     umount -R /mnt
+	reboot
 }
 
 ## Launch
