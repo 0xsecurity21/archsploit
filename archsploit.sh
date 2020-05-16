@@ -567,14 +567,14 @@ function screendriver()
 	loadstatus " [+] Display Drivers" "OK" "valid"
 }
 
-## Install Desktop GUI
-## -------------------
-function desktop()
+## Install Gnome Desktop
+## ---------------------
+function gnomedesktop()
 {
-	loadheader "# Step: Install Desktop()"
+	loadheader "# Step: Install Gnome Desktop()"
 	arch-chroot /mnt pacman -Syu gdm gedit gnome-backgrounds gnome-color-manager gnome-control-center gnome-disk-utility gnome-font-viewer gnome-initial-setup gnome-keyring gnome-logs gnome-menus gnome-remote-desktop gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell gnome-shell-extensions gnome-software gnome-system-monitor gnome-terminal gnome-themes-extra gnome-tweak-tool nautilus --noconfirm --needed >/dev/null 2>&1
     arch-chroot /mnt systemctl enable gdm.service >/dev/null 2>&1
-	loadstatus " [+] Desktop" "OK" "valid"
+	loadstatus " [+] Gnome Desktop" "OK" "valid"
 }
 
 ## Install Packages
@@ -911,9 +911,14 @@ function launch()
 	mkinitcpio
 	bootloader
 	multilib
-	alsautils
-	screendriver
-	desktop
+
+	if [ "$desktopen" == "true" ];
+	then
+		alsautils
+		screendriver
+		gnomedesktop
+    fi
+
 	packages
 	terminate
 }
