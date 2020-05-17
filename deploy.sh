@@ -137,18 +137,18 @@ function loadconfig()
 function kernels()
 {
 	loadheader "# Step: Install Kernels"
-	sudo pacman -Syu linux-headers --noconfirm --needed >/dev/null 2>&1
+	pacman -Syu linux-headers --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Linux Headers" "OK" "valid"
 
 	if [ -n "$kernels_install" ];
 	then
-		sudo pacman -Syu $kernels_install --noconfirm --needed >/dev/null 2>&1
+		pacman -Syu $kernels_install --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] Linux Custom Kernels" "OK" "valid"
     fi
 
 	if [ -n "$kernels_headers" ];
 	then
-		sudo pacman -Syu $kernels_headers --noconfirm --needed >/dev/null 2>&1
+		pacman -Syu $kernels_headers --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] Linux Custom Headers" "OK" "valid"
     fi
 }
@@ -158,13 +158,13 @@ function kernels()
 function configuration()
 {
 	loadheader "# Step: Setup Configuration"
-	arch-chroot /mnt timedatectl set-timezone $timezone
-	arch-chroot /mnt hwclock --systohc
+	timedatectl set-timezone $timezone
+	hwclock --systohc
 	loadstatus " [+] System Timezone" "OK" "valid"
 	loadstatus " [+] System Clock" "OK" "valid"
 
-	arch-chroot /mnt sed -i "s/#$locale/$locale/" /etc/locale.gen
-	arch-chroot /mnt locale-gen >/dev/null 2>&1
+	sed -i "s/#$locale/$locale/" /etc/locale.gen
+	locale-gen >/dev/null 2>&1
 	echo "LANG=$language.$charset" >> /mnt/etc/locale.conf
 	echo "LANGUAGE=$language" >> /mnt/etc/locale.conf
 	echo "KEYMAP=$keyboard" > /mnt/etc/vconsole.conf
@@ -195,7 +195,7 @@ function clonerepo()
 {
 	loadheader "# Step: Clone Repository"
 	cd /tmp/
-	sudo git clone https://github.com/archsploit/archsploit >/dev/null 2>&1
+	git clone https://github.com/archsploit/archsploit >/dev/null 2>&1
 	loadstatus " [+] Clone Repository" "OK" "valid"
 }
 
@@ -221,10 +221,10 @@ function virtualmachine()
 	loadheader "# Step: Optimize Virtual Machine"
     if [ -z "$kernels_install" ];
 	then
-		sudo pacman -Syu virtualbox-guest-utils virtualbox-guest-dkms --noconfirm --needed >/dev/null 2>&1
+		pacman -Syu virtualbox-guest-utils virtualbox-guest-dkms --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] Standard VM Kernels" "OK" "valid"
     else
-		sudo pacman -Syu virtualbox-guest-utils virtualbox-guest-modules-arch --noconfirm --needed >/dev/null 2>&1
+		pacman -Syu virtualbox-guest-utils virtualbox-guest-modules-arch --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] Custom VM Kernels" "OK" "valid"
     fi
 }
@@ -238,7 +238,7 @@ function multilib()
 	then
 		mv /etc/pacman.conf /etc/pacman.conf.bak
 		mv /tmp/archsploit/etc/pacman.conf /etc/
-		sudo pacman -Sy >/dev/null 2>&1
+		pacman -Sy >/dev/null 2>&1
 		loadstatus " [+] Multilib Configuration" "OK" "valid"
 	else
 		loadstatus " [*] Multilib Configuration" "!!" "issue"
@@ -255,53 +255,53 @@ function packages()
 	## --------------
 	if [ "$pacman_packages_roller" != "null" ];
 	then
-        sudo pacman -Syu $pacman_packages_roller --noconfirm --needed >/dev/null 2>&1
+        pacman -Syu $pacman_packages_roller --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] File Roller Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_common" != "null" ];
 	then
-        sudo pacman -Syu $pacman_packages_common --noconfirm --needed >/dev/null 2>&1
+        pacman -Syu $pacman_packages_common --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] Common Tools Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_utilities" != "null" ];
 	then
-        sudo pacman -Syu $pacman_packages_utilities --noconfirm --needed >/dev/null 2>&1
+        pacman -Syu $pacman_packages_utilities --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] Utilities Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_security" != "null" ];
 	then
-        sudo pacman -Syu $pacman_packages_security --noconfirm --needed >/dev/null 2>&1
+        pacman -Syu $pacman_packages_security --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] Security Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_developer" != "null" ];
 	then
-        sudo pacman -Syu $pacman_packages_developer --noconfirm --needed >/dev/null 2>&1
+        pacman -Syu $pacman_packages_developer --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] Developer Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_python" != "null" ];
 	then
-        sudo pacman -Syu $pacman_packages_python --noconfirm --needed >/dev/null 2>&1
+        pacman -Syu $pacman_packages_python --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] Python Packages" "OK" "valid"
     fi
 
 	## Install and Configure DnsMasq
 	## -----------------------------
-	sudo sed -i "s/#port=5353/port=5353/" /etc/dnsmasq.conf
-	sudo systemctl enable dnsmasq.service >/dev/null 2>&1
+	sed -i "s/#port=5353/port=5353/" /etc/dnsmasq.conf
+	systemctl enable dnsmasq.service >/dev/null 2>&1
 	loadstatus " [+] DnsMasq Configuration" "OK" "valid"
 
 	## Configure Apache
 	## ----------------
-	sudo sed -i "s/#LoadModule unique_id_module modules/LoadModule unique_id_module modules/" /etc/httpd/conf/httpd.conf
+	sed -i "s/#LoadModule unique_id_module modules/LoadModule unique_id_module modules/" /etc/httpd/conf/httpd.conf
 	if [ -f "/tmp/archsploit/srv/http/index.html" ];
 	then
 		mv /tmp/archsploit/srv/http/index.html /srv/http/
-		sudo systemctl enable httpd.service >/dev/null 2>&1
+		systemctl enable httpd.service >/dev/null 2>&1
 		loadstatus " [+] Apache Configuration" "OK" "valid"
 	else
 		loadstatus " [*] Apache Configuration" "!!" "issue"
@@ -309,8 +309,8 @@ function packages()
 
 	## Configure MySQL Server
 	## ----------------------
-	sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql >/dev/null 2>&1
-	sudo systemctl enable mysqld.service >/dev/null 2>&1
+	mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql >/dev/null 2>&1
+	systemctl enable mysqld.service >/dev/null 2>&1
 	loadstatus " [+] MySQL Configuration" "OK" "valid"
 
 	## Install PHP Components
@@ -427,10 +427,10 @@ function terminate()
 
 	## Delete Machine Logs
 	## -------------------
-	find /var/log/ -type f -name '*.gz' -exec sudo rm -f {} \; >/dev/null 2>&1
-	find /var/log/ -type f -name '*.old' -exec sudo rm -f {} \; >/dev/null 2>&1
-	find /var/log/ -type f -name '*.1' -exec sudo rm -f {} \; >/dev/null 2>&1
-	find /var/log/ -type f -name '*.log' -exec sudo rm -f {} \; >/dev/null 2>&1
+	find /var/log/ -type f -name '*.gz' -exec rm -f {} \; >/dev/null 2>&1
+	find /var/log/ -type f -name '*.old' -exec rm -f {} \; >/dev/null 2>&1
+	find /var/log/ -type f -name '*.1' -exec rm -f {} \; >/dev/null 2>&1
+	find /var/log/ -type f -name '*.log' -exec rm -f {} \; >/dev/null 2>&1
 	loadstatus " [+] Clean System Logs" "OK" "valid"
 
 	## Delete Temporary Folders and Files
