@@ -413,7 +413,7 @@ function addrelease()
 	echo "Description: ArchSploit Xisqu v2.0.3" >> /mnt/etc/archsploit/release/release.md
 	echo "Release: 2.0.3" >> /mnt/etc/archsploit/release/release.md
 	echo "Codename: Xisqu" >> /mnt/etc/archsploit/release/release.md
-	echo "Build: 20200404" >> /mnt/etc/archsploit/release/release.md
+	echo "Build: 20200515" >> /mnt/etc/archsploit/release/release.md
 	loadstatus " [+] Add Release" "OK" "valid"
 }
 
