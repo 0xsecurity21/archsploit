@@ -153,6 +153,42 @@ function kernels()
     fi
 }
 
+## Configuration
+## -------------
+function configuration()
+{
+	loadheader "# Step: Setup Configuration"
+	arch-chroot /mnt timedatectl set-timezone $timezone
+	arch-chroot /mnt hwclock --systohc
+	loadstatus " [+] System Timezone" "OK" "valid"
+	loadstatus " [+] System Clock" "OK" "valid"
+
+	arch-chroot /mnt sed -i "s/#$locale/$locale/" /etc/locale.gen
+	arch-chroot /mnt locale-gen >/dev/null 2>&1
+	echo "LANG=$language.$charset" >> /mnt/etc/locale.conf
+	echo "LANGUAGE=$language" >> /mnt/etc/locale.conf
+	echo "KEYMAP=$keyboard" > /mnt/etc/vconsole.conf
+	loadstatus " [+] System Language" "OK" "valid"
+
+	echo "$user_hostname" > /mnt/etc/hostname
+	pacman -Syu dhcpcd networkmanager --noconfirm --needed >/dev/null 2>&1
+	systemctl enable NetworkManager.service >/dev/null 2>&1
+	systemctl enable dhcpcd.service >/dev/null 2>&1
+
+	echo -e "127.0.0.1\tlocalhost" >> /mnt/etc/hosts
+	echo -e "::1\t\tlocalhost" >> /mnt/etc/hosts
+	echo -e "127.0.1.1\t$user_hostname" >> /mnt/etc/hosts
+	loadstatus " [+] System Hostname" "OK" "valid"
+	loadstatus " [+] System Network" "OK" "valid"
+
+	printf "$root_password\n$root_password" | passwd >/dev/null 2>&1
+	useradd -m -g users -G wheel,storage,optical,power -s /bin/bash $user_username
+	printf "$user_password\n$user_password" | passwd $user_username >/dev/null 2>&1
+	pacman -Syu bash-completion git sudo xdg-user-dirs --noconfirm --needed >/dev/null 2>&1
+	sed -i "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers
+	loadstatus " [+] System Users" "OK" "valid"
+}
+
 ## Clone Repository
 ## ----------------
 function clonerepo()
@@ -416,6 +452,7 @@ function launch()
 	checkinternet
     warning
 	kernels
+	configuration
 	clonerepo
 	addrelease
 
