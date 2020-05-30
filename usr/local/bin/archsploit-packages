@@ -1973,6 +1973,21 @@ function install_stressing()
 		else
 			loadstatus " [+] Udpflood Already Installed" "OK" "valid"
 		fi
+
+		## Ufonet
+		## https://github.com/epsylon/ufonet
+		## ---------------------------------
+		if [ ! -f "/etc/archsploit/packages/ufonet.md" ];
+		then
+			cd /opt/archsploit/stress-testing/ufonet/
+			sudo pip install pycrypto >/dev/null 2>&1
+		    sudo pip install whois >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/stress-testing/ufonet/ufonet /usr/local/bin/udpflood
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/ufonet.md >/dev/null 2>&1
+			loadstatus " [+] Install Ufonet" "OK" "valid"
+		else
+			loadstatus " [+] Ufonet Already Installed" "OK" "valid"
+		fi
 	fi
 
 	## Create Applications Desktop
@@ -1986,7 +2001,7 @@ function install_stressing()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Stressing/ apps "['archsploit-hping.desktop', 'archsploit-iaxflood.desktop', 'archsploit-rtpflood.desktop', 'archsploit-slowhttptest.desktop', 'archsploit-udpflood.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Stressing/ apps "['archsploit-hping.desktop', 'archsploit-iaxflood.desktop', 'archsploit-rtpflood.desktop', 'archsploit-slowhttptest.desktop', 'archsploit-udpflood.desktop', 'archsploit-ufonet.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
