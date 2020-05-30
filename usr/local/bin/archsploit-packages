@@ -1982,7 +1982,12 @@ function install_stressing()
 			cd /opt/archsploit/stress-testing/ufonet/
 			sudo pip install pycrypto >/dev/null 2>&1
 		    sudo pip install whois >/dev/null 2>&1
-			sudo ln -s /opt/archsploit/stress-testing/ufonet/ufonet /usr/local/bin/udpflood
+			sudo touch /usr/local/bin/ufonet
+		    sudo chmod +x /usr/local/bin/ufonet
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
+		    echo 'cd /opt/archsploit/stress-testing/ufonet/' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
+		    echo 'sudo ./ufonet $@' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1	
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/ufonet.md >/dev/null 2>&1
 			loadstatus " [+] Install Ufonet" "OK" "valid"
 		else
