@@ -73,7 +73,7 @@ sudo fdisk -l
 Once you identified the path of your USB drive, run the below command to create your bootable Arch Linux USB key.
 
 ```bash
-dd if=/tmp/archlinux-2020.02.01-x86_64.iso of=/usb/path status=progress bs=4M && sync
+sudo dd if=/tmp/archlinux-2020.02.01-x86_64.iso of=/usb/path status=progress bs=4M && sync
 ```
 
 The block size parameter "`bs`" can be increased, and while it may speed up the operation of the "`dd`" command, it can occasionally produce unbootable USB drives, depending on your system and a lot of different factors. The recommended value, "`bs=4M`", is conservative and reliable.
