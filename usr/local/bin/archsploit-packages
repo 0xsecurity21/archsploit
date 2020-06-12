@@ -28,7 +28,7 @@ function showbanner()
 	echo -e "${color_d9534f}   / _' | '__/ __| '_ \/ __| '_ \| |/ _ \| | __|    ${color_revert}"
 	echo -e "${color_d9534f}  | (_| | | | (__| | | \__ \ |_) | | (_) | | |_     ${color_revert}"
 	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
-	echo -e "${color_d9534f}                           |_|            v2.0.3    ${color_revert}"
+	echo -e "${color_d9534f}                           |_|            v2.0.4    ${color_revert}"
 	echo
 	echo -e "${color_5cb85c} [i] [Package]: archsploit-packages${color_revert}"
 	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"
@@ -1218,9 +1218,6 @@ function install_networking()
 	sudo pacman -S openvpn --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install OpenVPN" "OK" "valid"
 
-	sudo pacman -S polipo --noconfirm --needed >/dev/null 2>&1
-	loadstatus " [+] Install Polipo" "OK" "valid"
-
 	sudo pacman -S proxychains-ng --noconfirm --needed >/dev/null 2>&1
 	loadstatus " [+] Install Proxychains-ng" "OK" "valid"
 
@@ -1354,20 +1351,6 @@ function install_networking()
 		else
 			loadstatus " [+] WebShells Already Installed" "OK" "valid"
 		fi
-	fi
-
-	## Configure TOR & Polipo
-	## ----------------------
-	if [ -f "/tmp/packages-networking/etc/polipo/config" ];
-	then
-		sudo rm -f /etc/polipo/config
-		sudo mv /tmp/packages-networking/etc/polipo/config /etc/polipo/
-		sudo mkdir -p /var/log/polipo/
-		sudo touch /var/log/polipo/polipo.log
-		sudo chown -R polipo:users /var/log/polipo/
-		loadstatus " [+] Polipo Configuration" "OK" "valid"
-	else
-		loadstatus " [*] Polipo Configuration" "!!" "issue"
 	fi
 
 	## Create Applications Desktop
@@ -1987,7 +1970,7 @@ function install_stressing()
 		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
 		    echo 'clear' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
 		    echo 'cd /opt/archsploit/stress-testing/ufonet/' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
-		    echo 'sudo ./ufonet $@' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1	
+		    echo 'sudo ./ufonet $@' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
 			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/ufonet.md >/dev/null 2>&1
 			loadstatus " [+] Install Ufonet" "OK" "valid"
 		else

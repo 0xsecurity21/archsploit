@@ -22,7 +22,7 @@ function showbanner()
 	echo -e "${color_d9534f}   / _' | '__/ __| '_ \/ __| '_ \| |/ _ \| | __|    ${color_revert}"
 	echo -e "${color_d9534f}  | (_| | | | (__| | | \__ \ |_) | | (_) | | |_     ${color_revert}"
 	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
-	echo -e "${color_d9534f}                           |_|            v2.0.3    ${color_revert}"
+	echo -e "${color_d9534f}                           |_|            v2.0.4    ${color_revert}"
 	echo
 	echo -e "${color_5cb85c} [i] [Package]: archsploit-installer${color_revert}"
 	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"
@@ -410,7 +410,7 @@ function addrelease()
 	mkdir -p /mnt/etc/archsploit/release/
 	mkdir -p /mnt/etc/archsploit/packages/
 	echo "Distributor ID: ArchSploit" >> /mnt/etc/archsploit/release/release.md
-	echo "Description: ArchSploit Xisqu v2.0.3" >> /mnt/etc/archsploit/release/release.md
+	echo "Description: ArchSploit Xisqu v2.0.4" >> /mnt/etc/archsploit/release/release.md
 	echo "Release: 2.0.3" >> /mnt/etc/archsploit/release/release.md
 	echo "Codename: Xisqu" >> /mnt/etc/archsploit/release/release.md
 	echo "Build: 20200515" >> /mnt/etc/archsploit/release/release.md

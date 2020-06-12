@@ -28,7 +28,7 @@ function showbanner()
 	echo -e "${color_d9534f}   / _' | '__/ __| '_ \/ __| '_ \| |/ _ \| | __|    ${color_revert}"
 	echo -e "${color_d9534f}  | (_| | | | (__| | | \__ \ |_) | | (_) | | |_     ${color_revert}"
 	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
-	echo -e "${color_d9534f}                           |_|            v2.0.3    ${color_revert}"
+	echo -e "${color_d9534f}                           |_|            v2.0.4    ${color_revert}"
 	echo
 	echo -e "${color_5cb85c} [i] [Package]: archsploit-clean${color_revert}"
 	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"

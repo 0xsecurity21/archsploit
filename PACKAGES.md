@@ -85,7 +85,6 @@
 * [Nishang](https://github.com/samratashok/nishang/)
 * [Openssh](https://www.archlinux.org/packages/core/x86_64/openssh/)
 * [Openvpn](https://www.archlinux.org/packages/extra/x86_64/openvpn/)
-* [Polipo](https://www.archlinux.org/packages/community/x86_64/polipo/)
 * [PowerSploit](https://github.com/PowerShellMafia/PowerSploit/)
 * [Proxychains](https://www.archlinux.org/packages/community/x86_64/proxychains-ng/)
 * [Ptunnel](https://www.archlinux.org/packages/community/x86_64/ptunnel/)
