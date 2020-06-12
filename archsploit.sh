@@ -911,14 +911,9 @@ function launch()
 	mkinitcpio
 	bootloader
 	multilib
-
-	if [ "$desktopen" == "true" ];
-	then
-		alsautils
-		screendriver
-		gnomedesktop
-    fi
-
+	alsautils
+	screendriver
+	gnomedesktop
 	packages
 	terminate
 }
