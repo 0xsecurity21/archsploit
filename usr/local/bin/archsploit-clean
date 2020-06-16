@@ -208,15 +208,15 @@ function cleaner()
 	loadstatus " [+] Delete Persistents Files" "OK" "valid"
 	sleep 5
 
-	## Delete Persistents Launchers
-	## ----------------------------
+	## Delete Deprecated Launchers
+	## ---------------------------
 	sudo rm -f /usr/share/applications/wireshark.desktop
 	sudo rm -f /usr/share/applications/ophcrack.desktop
 	sudo rm -f /usr/share/applications/lftp.desktop
 	sudo rm -f /usr/share/applications/java-java-openjdk.desktop
 	sudo rm -f /usr/share/applications/jconsole-java-openjdk.desktop
 	sudo rm -f /usr/share/applications/jshell-java-openjdk.desktop
-	loadstatus " [+] Delete Persistents Launchers" "OK" "valid"
+	loadstatus " [+] Delete Deprecated Launchers" "OK" "valid"
 	sleep 5
 
 	## Delete Commands History
