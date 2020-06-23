@@ -571,7 +571,7 @@ function screendriver()
 ## ---------------------
 function gnomedesktop()
 {
-	loadheader "# Step: Install Gnome Desktop()"
+	loadheader "# Step: Install Gnome Desktop"
 	arch-chroot /mnt pacman -Syu gdm gedit gnome-backgrounds gnome-color-manager gnome-control-center gnome-disk-utility gnome-font-viewer gnome-initial-setup gnome-keyring gnome-logs gnome-menus gnome-remote-desktop gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell gnome-shell-extensions gnome-software gnome-system-monitor gnome-terminal gnome-themes-extra gnome-tweak-tool nautilus --noconfirm --needed >/dev/null 2>&1
     arch-chroot /mnt systemctl enable gdm.service >/dev/null 2>&1
 	loadstatus " [+] Gnome Desktop" "OK" "valid"
@@ -581,7 +581,7 @@ function gnomedesktop()
 ## ----------------
 function packages()
 {
-	loadheader "# Step: Install Packages()"
+	loadheader "# Step: Install Packages"
 
 	## Basic Packages
 	## --------------
