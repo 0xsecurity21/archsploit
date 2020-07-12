@@ -587,7 +587,7 @@ StScrollBar {
   .world-clocks-button .world-clocks-time {
     font-weight: bold;
     color: #eeeeec;
-    font-feature-settings: "lnum";
+    font-feature-settings: "tnum";
     font-size: 11pt;
     text-align: right; }
   .world-clocks-button .world-clocks-timezone {
@@ -2096,12 +2096,12 @@ StScrollBar {
   background: black;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.6); }
 
-  #lockDialogGroup {
-    background: #313131 url("resource:///org/gnome/shell/theme/texture.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-  }
+#lockDialogGroup {
+  background: #313131 url("resource:///org/gnome/shell/theme/texture.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
 
 #unlockDialogNotifications StButton#vhandle, #unlockDialogNotifications StButton#hhandle {
   background-color: rgba(53, 53, 53, 0.3); }

@@ -587,7 +587,7 @@ StScrollBar {
   .world-clocks-button .world-clocks-time {
     font-weight: bold;
     color: #fff;
-    font-feature-settings: "lnum";
+    font-feature-settings: "tnum";
     font-size: 11pt;
     text-align: right; }
   .world-clocks-button .world-clocks-timezone {
@@ -1270,12 +1270,12 @@ StScrollBar {
   color: rgba(255, 255, 255, 0.7);
   background-color: #000;
   border-color: black; }
-  
+
   .search-entry:hover {
     background-color: #0d0d0d;
     border-color: #080808;
     color: white; }
-  
+
   .search-entry:focus {
     padding: 6px 8px;
     border-width: 2px;
@@ -1283,7 +1283,7 @@ StScrollBar {
     border-color: #215d9c;
     color: #fff;
     box-shadow: inset 0 1px 2px 1px rgba(0, 0, 0, 0.2); }
-  
+
   .search-entry .search-entry-icon {
     icon-size: 1.09em;
     padding: 0 4px;
@@ -1988,7 +1988,7 @@ StScrollBar {
   spacing: 12px;
   width: 23em; }
   .login-dialog-user-list:expanded .login-dialog-user-list-item:selected {
-    background-color: #215d9c;
+    background-color: #565656;
     color: #ffffff; }
   .login-dialog-user-list:expanded .login-dialog-user-list-item:logged-in {
     border-right: 2px solid #215d9c; }
@@ -2097,7 +2097,11 @@ StScrollBar {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.6); }
 
 #lockDialogGroup {
-  background-color: #41494c; }
+  background: #313131 url("resource:///org/gnome/shell/theme/texture.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
 
 #unlockDialogNotifications StButton#vhandle, #unlockDialogNotifications StButton#hhandle {
   background-color: rgba(0, 0, 0, 0.3); }
