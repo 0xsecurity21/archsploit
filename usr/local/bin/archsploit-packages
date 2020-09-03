@@ -877,6 +877,21 @@ function install_gathering()
 			loadstatus " [+] Nullinux Already Installed" "OK" "valid"
 		fi
 
+		## Smbmap
+		## https://github.com/ShawnDEvans/smbmap
+		## -------------------------------------
+		if [ ! -f "/etc/archsploit/packages/smbmap.md" ];
+		then
+			sudo chmod +x /opt/archsploit/gathering/smbmap/smbmap.py
+			cd /opt/archsploit/gathering/smbmap/
+			sudo pip install -r requirements.txt >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/gathering/smbmap/smbmap.py /usr/local/bin/smbmap.py
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smbmap.md >/dev/null 2>&1
+			loadstatus " [+] Install Smbmap" "OK" "valid"
+		else
+			loadstatus " [+] Smbmap Already Installed" "OK" "valid"
+		fi
+
 		## SMTP User Enum
 		## https://github.com/pentestmonkey/smtp-user-enum/
 		## ------------------------------------------------
@@ -902,7 +917,7 @@ function install_gathering()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ apps "['archsploit-arp-scan.desktop', 'archsploit-automater.desktop', 'archsploit-dnsmap.desktop', 'archsploit-dnstracer.desktop', 'archsploit-enum4linux.desktop', 'archsploit-enumiax.desktop', 'archsploit-linenum.desktop', 'archsploit-masscan.desktop', 'archsploit-nikto.desktop', 'archsploit-nmap.desktop', 'archsploit-nullinux.desktop', 'archsploit-p0f.desktop', 'archsploit-smtp-user-enum.desktop', 'archsploit-sslsplit.desktop', 'archsploit-thc-ipv6.desktop', 'archsploit-traceroute.desktop', 'archsploit-whois.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ apps "['archsploit-arp-scan.desktop', 'archsploit-automater.desktop', 'archsploit-dnsmap.desktop', 'archsploit-dnstracer.desktop', 'archsploit-enum4linux.desktop', 'archsploit-enumiax.desktop', 'archsploit-linenum.desktop', 'archsploit-masscan.desktop', 'archsploit-nikto.desktop', 'archsploit-nmap.desktop', 'archsploit-nullinux.desktop', 'archsploit-p0f.desktop', 'archsploit-smbmap.desktop', 'archsploit-smtp-user-enum.desktop', 'archsploit-sslsplit.desktop', 'archsploit-thc-ipv6.desktop', 'archsploit-traceroute.desktop', 'archsploit-whois.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
@@ -1133,7 +1148,7 @@ function install_miscs()
 		## ---------------------------
 		if [ ! -f "/etc/archsploit/packages/tor-browser.md" ];
 		then
-			wget -O "/tmp/tor-browser-linux64-9.5.4_en-US.tar.xz" https://www.torproject.org/dist/torbrowser/9.5.3/tor-browser-linux64-9.5.4_en-US.tar.xz >/dev/null 2>&1
+			wget -O "/tmp/tor-browser-linux64-9.5.4_en-US.tar.xz" https://www.torproject.org/dist/torbrowser/9.5.4/tor-browser-linux64-9.5.4_en-US.tar.xz >/dev/null 2>&1
 			if [ -f "/tmp/tor-browser-linux64-9.5.4_en-US.tar.xz" ];
 			then
 			    cd /tmp/

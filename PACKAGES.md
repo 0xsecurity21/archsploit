@@ -56,6 +56,7 @@
 * [Nnmap](https://www.archlinux.org/packages/extra/x86_64/nmap/)
 * [Nullinux](https://github.com/m8r0wn/nullinux/)
 * [P0f](https://www.archlinux.org/packages/community/x86_64/p0f/)
+* [Smbmap](https://github.com/ShawnDEvans/smbmap/)
 * [SMTP User Enum](https://github.com/pentestmonkey/smtp-user-enum/)
 * [Sslsplit](https://www.archlinux.org/packages/community/x86_64/sslsplit/)
 * [THC-Ipv6](https://www.archlinux.org/packages/community/x86_64/thc-ipv6/)
