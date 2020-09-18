@@ -184,26 +184,7 @@ function detectbuild()
 function partitions()
 {
 	loadheader "# Step: Create Partitions"
-
-	if [ -d /mnt/boot ];
-	then
-        umount /mnt/boot
-        umount /mnt
-    fi
-
-	if [ -e "/dev/mapper/vg-root" ];
-	then
-        umount "/dev/mapper/vg-root"
-    fi
-
-	if [ -e "/dev/mapper/cryptroot" ];
-	then
-        cryptsetup close cryptroot
-    fi
-
-	partprobe $hdd_label
-
-	sgdisk --zap-all $hdd_label >/dev/null 2>&1
+    sgdisk --zap-all $hdd_label >/dev/null 2>&1
     wipefs -a $hdd_label >/dev/null 2>&1
 
     if [ "$system_mode" == "uefi" ];
@@ -226,8 +207,7 @@ function partitions()
             part_root="${hdd_label}p2"
         fi
 
-        #parted -s $hdd_label mklabel gpt mkpart primary fat32 1MiB 512MiB mkpart primary $hdd_system 512MiB 100% set 1 boot on
-		parted -s $hdd_label mklabel gpt mkpart ESP fat32 1MiB 512MiB mkpart root $hdd_system 512MiB 100% set 1 esp on
+        parted -s $hdd_label mklabel gpt mkpart primary fat32 1MiB 512MiB mkpart primary $hdd_system 512MiB 100% set 1 boot on
         sgdisk -t=1:ef00 $hdd_label >/dev/null 2>&1
         sgdisk -t=2:8e00 $hdd_label >/dev/null 2>&1
     fi
@@ -255,9 +235,8 @@ function partitions()
             part_root="${hdd_label}p3"
         fi
 
-		#parted -s $hdd_label mklabel gpt mkpart primary fat32 1MiB 128MiB mkpart primary $hdd_system 128MiB 512MiB mkpart primary $hdd_system 512MiB 100% set 1 boot on
-		parted -s $hdd_label mklabel msdos mkpart primary ext4 4MiB 512MiB mkpart primary $hdd_system 512MiB 100% set 1 boot on
-		sgdisk -t=1:ef02 $hdd_label >/dev/null 2>&1
+        parted -s $hdd_label mklabel gpt mkpart primary fat32 1MiB 128MiB mkpart primary $hdd_system 128MiB 512MiB mkpart primary $hdd_system 512MiB 100% set 1 boot on
+        sgdisk -t=1:ef02 $hdd_label >/dev/null 2>&1
         sgdisk -t=3:8e00 $hdd_label >/dev/null 2>&1
     fi
 
