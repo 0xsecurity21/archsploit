@@ -271,6 +271,7 @@ function partitions()
     if [ "$disk_system" == "f2fs" ];
 	then
         pacman -Sy --noconfirm f2fs-tools
+		loadstatus " [+] Installing F2fs Tools" "OK" "valid"
     fi
 
     sgdisk --zap-all $disk_label
@@ -378,6 +379,7 @@ function partitions()
         fi
 
         dd if=/dev/zero of=/mnt/$swap_file bs=1M count=$swap_size status=progress
+		loadstatus " [+] Erasing Virtual Disk" "OK" "valid"
         chmod 600 /mnt/$swap_file
         mkswap /mnt/$swap_file
 		loadstatus " [+] Swap File" "OK" "valid"
