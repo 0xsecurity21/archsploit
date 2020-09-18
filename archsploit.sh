@@ -184,6 +184,13 @@ function detectbuild()
 function partitions()
 {
 	loadheader "# Step: Create Partitions"
+
+	if [ ! -f "/run/cryptsetup" ];
+	then
+		mkdir -p /run/cryptsetup
+		loadstatus " [+] Create Cryptsetup Directory" "OK" "valid"
+	fi
+
 	if [ -d /mnt/boot ];
 	then
         umount /mnt/boot
@@ -382,8 +389,8 @@ function partitions()
 function loadmirror()
 {
 	loadheader "# Step: Load Mirror"
-	pacman -Syy >/dev/null 2>&1
-	pacman -S "reflector" --noconfirm --needed >/dev/null 2>&1
+	pacman -Syy
+	pacman -S "reflector" --noconfirm --needed
 	cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 	reflector -c "FR" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist
 	loadstatus " [+] Configure Mirror" "OK" "valid"
@@ -394,7 +401,7 @@ function loadmirror()
 function basesystem()
 {
 	loadheader "# Step: Install Base System"
-	pacstrap /mnt base base-devel git linux linux-firmware nano net-tools >/dev/null 2>&1
+	pacstrap /mnt base base-devel git linux linux-firmware nano net-tools
 	loadstatus " [+] Base System" "OK" "valid"
 }
 
@@ -403,18 +410,18 @@ function basesystem()
 function kernels()
 {
 	loadheader "# Step: Install Kernels"
-	arch-chroot /mnt pacman -Syu linux-headers --noconfirm --needed >/dev/null 2>&1
+	arch-chroot /mnt pacman -Syu linux-headers --noconfirm --needed
 	loadstatus " [+] Linux Headers" "OK" "valid"
 
 	if [ -n "$kernels_install" ];
 	then
-		arch-chroot /mnt pacman -Syu $kernels_install --noconfirm --needed >/dev/null 2>&1
+		arch-chroot /mnt pacman -Syu $kernels_install --noconfirm --needed
 		loadstatus " [+] Linux Custom Kernels" "OK" "valid"
     fi
 
 	if [ -n "$kernels_headers" ];
 	then
-		arch-chroot /mnt pacman -Syu $kernels_headers --noconfirm --needed >/dev/null 2>&1
+		arch-chroot /mnt pacman -Syu $kernels_headers --noconfirm --needed
 		loadstatus " [+] Linux Custom Headers" "OK" "valid"
     fi
 }
@@ -425,7 +432,7 @@ function buildfstab()
 {
 	loadheader "# Step: Build Fstab"
 	genfstab -U /mnt >> /mnt/etc/fstab
-	cat /mnt/etc/fstab >/dev/null 2>&1
+	cat /mnt/etc/fstab
 
 	if [ -n "$swap_size" ];
 	then
@@ -438,7 +445,7 @@ function buildfstab()
 	if [ "$disk_trim" == "true" ];
 	then
 		arch-chroot /mnt sed -i "s/relatime/noatime/" /etc/fstab
-		arch-chroot /mnt systemctl enable fstrim.timer >/dev/null 2>&1
+		arch-chroot /mnt systemctl enable fstrim.timer
     fi
 
 	loadstatus " [+] Genfstab File" "OK" "valid"
@@ -455,16 +462,16 @@ function configuration()
 	loadstatus " [+] System Clock" "OK" "valid"
 
 	arch-chroot /mnt sed -i "s/#$locale/$locale/" /etc/locale.gen
-	arch-chroot /mnt locale-gen >/dev/null 2>&1
+	arch-chroot /mnt locale-gen
 	echo "LANG=$language.$charset" >> /mnt/etc/locale.conf
 	echo "LANGUAGE=$language" >> /mnt/etc/locale.conf
 	echo "KEYMAP=$keyboard" > /mnt/etc/vconsole.conf
 	loadstatus " [+] System Language" "OK" "valid"
 
 	echo "$user_hostname" > /mnt/etc/hostname
-	arch-chroot /mnt pacman -Syu dhcpcd networkmanager --noconfirm --needed >/dev/null 2>&1
-	arch-chroot /mnt systemctl enable NetworkManager.service >/dev/null 2>&1
-	arch-chroot /mnt systemctl enable dhcpcd.service >/dev/null 2>&1
+	arch-chroot /mnt pacman -Syu dhcpcd networkmanager --noconfirm --needed
+	arch-chroot /mnt systemctl enable NetworkManager.service
+	arch-chroot /mnt systemctl enable dhcpcd.service
 
 	echo -e "127.0.0.1\tlocalhost" >> /mnt/etc/hosts
 	echo -e "::1\t\tlocalhost" >> /mnt/etc/hosts
@@ -472,10 +479,10 @@ function configuration()
 	loadstatus " [+] System Hostname" "OK" "valid"
 	loadstatus " [+] System Network" "OK" "valid"
 
-	printf "$root_password\n$root_password" | arch-chroot /mnt passwd >/dev/null 2>&1
+	printf "$root_password\n$root_password" | arch-chroot /mnt passwd
 	arch-chroot /mnt useradd -m -g users -G wheel,storage,optical,power -s /bin/bash $user_username
-	printf "$user_password\n$user_password" | arch-chroot /mnt passwd $user_username >/dev/null 2>&1
-	arch-chroot /mnt pacman -Syu bash-completion sudo xdg-user-dirs --noconfirm --needed >/dev/null 2>&1
+	printf "$user_password\n$user_password" | arch-chroot /mnt passwd $user_username
+	arch-chroot /mnt pacman -Syu bash-completion sudo xdg-user-dirs --noconfirm --needed
 	arch-chroot /mnt sed -i "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers
 	loadstatus " [+] System Users" "OK" "valid"
 }
@@ -485,7 +492,7 @@ function configuration()
 function clonerepo()
 {
 	loadheader "# Step: Clone Repository"
-	arch-chroot /mnt git clone https://github.com/archsploit/archsploit >/dev/null 2>&1
+	arch-chroot /mnt git clone https://github.com/archsploit/archsploit
 	mv /mnt/archsploit /mnt/tmp
 	loadstatus " [+] Clone Repository" "OK" "valid"
 }
@@ -512,10 +519,10 @@ function virtualmachine()
 	loadheader "# Step: Optimize Virtual Machine"
     if [ -z "$kernels_install" ];
 	then
-		arch-chroot /mnt pacman -Syu virtualbox-guest-utils virtualbox-guest-dkms --noconfirm --needed >/dev/null 2>&1
+		arch-chroot /mnt pacman -Syu virtualbox-guest-utils virtualbox-guest-dkms --noconfirm --needed
 		loadstatus " [+] Standard VM Kernels" "OK" "valid"
     else
-		arch-chroot /mnt pacman -Syu virtualbox-guest-utils virtualbox-guest-modules-arch --noconfirm --needed >/dev/null 2>&1
+		arch-chroot /mnt pacman -Syu virtualbox-guest-utils virtualbox-guest-modules-arch --noconfirm --needed
 		loadstatus " [+] Custom VM Kernels" "OK" "valid"
     fi
 }
@@ -525,11 +532,11 @@ function virtualmachine()
 function mkinitcpio()
 {
 	loadheader "# Step: Configure Mkinitcpio"
-	arch-chroot /mnt pacman -Syu lvm2 --noconfirm --needed >/dev/null 2>&1
+	arch-chroot /mnt pacman -Syu lvm2 --noconfirm --needed
 	arch-chroot /mnt sed -i "s/ block / block keyboard keymap /" /etc/mkinitcpio.conf
 	arch-chroot /mnt sed -i "s/ filesystems keyboard / encrypt lvm2 filesystems /" /etc/mkinitcpio.conf
 	arch-chroot /mnt sed -i "s/#COMPRESSION=\"${kernels_deflate}\"/COMPRESSION=\"${kernels_deflate}\"/" /etc/mkinitcpio.conf
-	arch-chroot /mnt mkinitcpio -P >/dev/null 2>&1
+	arch-chroot /mnt mkinitcpio -P
 	loadstatus " [+] Mkinitcpio Configuration" "OK" "valid"
 }
 
@@ -540,7 +547,7 @@ function bootloader()
 	loadheader "# Step: Setup Bootloader"
 	if [ "$intel_chipset" == "true" -a "$virtualbox" != "true" ];
 	then
-        arch-chroot /mnt pacman -Syu intel-ucode --noconfirm --needed >/dev/null 2>&1
+        arch-chroot /mnt pacman -Syu intel-ucode --noconfirm --needed
 		loadstatus " [+] Intel Microcode" "OK" "valid"
     fi
 
@@ -561,7 +568,7 @@ function bootloader()
 		grub_cmdline_linux=$(echo cryptdevice=PARTUUID=${partuuid}:lvm)
     fi
 
-	arch-chroot /mnt pacman -Syu grub dosfstools --noconfirm --needed >/dev/null 2>&1
+	arch-chroot /mnt pacman -Syu grub dosfstools --noconfirm --needed
 	arch-chroot /mnt sed -i "s/GRUB_DEFAULT=0/GRUB_DEFAULT=saved/" /etc/default/grub
 	arch-chroot /mnt sed -i "s/#GRUB_SAVEDEFAULT=\"true\"/GRUB_SAVEDEFAULT=\"true\"/" /etc/default/grub
 	arch-chroot /mnt sed -i -E "s/GRUB_CMDLINE_LINUX_DEFAULT=\"(.*)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet splash fastboot\"/" /etc/default/grub
@@ -572,18 +579,18 @@ function bootloader()
 
 	if [ "$system_mode" == "uefi" ];
 	then
-		arch-chroot /mnt pacman -Syu efibootmgr --noconfirm --needed >/dev/null 2>&1
-		arch-chroot /mnt grub-install --target=x86_64-efi --bootloader-id=grub --efi-directory=/boot --recheck >/dev/null 2>&1
+		arch-chroot /mnt pacman -Syu efibootmgr --noconfirm --needed
+		arch-chroot /mnt grub-install --target=x86_64-efi --bootloader-id=grub --efi-directory=/boot --recheck
 		loadstatus " [+] UEFI Bootloader" "OK" "valid"
     fi
 
     if [ "$system_mode" == "bios" ];
 	then
-        arch-chroot /mnt grub-install --target=i386-pc --recheck /dev/sda >/dev/null 2>&1
+        arch-chroot /mnt grub-install --target=i386-pc --recheck /dev/sda
 		loadstatus " [+] BIOS Bootloader" "OK" "valid"
     fi
 
-	arch-chroot /mnt grub-mkconfig -o "/boot/grub/grub.cfg" >/dev/null 2>&1
+	arch-chroot /mnt grub-mkconfig -o "/boot/grub/grub.cfg"
 	loadstatus " [+] GRUB Configuration" "OK" "valid"
 
 	if [ "$virtualbox" == "true" ];
@@ -602,7 +609,7 @@ function multilib()
 	then
 		mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.bak
 		mv /mnt/tmp/archsploit/etc/pacman.conf /mnt/etc/
-		arch-chroot /mnt pacman -Sy >/dev/null 2>&1
+		arch-chroot /mnt pacman -Sy
 		loadstatus " [+] Multilib Configuration" "OK" "valid"
 	else
 		loadstatus " [*] Multilib Configuration" "!!" "issue"
@@ -614,9 +621,9 @@ function multilib()
 function alsautils()
 {
 	loadheader "# Step: Install and Configure ALSA"
-	arch-chroot /mnt pacman -Syu alsa-utils pulseaudio --noconfirm --needed >/dev/null 2>&1
-	arch-chroot /mnt pacman -Syu alsa-oss alsa-lib --noconfirm --needed >/dev/null 2>&1
-	arch-chroot /mnt amixer sset Master unmute >/dev/null 2>&1
+	arch-chroot /mnt pacman -Syu alsa-utils pulseaudio --noconfirm --needed
+	arch-chroot /mnt pacman -Syu alsa-oss alsa-lib --noconfirm --needed
+	arch-chroot /mnt amixer sset Master unmute
 	loadstatus " [+] ALSA Configuration" "OK" "valid"
 }
 
@@ -641,15 +648,15 @@ function screendriver()
             ;;
     esac
 
-	arch-chroot /mnt pacman -Syu mesa mesa-libgl --noconfirm --needed >/dev/null 2>&1
+	arch-chroot /mnt pacman -Syu mesa mesa-libgl --noconfirm --needed
 	loadstatus " [+] Mesa Packages" "OK" "valid"
 
-	arch-chroot /mnt pacman -Syu xorg xorg-server --noconfirm --needed >/dev/null 2>&1
+	arch-chroot /mnt pacman -Syu xorg xorg-server --noconfirm --needed
 	loadstatus " [+] Xorg Packages" "OK" "valid"
 
 	if [ "$display_drivers" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $display_drivers --noconfirm --needed >/dev/null 2>&1
+        arch-chroot /mnt pacman -Syu $display_drivers --noconfirm --needed
     fi
 
 	loadstatus " [+] Display Drivers" "OK" "valid"
@@ -660,8 +667,8 @@ function screendriver()
 function gnomedesktop()
 {
 	loadheader "# Step: Install Gnome Desktop"
-	arch-chroot /mnt pacman -Syu gdm gedit gnome-backgrounds gnome-color-manager gnome-control-center gnome-disk-utility gnome-font-viewer gnome-initial-setup gnome-keyring gnome-logs gnome-menus gnome-remote-desktop gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell gnome-shell-extensions gnome-software gnome-system-monitor gnome-terminal gnome-themes-extra gnome-tweak-tool nautilus --noconfirm --needed >/dev/null 2>&1
-    arch-chroot /mnt systemctl enable gdm.service >/dev/null 2>&1
+	arch-chroot /mnt pacman -Syu gdm gedit gnome-backgrounds gnome-color-manager gnome-control-center gnome-disk-utility gnome-font-viewer gnome-initial-setup gnome-keyring gnome-logs gnome-menus gnome-remote-desktop gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell gnome-shell-extensions gnome-software gnome-system-monitor gnome-terminal gnome-themes-extra gnome-tweak-tool nautilus --noconfirm --needed
+    arch-chroot /mnt systemctl enable gdm.service
 	loadstatus " [+] Gnome Desktop" "OK" "valid"
 }
 
@@ -673,58 +680,58 @@ function packages()
 
 	## Basic Packages
 	## --------------
-	arch-chroot /mnt pacman -Syu git --noconfirm --needed >/dev/null 2>&1
+	arch-chroot /mnt pacman -Syu git --noconfirm --needed
 	arch-chroot /mnt sed -i "s/%wheel ALL=(ALL) ALL/%wheel ALL=(ALL) NOPASSWD: ALL/" /etc/sudoers
-    arch-chroot /mnt bash -c "echo -e \"$user_password\n$user_password\n$user_password\n$user_password\n\" | su $user_username -c \"cd /home/$user_username && git clone https://aur.archlinux.org/yay.git && (cd yay && makepkg -si --noconfirm) && rm -rf yay\"" >/dev/null 2>&1
+    arch-chroot /mnt bash -c "echo -e \"$user_password\n$user_password\n$user_password\n$user_password\n\" | su $user_username -c \"cd /home/$user_username && git clone https://aur.archlinux.org/yay.git && (cd yay && makepkg -si --noconfirm) && rm -rf yay\""
     arch-chroot /mnt sed -i "s/%wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers
 	loadstatus " [+] Yay Helper" "OK" "valid"
 
 	if [ "$disk_system" == "btrfs" ];
 	then
-		arch-chroot /mnt pacman -Syu btrfs-progs --noconfirm --needed >/dev/null 2>&1
+		arch-chroot /mnt pacman -Syu btrfs-progs --noconfirm --needed
 		loadstatus " [+] BTRFS Packages" "OK" "valid"
 	fi
 
 	if [ "$pacman_packages_roller" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_roller --noconfirm --needed >/dev/null 2>&1
+        arch-chroot /mnt pacman -Syu $pacman_packages_roller --noconfirm --needed
 		loadstatus " [+] File Roller Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_common" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_common --noconfirm --needed >/dev/null 2>&1
+        arch-chroot /mnt pacman -Syu $pacman_packages_common --noconfirm --needed
 		loadstatus " [+] Common Tools Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_utilities" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_utilities --noconfirm --needed >/dev/null 2>&1
+        arch-chroot /mnt pacman -Syu $pacman_packages_utilities --noconfirm --needed
 		loadstatus " [+] Utilities Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_security" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_security --noconfirm --needed >/dev/null 2>&1
+        arch-chroot /mnt pacman -Syu $pacman_packages_security --noconfirm --needed
 		loadstatus " [+] Security Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_developer" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_developer --noconfirm --needed >/dev/null 2>&1
+        arch-chroot /mnt pacman -Syu $pacman_packages_developer --noconfirm --needed
 		loadstatus " [+] Developer Packages" "OK" "valid"
     fi
 
 	if [ "$pacman_packages_python" != "null" ];
 	then
-        arch-chroot /mnt pacman -Syu $pacman_packages_python --noconfirm --needed >/dev/null 2>&1
+        arch-chroot /mnt pacman -Syu $pacman_packages_python --noconfirm --needed
 		loadstatus " [+] Python Packages" "OK" "valid"
     fi
 
 	## Install and Configure DnsMasq
 	## -----------------------------
 	arch-chroot /mnt sed -i "s/#port=5353/port=5353/" /etc/dnsmasq.conf
-	arch-chroot /mnt systemctl enable dnsmasq.service >/dev/null 2>&1
+	arch-chroot /mnt systemctl enable dnsmasq.service
 	loadstatus " [+] DnsMasq Configuration" "OK" "valid"
 
 	## Configure Apache
@@ -733,7 +740,7 @@ function packages()
 	if [ -f "/mnt/tmp/archsploit/srv/http/index.html" ];
 	then
 		mv /mnt/tmp/archsploit/srv/http/index.html /mnt/srv/http/
-		arch-chroot /mnt systemctl enable httpd.service >/dev/null 2>&1
+		arch-chroot /mnt systemctl enable httpd.service
 		loadstatus " [+] Apache Configuration" "OK" "valid"
 	else
 		loadstatus " [*] Apache Configuration" "!!" "issue"
@@ -741,8 +748,8 @@ function packages()
 
 	## Configure MySQL Server
 	## ----------------------
-	arch-chroot /mnt mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql >/dev/null 2>&1
-	arch-chroot /mnt systemctl enable mysqld.service >/dev/null 2>&1
+	arch-chroot /mnt mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+	arch-chroot /mnt systemctl enable mysqld.service
 	loadstatus " [+] MySQL Configuration" "OK" "valid"
 
 	## Install PHP Components
@@ -950,10 +957,10 @@ function terminate()
 
 	## Delete Machine Logs
 	## -------------------
-	find /mnt/var/log/ -type f -name '*.gz' -exec sudo rm -f {} \; >/dev/null 2>&1
-	find /mnt/var/log/ -type f -name '*.old' -exec sudo rm -f {} \; >/dev/null 2>&1
-	find /mnt/var/log/ -type f -name '*.1' -exec sudo rm -f {} \; >/dev/null 2>&1
-	find /mnt/var/log/ -type f -name '*.log' -exec sudo rm -f {} \; >/dev/null 2>&1
+	find /mnt/var/log/ -type f -name '*.gz' -exec sudo rm -f {} \;
+	find /mnt/var/log/ -type f -name '*.old' -exec sudo rm -f {} \;
+	find /mnt/var/log/ -type f -name '*.1' -exec sudo rm -f {} \;
+	find /mnt/var/log/ -type f -name '*.log' -exec sudo rm -f {} \;
 	loadstatus " [+] Clean System Logs" "OK" "valid"
 
 	## Delete Temporary Folders and Files
