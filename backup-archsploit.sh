@@ -153,15 +153,15 @@ function detectbuild()
 		system_mode="bios"
     fi
 
-    if [ -n "$(echo $disk_label | grep "^/dev/[a-z]d[a-z]")" ];
+    if [ -n "$(echo $hdd_label | grep "^/dev/[a-z]d[a-z]")" ];
 	then
         disk_sata="true"
 		disk_name="SATA"
-    elif [ -n "$(echo $disk_label | grep "^/dev/nvme")" ];
+    elif [ -n "$(echo $hdd_label | grep "^/dev/nvme")" ];
 	then
         disk_nvme="true"
 		disk_name="NVMe"
-    elif [ -n "$(echo $disk_label | grep "^/dev/mmc")" ];
+    elif [ -n "$(echo $hdd_label | grep "^/dev/mmc")" ];
 	then
         disk_mmcd="true"
 		disk_name="MMC"
@@ -174,7 +174,7 @@ function detectbuild()
 
 	loadstatus " [+] System Mode" "$system_mode" "valid"
 	loadstatus " [+] Disk Type" "$disk_name" "valid"
-	loadstatus " [+] Disk TRIM" "$disk_trim" "valid"
+	loadstatus " [+] Disk TRIM" "$hdd_trim" "valid"
 	loadstatus " [+] Intel Chipset" "$intel_chipset" "valid"
 	loadstatus " [+] VirtualBox" "$virtualbox" "valid"
 }
@@ -184,196 +184,108 @@ function detectbuild()
 function partitions()
 {
 	loadheader "# Step: Create Partitions"
-	if [ -d /mnt/boot ];
-	then
-        umount /mnt/boot
-        umount /mnt
-    fi
-
-	if [ -e "/dev/mapper/vg-root" ];
-	then
-        umount "/dev/mapper/vg-root"
-    fi
-
-	if [ -e "/dev/mapper/cryptroot" ];
-	then
-        cryptsetup close cryptroot
-    fi
-
-	partprobe $disk_label
-    cmd_parted_uefi="mklabel gpt mkpart ESP fat32 1MiB 512MiB mkpart root $disk_system 512MiB 100% set 1 esp on"
-    cmd_parted_bios="mklabel msdos mkpart primary ext4 4MiB 512MiB mkpart primary $disk_system 512MiB 100% set 1 boot on"
+    sgdisk --zap-all $hdd_label >/dev/null 2>&1
+    wipefs -a $hdd_label >/dev/null 2>&1
 
     if [ "$system_mode" == "uefi" ];
 	then
         if [ "$disk_sata" == "true" ];
 		then
-            part_boot="${disk_label}1"
-            part_root="${disk_label}2"
-            disk_root="${disk_label}2"
+            part_boot="${hdd_label}1"
+            part_root="${hdd_label}2"
         fi
 
         if [ "$disk_nvme" == "true" ];
 		then
-            part_boot="${disk_label}p1"
-            part_root="${disk_label}p2"
-            disk_root="${disk_label}p2"
+            part_boot="${hdd_label}p1"
+            part_root="${hdd_label}p2"
         fi
 
         if [ "$disk_mmcd" == "true" ];
 		then
-            part_boot="${disk_label}p1"
-            part_root="${disk_label}p2"
-            disk_root="${disk_label}p2"
+            part_boot="${hdd_label}p1"
+            part_root="${hdd_label}p2"
         fi
+
+        parted -s $hdd_label mklabel gpt mkpart primary fat32 1MiB 512MiB mkpart primary $hdd_system 512MiB 100% set 1 boot on
+        sgdisk -t=1:ef00 $hdd_label >/dev/null 2>&1
+        sgdisk -t=2:8e00 $hdd_label >/dev/null 2>&1
     fi
 
     if [ "$system_mode" == "bios" ];
 	then
         if [ "$disk_sata" == "true" ];
 		then
-            part_boot="${disk_label}1"
-            part_root="${disk_label}2"
-            disk_root="${disk_label}2"
+            part_bios="${hdd_label}1"
+            part_boot="${hdd_label}2"
+            part_root="${hdd_label}3"
         fi
 
         if [ "$disk_nvme" == "true" ];
 		then
-            part_boot="${disk_label}p1"
-            part_root="${disk_label}p2"
-            disk_root="${disk_label}p2"
+            part_bios="${hdd_label}p1"
+            part_boot="${hdd_label}p2"
+            part_root="${hdd_label}p3"
         fi
 
         if [ "$disk_mmcd" == "true" ];
 		then
-            part_boot="${disk_label}p1"
-            part_root="${disk_label}p2"
-            disk_root="${disk_label}p2"
+            part_bios="${hdd_label}p1"
+            part_boot="${hdd_label}p2"
+            part_root="${hdd_label}p3"
         fi
+
+        parted -s $hdd_label mklabel gpt mkpart primary fat32 1MiB 128MiB mkpart primary $hdd_system 128MiB 512MiB mkpart primary $hdd_system 512MiB 100% set 1 boot on
+        sgdisk -t=1:ef02 $hdd_label >/dev/null 2>&1
+        sgdisk -t=3:8e00 $hdd_label >/dev/null 2>&1
     fi
 
-    partboot_numb="$part_boot"
-    partroot_numb="$part_root"
-    partboot_numb="${partboot_numb//\/dev\/sda/}"
-    partboot_numb="${partboot_numb//\/dev\/nvme0n1p/}"
-    partboot_numb="${partboot_numb//\/dev\/mmcblk0p/}"
-    partroot_numb="${partroot_numb//\/dev\/sda/}"
-    partroot_numb="${partroot_numb//\/dev\/nvme0n1p/}"
-    partroot_numb="${partroot_numb//\/dev\/mmcblk0p/}"
+	echo -n "$hdd_passkey" | cryptsetup --key-size=512 --key-file=- luksFormat --type luks2 $part_root
+    echo -n "$hdd_passkey" | cryptsetup --key-file=- open $part_root lvm
+	sleep 15
 
-    if [ "$disk_system" == "f2fs" ];
+    pvcreate /dev/mapper/lvm >/dev/null 2>&1
+    vgcreate vg /dev/mapper/lvm >/dev/null 2>&1
+    lvcreate -l 100%FREE -n root vg >/dev/null 2>&1
+
+	path_root="/dev/mapper/vg-root"
+	if [ "$system_mode" == "uefi" ];
 	then
-        pacman -Sy --noconfirm f2fs-tools
-    fi
-
-    sgdisk --zap-all $disk_label
-    wipefs -a $disk_label
-
-    if [ "$system_mode" == "uefi" ];
-	then
-        parted -s $disk_label $cmd_parted_uefi
-        if [ -n "$luks_passkey" ];
-		then
-            sgdisk -t=$partroot_numb:8309 $disk_label
-            sgdisk -t=$partroot_numb:8e00 $disk_label
-        fi
-    fi
-
-    if [ "$system_mode" == "bios" ];
-	then
-        parted -s $disk_label $cmd_parted_bios
-    fi
-
-    if [ -n "$luks_passkey" ];
-	then
-        echo -n "$luks_passkey" | cryptsetup --key-size=512 --key-file=- luksFormat --type luks2 $part_root
-        echo -n "$luks_passkey" | cryptsetup --key-file=- open $part_root cryptroot
-        sleep 15
-    fi
-
-    if [ -n "$luks_passkey" ];
-	then
-        disk_lvm="/dev/mapper/cryptroot"
-    else
-        disk_lvm="$disk_root"
-    fi
-
-    pvcreate $disk_lvm
-    vgcreate vg $disk_lvm
-    lvcreate -l 100%FREE -n root vg
-
-    if [ -n "$luks_passkey" ];
-	then
-        disk_root="/dev/mapper/cryptroot"
-    fi
-
-	disk_root="/dev/mapper/vg-root"
-    if [ "$system_mode" == "uefi" ];
-	then
-        wipefs -a $part_boot
-        wipefs -a $disk_root
-        mkfs.fat -n ESP -F32 $part_boot
-        mkfs."$disk_system" -L root $disk_root
+        wipefs -a $part_boot >/dev/null 2>&1
+        wipefs -a $path_root >/dev/null 2>&1
+        mkfs.fat -n ESP -F32 $part_boot >/dev/null 2>&1
+        mkfs."$hdd_system" -L root $path_root >/dev/null 2>&1
 		loadstatus " [+] UEFI Partitions" "OK" "valid"
     fi
 
     if [ "$system_mode" == "bios" ];
 	then
-        wipefs -a $part_boot
-        wipefs -a $disk_root
-        mkfs."$disk_system" -L boot $part_boot
-        mkfs."$disk_system" -L root $disk_root
-		loadstatus " [+] Bios Partitions" "OK" "valid"
+        wipefs -a $part_bios >/dev/null 2>&1
+        wipefs -a $part_boot >/dev/null 2>&1
+        wipefs -a $path_root >/dev/null 2>&1
+        mkfs.fat -n BIOS -F32 $part_bios >/dev/null 2>&1
+        mkfs."$hdd_system" -L boot $part_boot >/dev/null 2>&1
+        mkfs."$hdd_system" -L root $path_root >/dev/null 2>&1
+		loadstatus " [+] BIOS Partitions" "OK" "valid"
     fi
 
-    part_opts="defaults"
-    if [ "$disk_trim" == "true" ];
+	if [ "$hdd_trim" == "true" ];
 	then
-        if [ "$disk_system" == "f2fs" ];
-		then
-            part_opts="$part_opts,noatime,nodiscard"
-        else
-            part_opts="$part_opts,noatime"
-		fi
+        part_opts="defaults,noatime"
+		loadstatus " [+] TRIM Options" "OK" "valid"
     fi
 
-	loadstatus " [+] Trim Options" "OK" "valid"
-
-    if [ "$disk_system" == "btrfs" ];
-	then
-        mount -o "$part_opts" "$disk_root" /mnt
-        btrfs subvolume create /mnt/root
-        btrfs subvolume create /mnt/home
-        btrfs subvolume create /mnt/var
-        btrfs subvolume create /mnt/snapshots
-        umount /mnt
-        mount -o "subvol=root,$part_opts,compress=lzo" "$disk_root" /mnt
-        mkdir /mnt/{boot,home,var,snapshots}
-        mount -o "$part_opts" "$part_boot" /mnt/boot
-        mount -o "subvol=home,$part_opts,compress=lzo" "$disk_root" /mnt/home
-        mount -o "subvol=var,$part_opts,compress=lzo" "$disk_root" /mnt/var
-        mount -o "subvol=snapshots,$part_opts,compress=lzo" "$disk_root" /mnt/snapshots
-    else
-        mount -o "$part_opts" "$disk_root" /mnt
-        mkdir /mnt/boot
-        mount -o "$part_opts" "$part_boot" /mnt/boot
-    fi
-
+    mount -o "$part_opts" "$path_root" /mnt
+    mkdir /mnt/boot
+    mount -o "$part_opts" "$part_boot" /mnt/boot
 	loadstatus " [+] Mount Partitions" "OK" "valid"
 
-    if [ -n "$swap_size" ];
+    if [ -n "$hdd_swap" -a "$hdd_system" != "btrfs" ];
 	then
-        if [ "$disk_system" == "btrfs" ];
-		then
-            truncate -s 0 /mnt/$swap_file
-            chattr +C /mnt/$swap_file
-            btrfs property set /mnt/$swap_file compression none
-        fi
-
-        dd if=/dev/zero of=/mnt/$swap_file bs=1M count=$swap_size status=progress
-        chmod 600 /mnt/$swap_file
-        mkswap /mnt/$swap_file
-		loadstatus " [+] Swap File" "OK" "valid"
+        fallocate -l $hdd_swap /mnt/swap >/dev/null 2>&1
+        chmod 600 /mnt/swap
+        mkswap /mnt/swap >/dev/null 2>&1
+		loadstatus " [+] Disk SWAP" "OK" "valid"
     fi
 }
 
@@ -427,7 +339,7 @@ function buildfstab()
 	genfstab -U /mnt >> /mnt/etc/fstab
 	cat /mnt/etc/fstab >/dev/null 2>&1
 
-	if [ -n "$swap_size" ];
+	if [ -n "$hdd_swap" ];
 	then
 		echo "# Swap" >> /mnt/etc/fstab
 		echo "/swap none swap defaults 0 0" >> /mnt/etc/fstab
@@ -435,7 +347,7 @@ function buildfstab()
 		echo "vm.swappiness=10" > /mnt/etc/sysctl.d/99-sysctl.conf
     fi
 
-	if [ "$disk_trim" == "true" ];
+	if [ "$hdd_trim" == "true" ];
 	then
 		arch-chroot /mnt sed -i "s/relatime/noatime/" /etc/fstab
 		arch-chroot /mnt systemctl enable fstrim.timer >/dev/null 2>&1
@@ -554,7 +466,7 @@ function bootloader()
         partuuid=$(blkid -s PARTUUID -o value /dev/sda3)
     fi
 
-	if [ "$disk_trim" == "true" ];
+	if [ "$hdd_trim" == "true" ];
 	then
 		grub_cmdline_linux=$(echo cryptdevice=PARTUUID=${partuuid}:lvm:allow-discards)
 	else
@@ -679,7 +591,7 @@ function packages()
     arch-chroot /mnt sed -i "s/%wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers
 	loadstatus " [+] Yay Helper" "OK" "valid"
 
-	if [ "$disk_system" == "btrfs" ];
+	if [ "$hdd_system" == "btrfs" ];
 	then
 		arch-chroot /mnt pacman -Syu btrfs-progs --noconfirm --needed >/dev/null 2>&1
 		loadstatus " [+] BTRFS Packages" "OK" "valid"
