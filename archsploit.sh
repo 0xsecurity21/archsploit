@@ -204,10 +204,10 @@ function partitions()
 
 	if [ -e "/dev/mapper/cryptroot" ];
 	then
-        cryptsetup close cryptroot
+        cryptsetup close cryptroot >/dev/null 2>&1
     fi
 
-	partprobe $disk_label
+	partprobe $disk_label >/dev/null 2>&1
     cmd_parted_uefi="mklabel gpt mkpart ESP fat32 1MiB 512MiB mkpart root $disk_system 512MiB 100% set 1 esp on"
     cmd_parted_bios="mklabel msdos mkpart primary ext4 4MiB 512MiB mkpart primary $disk_system 512MiB 100% set 1 boot on"
 
@@ -270,26 +270,26 @@ function partitions()
 
     if [ "$disk_system" == "f2fs" ];
 	then
-        pacman -Sy --noconfirm f2fs-tools
+        pacman -Sy --noconfirm f2fs-tools >/dev/null 2>&1
 		loadstatus " [+] Installing F2fs Tools" "OK" "valid"
     fi
 
-    sgdisk --zap-all $disk_label
-    wipefs -a $disk_label
+    sgdisk --zap-all $disk_label >/dev/null 2>&1
+    wipefs -a $disk_label >/dev/null 2>&1
 
     if [ "$system_mode" == "uefi" ];
 	then
-        parted -s $disk_label $cmd_parted_uefi
+        parted -s $disk_label $cmd_parted_uefi >/dev/null 2>&1
         if [ -n "$luks_passkey" ];
 		then
-            sgdisk -t=$partroot_numb:8309 $disk_label
-            sgdisk -t=$partroot_numb:8e00 $disk_label
+            sgdisk -t=$partroot_numb:8309 $disk_label >/dev/null 2>&1
+            sgdisk -t=$partroot_numb:8e00 $disk_label >/dev/null 2>&1
         fi
     fi
 
     if [ "$system_mode" == "bios" ];
 	then
-        parted -s $disk_label $cmd_parted_bios
+        parted -s $disk_label $cmd_parted_bios >/dev/null 2>&1
     fi
 
     if [ -n "$luks_passkey" ];
@@ -306,9 +306,9 @@ function partitions()
         disk_lvm="$disk_root"
     fi
 
-    pvcreate $disk_lvm
-    vgcreate vg $disk_lvm
-    lvcreate -l 100%FREE -n root vg
+    pvcreate $disk_lvm >/dev/null 2>&1
+    vgcreate vg $disk_lvm >/dev/null 2>&1
+    lvcreate -l 100%FREE -n root vg >/dev/null 2>&1
 
     if [ -n "$luks_passkey" ];
 	then
@@ -318,19 +318,19 @@ function partitions()
 	disk_root="/dev/mapper/vg-root"
     if [ "$system_mode" == "uefi" ];
 	then
-        wipefs -a $part_boot
-        wipefs -a $disk_root
-        mkfs.fat -n ESP -F32 $part_boot
-        mkfs."$disk_system" -L root $disk_root
+        wipefs -a $part_boot >/dev/null 2>&1
+        wipefs -a $disk_root >/dev/null 2>&1
+        mkfs.fat -n ESP -F32 $part_boot >/dev/null 2>&1
+        mkfs."$disk_system" -L root $disk_root >/dev/null 2>&1
 		loadstatus " [+] UEFI Partitions" "OK" "valid"
     fi
 
     if [ "$system_mode" == "bios" ];
 	then
-        wipefs -a $part_boot
-        wipefs -a $disk_root
-        mkfs."$disk_system" -L boot $part_boot
-        mkfs."$disk_system" -L root $disk_root
+        wipefs -a $part_boot >/dev/null 2>&1
+        wipefs -a $disk_root >/dev/null 2>&1
+        mkfs."$disk_system" -L boot $part_boot >/dev/null 2>&1
+        mkfs."$disk_system" -L root $disk_root >/dev/null 2>&1
 		loadstatus " [+] Bios Partitions" "OK" "valid"
     fi
 
@@ -350,10 +350,10 @@ function partitions()
     if [ "$disk_system" == "btrfs" ];
 	then
         mount -o "$part_opts" "$disk_root" /mnt
-        btrfs subvolume create /mnt/root
-        btrfs subvolume create /mnt/home
-        btrfs subvolume create /mnt/var
-        btrfs subvolume create /mnt/snapshots
+        btrfs subvolume create /mnt/root >/dev/null 2>&1
+        btrfs subvolume create /mnt/home >/dev/null 2>&1
+        btrfs subvolume create /mnt/var >/dev/null 2>&1
+        btrfs subvolume create /mnt/snapshots >/dev/null 2>&1
         umount /mnt
         mount -o "subvol=root,$part_opts,compress=lzo" "$disk_root" /mnt
         mkdir /mnt/{boot,home,var,snapshots}
@@ -374,14 +374,14 @@ function partitions()
         if [ "$disk_system" == "btrfs" ];
 		then
             truncate -s 0 /mnt/$swap_file
-            chattr +C /mnt/$swap_file
-            btrfs property set /mnt/$swap_file compression none
+            chattr +C /mnt/$swap_file >/dev/null 2>&1
+            btrfs property set /mnt/$swap_file compression none >/dev/null 2>&1
         fi
 
-        dd if=/dev/zero of=/mnt/$swap_file bs=1M count=$swap_size status=progress
+        dd if=/dev/zero of=/mnt/$swap_file bs=1M count=$swap_size status=progress >/dev/null 2>&1
 		loadstatus " [+] Erasing Virtual Disk" "OK" "valid"
         chmod 600 /mnt/$swap_file
-        mkswap /mnt/$swap_file
+        mkswap /mnt/$swap_file >/dev/null 2>&1
 		loadstatus " [+] Swap File" "OK" "valid"
     fi
 }
