@@ -188,7 +188,7 @@ function partitions()
 	if [ ! -f "/run/cryptsetup" ];
 	then
 		mkdir -p /run/cryptsetup
-		loadstatus " [+] Create Cryptsetup Directory" "OK" "valid"
+		loadstatus " [+] Cryptsetup Directory" "OK" "valid"
 	fi
 
 	if [ -d /mnt/boot ];
