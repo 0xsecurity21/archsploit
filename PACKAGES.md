@@ -18,7 +18,6 @@
 * [Commix](https://github.com/commixproject/commix/)
 * [ExploitDB](https://github.com/offensive-security/exploitdb)
 * [Jexboss](https://github.com/joaomatosf/jexboss/)
-* [Kage](https://github.com/Zerx0r/Kage)
 * [Libenom](https://github.com/bounteous/libenom/)
 * [Metasploit](https://github.com/rapid7/metasploit-framework/)
 * [PocSuite](https://github.com/knownsec/pocsuite3/)

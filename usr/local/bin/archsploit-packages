@@ -526,7 +526,18 @@ function install_exploitation()
 				echo ' port: 5432' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
 				echo ' pool: 75' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
 				echo ' timeout: 5' | sudo tee -a /opt/metasploit/config/database.yml >/dev/null 2>&1
-				sudo sh -c "echo export MSF_DATABASE_CONFIG=/opt/metasploit/config/database.yml >> /etc/profile"
+				sudo bash -c 'echo export MSF_DATABASE_CONFIG=/opt/metasploit/config/database.yml >> /etc/profile'
+				echo "" >> /home/$USER/.bashrc
+				echo "# Metasploit Alias" >> /home/$USER/.bashrc
+				echo "alias msfconsole='cd /opt/metasploit;./msfconsole'" >> /home/$USER/.bashrc
+				echo "alias msfd='cd /opt/metasploit;./msfd'" >> /home/$USER/.bashrc
+				echo "alias msfdb='cd /opt/metasploit;./msfdb'" >> /home/$USER/.bashrc
+				echo "alias msf-json-rpc.ru='cd /opt/metasploit;./msf-json-rpc.ru'" >> /home/$USER/.bashrc
+				echo "alias msfrpc='cd /opt/metasploit;./msfrpc'" >> /home/$USER/.bashrc
+				echo "alias msfrpcd='cd /opt/metasploit;./msfrpcd'" >> /home/$USER/.bashrc
+				echo "alias msfupdate='cd /opt/metasploit;./msfupdate'" >> /home/$USER/.bashrc
+				echo "alias msfvenom='cd /opt/metasploit;./msfvenom'" >> /home/$USER/.bashrc
+				echo "alias msf-ws.ru='cd /opt/metasploit;./msf-ws.ru'" >> /home/$USER/.bashrc
 				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/metasploit.md >/dev/null 2>&1
 				loadstatus " [+] Install Metasploit" "OK" "valid"
 			else
@@ -605,7 +616,7 @@ function install_exploitation()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-armitage.desktop', 'archsploit-commix.desktop', 'archsploit-exploitdb.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-armitage.desktop', 'archsploit-commix.desktop', 'archsploit-exploitdb.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-metasploit.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
