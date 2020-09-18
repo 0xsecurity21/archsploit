@@ -237,7 +237,7 @@ function partitions()
         fi
 
         #parted -s $hdd_label mklabel gpt mkpart primary fat32 1MiB 128MiB mkpart primary $hdd_system 128MiB 512MiB mkpart primary $hdd_system 512MiB 100% set 1 boot on
-		parted -s $hdd_label mklabel msdos mkpart primary ext4 4MiB 512MiB mkpart primary $hdd_system 512MiB 100% set 1 boot on
+		parted -s $hdd_label mklabel gpt mkpart primary ext4 4MiB 512MiB mkpart primary $hdd_system 512MiB 100% set 1 boot on
         sgdisk -t=1:ef02 $hdd_label >/dev/null 2>&1
         sgdisk -t=3:8e00 $hdd_label >/dev/null 2>&1
     fi
