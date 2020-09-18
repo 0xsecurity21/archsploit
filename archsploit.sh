@@ -200,7 +200,7 @@ function partitions()
         cryptsetup close cryptroot
     fi
 
-	partprobe $disk_label
+	partprobe $disk_label >/dev/null 2>&1
     cmd_parted_uefi="mklabel gpt mkpart ESP fat32 1MiB 512MiB mkpart root $disk_system 512MiB 100% set 1 esp on"
     cmd_parted_bios="mklabel msdos mkpart primary ext4 4MiB 512MiB mkpart primary $disk_system 512MiB 100% set 1 boot on"
 
@@ -266,28 +266,28 @@ function partitions()
         pacman -Sy --noconfirm f2fs-tools
     fi
 
-    sgdisk --zap-all $disk_label
-    wipefs -a $disk_label
+    sgdisk --zap-all $disk_label >/dev/null 2>&1
+    wipefs -a $disk_label >/dev/null 2>&1
 
     if [ "$system_mode" == "uefi" ];
 	then
-        parted -s $disk_label $cmd_parted_uefi
+        parted -s $disk_label $cmd_parted_uefi >/dev/null 2>&1
         if [ -n "$luks_passkey" ];
 		then
-            sgdisk -t=$partroot_numb:8309 $disk_label
-            sgdisk -t=$partroot_numb:8e00 $disk_label
+            sgdisk -t=$partroot_numb:8309 $disk_label >/dev/null 2>&1
+            sgdisk -t=$partroot_numb:8e00 $disk_label >/dev/null 2>&1
         fi
     fi
 
     if [ "$system_mode" == "bios" ];
 	then
-        parted -s $disk_label $cmd_parted_bios
+        parted -s $disk_label $cmd_parted_bios >/dev/null 2>&1
     fi
 
     if [ -n "$luks_passkey" ];
 	then
-        echo -n "$luks_passkey" | cryptsetup --key-size=512 --key-file=- luksFormat --type luks2 $part_root
-        echo -n "$luks_passkey" | cryptsetup --key-file=- open $part_root cryptroot
+        echo -n "$luks_passkey" | cryptsetup --key-size=512 --key-file=- luksFormat --type luks2 $part_root >/dev/null 2>&1
+        echo -n "$luks_passkey" | cryptsetup --key-file=- open $part_root cryptroot >/dev/null 2>&1
         sleep 15
     fi
 
@@ -298,9 +298,9 @@ function partitions()
         disk_lvm="$disk_root"
     fi
 
-    pvcreate $disk_lvm
-    vgcreate vg $disk_lvm
-    lvcreate -l 100%FREE -n root vg
+    pvcreate $disk_lvm >/dev/null 2>&1
+    vgcreate vg $disk_lvm >/dev/null 2>&1
+    lvcreate -l 100%FREE -n root vg >/dev/null 2>&1
 
     if [ -n "$luks_passkey" ];
 	then
