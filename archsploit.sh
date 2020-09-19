@@ -185,204 +185,113 @@ function partitions()
 {
 	loadheader "# Step: Create Partitions"
 
-	if [ ! -f "/run/cryptsetup" ];
+	if [ ! -d "/run/cryptsetup" ];
 	then
 		mkdir -p /run/cryptsetup
-		loadstatus " [+] Cryptsetup Directory" "OK" "valid"
 	fi
 
-	if [ -d /mnt/boot ];
-	then
-        umount /mnt/boot
-        umount /mnt
-    fi
-
-	if [ -e "/dev/mapper/vg-root" ];
-	then
-        umount "/dev/mapper/vg-root"
-    fi
-
-	if [ -e "/dev/mapper/cryptroot" ];
-	then
-        cryptsetup close cryptroot
-    fi
-
-	partprobe $disk_label >/dev/null 2>&1
-    cmd_parted_uefi="mklabel gpt mkpart ESP fat32 1MiB 512MiB mkpart root $disk_system 512MiB 100% set 1 esp on"
-    cmd_parted_bios="mklabel msdos mkpart primary ext4 4MiB 512MiB mkpart primary $disk_system 512MiB 100% set 1 boot on"
-
-    if [ "$system_mode" == "uefi" ];
-	then
-        if [ "$disk_sata" == "true" ];
-		then
-            part_boot="${disk_label}1"
-            part_root="${disk_label}2"
-            disk_root="${disk_label}2"
-        fi
-
-        if [ "$disk_nvme" == "true" ];
-		then
-            part_boot="${disk_label}p1"
-            part_root="${disk_label}p2"
-            disk_root="${disk_label}p2"
-        fi
-
-        if [ "$disk_mmcd" == "true" ];
-		then
-            part_boot="${disk_label}p1"
-            part_root="${disk_label}p2"
-            disk_root="${disk_label}p2"
-        fi
-    fi
-
-    if [ "$system_mode" == "bios" ];
-	then
-        if [ "$disk_sata" == "true" ];
-		then
-            part_boot="${disk_label}1"
-            part_root="${disk_label}2"
-            disk_root="${disk_label}2"
-        fi
-
-        if [ "$disk_nvme" == "true" ];
-		then
-            part_boot="${disk_label}p1"
-            part_root="${disk_label}p2"
-            disk_root="${disk_label}p2"
-        fi
-
-        if [ "$disk_mmcd" == "true" ];
-		then
-            part_boot="${disk_label}p1"
-            part_root="${disk_label}p2"
-            disk_root="${disk_label}p2"
-        fi
-    fi
-
-    partboot_numb="$part_boot"
-    partroot_numb="$part_root"
-    partboot_numb="${partboot_numb//\/dev\/sda/}"
-    partboot_numb="${partboot_numb//\/dev\/nvme0n1p/}"
-    partboot_numb="${partboot_numb//\/dev\/mmcblk0p/}"
-    partroot_numb="${partroot_numb//\/dev\/sda/}"
-    partroot_numb="${partroot_numb//\/dev\/nvme0n1p/}"
-    partroot_numb="${partroot_numb//\/dev\/mmcblk0p/}"
-
-    if [ "$disk_system" == "f2fs" ];
-	then
-        pacman -Sy --noconfirm f2fs-tools >/dev/null 2>&1
-		loadstatus " [+] Installing F2fs Tools" "OK" "valid"
-    fi
-
-    sgdisk --zap-all $disk_label >/dev/null 2>&1
+	sgdisk --zap-all $disk_label >/dev/null 2>&1
     wipefs -a $disk_label >/dev/null 2>&1
 
     if [ "$system_mode" == "uefi" ];
 	then
-        parted -s $disk_label $cmd_parted_uefi >/dev/null 2>&1
-        if [ -n "$luks_passkey" ];
+        if [ "$disk_sata" == "true" ];
 		then
-            sgdisk -t=$partroot_numb:8309 $disk_label >/dev/null 2>&1
-            sgdisk -t=$partroot_numb:8e00 $disk_label >/dev/null 2>&1
+            part_boot="${disk_label}1"
+            part_root="${disk_label}2"
         fi
+
+        if [ "$disk_nvme" == "true" ];
+		then
+            part_boot="${disk_label}p1"
+            part_root="${disk_label}p2"
+        fi
+
+        if [ "$disk_mmcd" == "true" ];
+		then
+            part_boot="${disk_label}p1"
+            part_root="${disk_label}p2"
+        fi
+
+        parted -s $disk_label mklabel gpt mkpart primary fat32 1MiB 512MiB mkpart primary $disk_system 512MiB 100% set 1 boot on
+        sgdisk -t=1:ef00 $disk_label >/dev/null 2>&1
+        sgdisk -t=2:8e00 $disk_label >/dev/null 2>&1
     fi
 
     if [ "$system_mode" == "bios" ];
 	then
-        parted -s $disk_label $cmd_parted_bios >/dev/null 2>&1
+        if [ "$disk_sata" == "true" ];
+		then
+            part_bios="${disk_label}1"
+            part_boot="${disk_label}2"
+            part_root="${disk_label}3"
+        fi
+
+        if [ "$disk_nvme" == "true" ];
+		then
+            part_bios="${disk_label}p1"
+            part_boot="${disk_label}p2"
+            part_root="${disk_label}p3"
+        fi
+
+        if [ "$disk_mmcd" == "true" ];
+		then
+            part_bios="${disk_label}p1"
+            part_boot="${disk_label}p2"
+            part_root="${disk_label}p3"
+        fi
+
+        parted -s $disk_label mklabel gpt mkpart primary fat32 1MiB 128MiB mkpart primary $disk_system 128MiB 512MiB mkpart primary $disk_system 512MiB 100% set 1 boot on
+        sgdisk -t=1:ef02 $disk_label >/dev/null 2>&1
+        sgdisk -t=3:8e00 $disk_label >/dev/null 2>&1
     fi
 
-    if [ -n "$luks_passkey" ];
-	then
-        echo -n "$luks_passkey" | cryptsetup --key-size=512 --key-file=- luksFormat --type luks2 $part_root >/dev/null 2>&1
-        echo -n "$luks_passkey" | cryptsetup --key-file=- open $part_root cryptroot >/dev/null 2>&1
-        sleep 15
-    fi
+	echo -n "$luks_passkey" | cryptsetup --key-size=512 --key-file=- luksFormat --type luks2 $part_root
+    echo -n "$luks_passkey" | cryptsetup --key-file=- open $part_root lvm
+	sleep 15
 
-    if [ -n "$luks_passkey" ];
-	then
-        disk_lvm="/dev/mapper/cryptroot"
-    else
-        disk_lvm="$disk_root"
-    fi
-
-    pvcreate $disk_lvm >/dev/null 2>&1
-    vgcreate vg $disk_lvm >/dev/null 2>&1
+    pvcreate /dev/mapper/lvm >/dev/null 2>&1
+    vgcreate vg /dev/mapper/lvm >/dev/null 2>&1
     lvcreate -l 100%FREE -n root vg >/dev/null 2>&1
 
-    if [ -n "$luks_passkey" ];
-	then
-        disk_root="/dev/mapper/cryptroot"
-    fi
-
-	disk_root="/dev/mapper/vg-root"
-    if [ "$system_mode" == "uefi" ];
+	path_root="/dev/mapper/vg-root"
+	if [ "$system_mode" == "uefi" ];
 	then
         wipefs -a $part_boot >/dev/null 2>&1
-        wipefs -a $disk_root >/dev/null 2>&1
+        wipefs -a $path_root >/dev/null 2>&1
         mkfs.fat -n ESP -F32 $part_boot >/dev/null 2>&1
-        mkfs."$disk_system" -L root $disk_root >/dev/null 2>&1
+        mkfs."$disk_system" -L root $path_root >/dev/null 2>&1
 		loadstatus " [+] UEFI Partitions" "OK" "valid"
     fi
 
     if [ "$system_mode" == "bios" ];
 	then
+        wipefs -a $part_bios >/dev/null 2>&1
         wipefs -a $part_boot >/dev/null 2>&1
-        wipefs -a $disk_root >/dev/null 2>&1
+        wipefs -a $path_root >/dev/null 2>&1
+        mkfs.fat -n BIOS -F32 $part_bios >/dev/null 2>&1
         mkfs."$disk_system" -L boot $part_boot >/dev/null 2>&1
-        mkfs."$disk_system" -L root $disk_root >/dev/null 2>&1
-		loadstatus " [+] Bios Partitions" "OK" "valid"
+        mkfs."$disk_system" -L root $path_root >/dev/null 2>&1
+		loadstatus " [+] BIOS Partitions" "OK" "valid"
     fi
 
-    part_opts="defaults"
-    if [ "$disk_trim" == "true" ];
+	if [ "$disk_trim" == "true" ];
 	then
-        if [ "$disk_system" == "f2fs" ];
-		then
-            part_opts="$part_opts,noatime,nodiscard"
-        else
-            part_opts="$part_opts,noatime"
-		fi
+        part_opts="defaults,noatime"
+		loadstatus " [+] TRIM Options" "OK" "valid"
     fi
 
-	loadstatus " [+] Trim Options" "OK" "valid"
-
-    if [ "$disk_system" == "btrfs" ];
-	then
-        mount -o "$part_opts" "$disk_root" /mnt
-        btrfs subvolume create /mnt/root >/dev/null 2>&1
-        btrfs subvolume create /mnt/home >/dev/null 2>&1
-        btrfs subvolume create /mnt/var >/dev/null 2>&1
-        btrfs subvolume create /mnt/snapshots >/dev/null 2>&1
-        umount /mnt
-        mount -o "subvol=root,$part_opts,compress=lzo" "$disk_root" /mnt
-        mkdir /mnt/{boot,home,var,snapshots}
-        mount -o "$part_opts" "$part_boot" /mnt/boot
-        mount -o "subvol=home,$part_opts,compress=lzo" "$disk_root" /mnt/home
-        mount -o "subvol=var,$part_opts,compress=lzo" "$disk_root" /mnt/var
-        mount -o "subvol=snapshots,$part_opts,compress=lzo" "$disk_root" /mnt/snapshots
-    else
-        mount -o "$part_opts" "$disk_root" /mnt
-        mkdir /mnt/boot
-        mount -o "$part_opts" "$part_boot" /mnt/boot
-    fi
-
+    mount -o "$part_opts" "$path_root" /mnt
+    mkdir /mnt/boot
+    mount -o "$part_opts" "$part_boot" /mnt/boot
 	loadstatus " [+] Mount Partitions" "OK" "valid"
 
-    if [ -n "$swap_size" ];
+    if [ -n "$swapd_size" -a "$disk_system" != "btrfs" ];
 	then
-        if [ "$disk_system" == "btrfs" ];
-		then
-            truncate -s 0 /mnt/$swap_file >/dev/null 2>&1
-            chattr +C /mnt/$swap_file >/dev/null 2>&1
-            btrfs property set /mnt/$swap_file compression none >/dev/null 2>&1
-        fi
-
-        dd if=/dev/zero of=/mnt/$swap_file bs=1M count=$swap_size status=progress >/dev/null 2>&1
-		loadstatus " [+] Erasing Virtual Disk" "OK" "valid"
-        chmod 600 /mnt/$swap_file
-        mkswap /mnt/$swap_file >/dev/null 2>&1
-		loadstatus " [+] Swap File" "OK" "valid"
+        fallocate -l $swapd_size /mnt/swap >/dev/null 2>&1
+        chmod 600 /mnt/swap
+        mkswap /mnt/swap >/dev/null 2>&1
+		loadstatus " [+] Disk SWAP" "OK" "valid"
     fi
 }
 
@@ -394,7 +303,7 @@ function loadmirror()
 	pacman -Syy >/dev/null 2>&1
 	pacman -S "reflector" --noconfirm --needed >/dev/null 2>&1
 	cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
-	reflector -c "FR" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist >/dev/null 2>&1
+	reflector -c "FR" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist
 	loadstatus " [+] Configure Mirror" "OK" "valid"
 }
 
@@ -433,10 +342,10 @@ function kernels()
 function buildfstab()
 {
 	loadheader "# Step: Build Fstab"
-	genfstab -U /mnt >> /mnt/etc/fstab >/dev/null 2>&1
+	genfstab -U /mnt >> /mnt/etc/fstab
 	cat /mnt/etc/fstab >/dev/null 2>&1
 
-	if [ -n "$swap_size" ];
+	if [ -n "$swapd_size" ];
 	then
 		echo "# Swap" >> /mnt/etc/fstab
 		echo "/swap none swap defaults 0 0" >> /mnt/etc/fstab
@@ -446,7 +355,7 @@ function buildfstab()
 
 	if [ "$disk_trim" == "true" ];
 	then
-		arch-chroot /mnt sed -i "s/relatime/noatime/" /etc/fstab >/dev/null 2>&1
+		arch-chroot /mnt sed -i "s/relatime/noatime/" /etc/fstab
 		arch-chroot /mnt systemctl enable fstrim.timer >/dev/null 2>&1
     fi
 
@@ -458,12 +367,12 @@ function buildfstab()
 function configuration()
 {
 	loadheader "# Step: Setup Configuration"
-	arch-chroot /mnt timedatectl set-timezone $timezone >/dev/null 2>&1
-	arch-chroot /mnt hwclock --systohc >/dev/null 2>&1
+	arch-chroot /mnt timedatectl set-timezone $timezone
+	arch-chroot /mnt hwclock --systohc
 	loadstatus " [+] System Timezone" "OK" "valid"
 	loadstatus " [+] System Clock" "OK" "valid"
 
-	arch-chroot /mnt sed -i "s/#$locale/$locale/" /etc/locale.gen >/dev/null 2>&1
+	arch-chroot /mnt sed -i "s/#$locale/$locale/" /etc/locale.gen
 	arch-chroot /mnt locale-gen >/dev/null 2>&1
 	echo "LANG=$language.$charset" >> /mnt/etc/locale.conf
 	echo "LANGUAGE=$language" >> /mnt/etc/locale.conf
@@ -482,10 +391,10 @@ function configuration()
 	loadstatus " [+] System Network" "OK" "valid"
 
 	printf "$root_password\n$root_password" | arch-chroot /mnt passwd >/dev/null 2>&1
-	arch-chroot /mnt useradd -m -g users -G wheel,storage,optical,power -s /bin/bash $user_username >/dev/null 2>&1
+	arch-chroot /mnt useradd -m -g users -G wheel,storage,optical,power -s /bin/bash $user_username
 	printf "$user_password\n$user_password" | arch-chroot /mnt passwd $user_username >/dev/null 2>&1
 	arch-chroot /mnt pacman -Syu bash-completion sudo xdg-user-dirs --noconfirm --needed >/dev/null 2>&1
-	arch-chroot /mnt sed -i "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers >/dev/null 2>&1
+	arch-chroot /mnt sed -i "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers
 	loadstatus " [+] System Users" "OK" "valid"
 }
 
@@ -535,9 +444,9 @@ function mkinitcpio()
 {
 	loadheader "# Step: Configure Mkinitcpio"
 	arch-chroot /mnt pacman -Syu lvm2 --noconfirm --needed >/dev/null 2>&1
-	arch-chroot /mnt sed -i "s/ block / block keyboard keymap /" /etc/mkinitcpio.conf >/dev/null 2>&1
-	arch-chroot /mnt sed -i "s/ filesystems keyboard / encrypt lvm2 filesystems /" /etc/mkinitcpio.conf >/dev/null 2>&1
-	arch-chroot /mnt sed -i "s/#COMPRESSION=\"${kernels_deflate}\"/COMPRESSION=\"${kernels_deflate}\"/" /etc/mkinitcpio.conf >/dev/null 2>&1
+	arch-chroot /mnt sed -i "s/ block / block keyboard keymap /" /etc/mkinitcpio.conf
+	arch-chroot /mnt sed -i "s/ filesystems keyboard / encrypt lvm2 filesystems /" /etc/mkinitcpio.conf
+	arch-chroot /mnt sed -i "s/#COMPRESSION=\"${kernels_deflate}\"/COMPRESSION=\"${kernels_deflate}\"/" /etc/mkinitcpio.conf
 	arch-chroot /mnt mkinitcpio -P >/dev/null 2>&1
 	loadstatus " [+] Mkinitcpio Configuration" "OK" "valid"
 }
@@ -571,10 +480,10 @@ function bootloader()
     fi
 
 	arch-chroot /mnt pacman -Syu grub dosfstools --noconfirm --needed >/dev/null 2>&1
-	arch-chroot /mnt sed -i "s/GRUB_DEFAULT=0/GRUB_DEFAULT=saved/" /etc/default/grub >/dev/null 2>&1
-	arch-chroot /mnt sed -i "s/#GRUB_SAVEDEFAULT=\"true\"/GRUB_SAVEDEFAULT=\"true\"/" /etc/default/grub >/dev/null 2>&1
-	arch-chroot /mnt sed -i -E "s/GRUB_CMDLINE_LINUX_DEFAULT=\"(.*)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet splash fastboot\"/" /etc/default/grub >/dev/null 2>&1
-	arch-chroot /mnt sed -i "s/GRUB_CMDLINE_LINUX=\"\"/GRUB_CMDLINE_LINUX=\"$grub_cmdline_linux\"/" /etc/default/grub >/dev/null 2>&1
+	arch-chroot /mnt sed -i "s/GRUB_DEFAULT=0/GRUB_DEFAULT=saved/" /etc/default/grub
+	arch-chroot /mnt sed -i "s/#GRUB_SAVEDEFAULT=\"true\"/GRUB_SAVEDEFAULT=\"true\"/" /etc/default/grub
+	arch-chroot /mnt sed -i -E "s/GRUB_CMDLINE_LINUX_DEFAULT=\"(.*)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet splash fastboot\"/" /etc/default/grub
+	arch-chroot /mnt sed -i "s/GRUB_CMDLINE_LINUX=\"\"/GRUB_CMDLINE_LINUX=\"$grub_cmdline_linux\"/" /etc/default/grub
 	echo "" >> /mnt/etc/default/grub
 	echo "# Arch Linux" >> /mnt/etc/default/grub
 	echo "GRUB_DISABLE_SUBMENU=y" >> /mnt/etc/default/grub
@@ -683,9 +592,9 @@ function packages()
 	## Basic Packages
 	## --------------
 	arch-chroot /mnt pacman -Syu git --noconfirm --needed >/dev/null 2>&1
-	arch-chroot /mnt sed -i "s/%wheel ALL=(ALL) ALL/%wheel ALL=(ALL) NOPASSWD: ALL/" /etc/sudoers >/dev/null 2>&1
+	arch-chroot /mnt sed -i "s/%wheel ALL=(ALL) ALL/%wheel ALL=(ALL) NOPASSWD: ALL/" /etc/sudoers
     arch-chroot /mnt bash -c "echo -e \"$user_password\n$user_password\n$user_password\n$user_password\n\" | su $user_username -c \"cd /home/$user_username && git clone https://aur.archlinux.org/yay.git && (cd yay && makepkg -si --noconfirm) && rm -rf yay\"" >/dev/null 2>&1
-    arch-chroot /mnt sed -i "s/%wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers >/dev/null 2>&1
+    arch-chroot /mnt sed -i "s/%wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers
 	loadstatus " [+] Yay Helper" "OK" "valid"
 
 	if [ "$disk_system" == "btrfs" ];
@@ -732,13 +641,13 @@ function packages()
 
 	## Install and Configure DnsMasq
 	## -----------------------------
-	arch-chroot /mnt sed -i "s/#port=5353/port=5353/" /etc/dnsmasq.conf >/dev/null 2>&1
+	arch-chroot /mnt sed -i "s/#port=5353/port=5353/" /etc/dnsmasq.conf
 	arch-chroot /mnt systemctl enable dnsmasq.service >/dev/null 2>&1
 	loadstatus " [+] DnsMasq Configuration" "OK" "valid"
 
 	## Configure Apache
 	## ----------------
-	arch-chroot /mnt sed -i "s/#LoadModule unique_id_module modules/LoadModule unique_id_module modules/" /etc/httpd/conf/httpd.conf >/dev/null 2>&1
+	arch-chroot /mnt sed -i "s/#LoadModule unique_id_module modules/LoadModule unique_id_module modules/" /etc/httpd/conf/httpd.conf
 	if [ -f "/mnt/tmp/archsploit/srv/http/index.html" ];
 	then
 		mv /mnt/tmp/archsploit/srv/http/index.html /mnt/srv/http/
@@ -959,10 +868,10 @@ function terminate()
 
 	## Delete Machine Logs
 	## -------------------
-	find /mnt/var/log/ -type f -name '*.gz' -exec sudo rm -f {} \;
-	find /mnt/var/log/ -type f -name '*.old' -exec sudo rm -f {} \;
-	find /mnt/var/log/ -type f -name '*.1' -exec sudo rm -f {} \;
-	find /mnt/var/log/ -type f -name '*.log' -exec sudo rm -f {} \;
+	find /mnt/var/log/ -type f -name '*.gz' -exec sudo rm -f {} \; >/dev/null 2>&1
+	find /mnt/var/log/ -type f -name '*.old' -exec sudo rm -f {} \; >/dev/null 2>&1
+	find /mnt/var/log/ -type f -name '*.1' -exec sudo rm -f {} \; >/dev/null 2>&1
+	find /mnt/var/log/ -type f -name '*.log' -exec sudo rm -f {} \; >/dev/null 2>&1
 	loadstatus " [+] Clean System Logs" "OK" "valid"
 
 	## Delete Temporary Folders and Files
