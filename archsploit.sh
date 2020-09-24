@@ -372,12 +372,60 @@ function configuration()
 	loadstatus " [+] System Timezone" "OK" "valid"
 	loadstatus " [+] System Clock" "OK" "valid"
 
-	arch-chroot /mnt sed -i "s/#$locale/$locale/" /etc/locale.gen
-	arch-chroot /mnt locale-gen >/dev/null 2>&1
-	echo "LANG=$language.$charset" >> /mnt/etc/locale.conf
-	echo "LANGUAGE=$language" >> /mnt/etc/locale.conf
-	echo "KEYMAP=$keyboard" > /mnt/etc/vconsole.conf
+	for LOCALE in "${locales_keys[@]}";
+	do
+		sed -i "s/#$LOCALE/$LOCALE/" /etc/locale.gen
+	    sed -i "s/#$LOCALE/$LOCALE/" /mnt/etc/locale.gen
+	done
+
+	for VARIABLE in "${locales_conf[@]}";
+	do
+		echo -e "$VARIABLE" >> /mnt/etc/locale.conf
+	done
+
+	locale-gen
+	arch-chroot /mnt locale-gen
+	echo -e "$env_keymap\n$env_font_keys\n$env_fonts_conf" > /mnt/etc/vconsole.conf
+
+	key_options=""
+	if [ -n "$env_keylayout" ];
+	then
+		key_options="$key_options"$'\n'"    Option \"XkbLayout\" \"$env_keylayout\""
+	fi
+
+	if [ -n "$env_keymodel" ];
+	then
+		key_options="$key_options"$'\n'"    Option \"XkbModel\" \"$env_keymodel\""
+	fi
+
+	if [ -n "$env_keyvariant" ];
+	then
+		key_options="$key_options"$'\n'"    Option \"XkbVariant\" \"$env_keyvariant\""
+	fi
+
+	if [ -n "$env_keyoptions" ];
+	then
+		key_options="$key_options"$'\n'"    Option \"XkbOptions\" \"$env_keyoptions\""
+	fi
+
+	arch-chroot /mnt mkdir -p "/etc/X11/xorg.conf.d/"
+	arch-chroot /mnt touch /mnt/etc/X11/xorg.conf.d/00-keyboard.conf
+	echo "# Written by systemd-localed(8), read by systemd-localed and Xorg." | tee -a /mnt/etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null 2>&1
+	echo "# It's probably wise not to edit this file manually." | tee -a /mnt/etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null 2>&1
+	echo "# Use localectl(1) to instruct systemd-localed to update it." | tee -a /mnt/etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null 2>&1
+	echo "Section \"InputClass\"" | tee -a /mnt/etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null 2>&1
+	echo "    Identifier \"system-keyboard\"" | tee -a /mnt/etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null 2>&1
+	echo "    MatchIsKeyboard \"on\"" | tee -a /mnt/etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null 2>&1
+	echo "    ${key_options}" | tee -a /mnt/etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null 2>&1
+	echo "EndSection" | tee -a /mnt/etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null 2>&1
 	loadstatus " [+] System Language" "OK" "valid"
+
+	#arch-chroot /mnt sed -i "s/#$locale/$locale/" /etc/locale.gen
+	#arch-chroot /mnt locale-gen >/dev/null 2>&1
+	#echo "LANG=$language.$charset" >> /mnt/etc/locale.conf
+	#echo "LANGUAGE=$language" >> /mnt/etc/locale.conf
+	#echo "KEYMAP=$keyboard" > /mnt/etc/vconsole.conf
+	#loadstatus " [+] System Language" "OK" "valid"
 
 	echo "$user_hostname" > /mnt/etc/hostname
 	arch-chroot /mnt pacman -Syu dhcpcd networkmanager --noconfirm --needed >/dev/null 2>&1
