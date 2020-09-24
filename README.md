@@ -111,8 +111,8 @@ ip link
 If your network interface is not yet enabled, you can enable it using:
 
 ```bash
-# Replace "interface" with your current Ethernet adapter name for example "eth0"
-ip link set "interface" up
+# Replace "device" with your current Ethernet adapter name for example "eth0"
+ip link set "device" up
 dhcpcd
 ```
 
@@ -133,19 +133,19 @@ device list
 Then, to scan the network:
 
 ```bash
-station *device* scan
+station "device" scan
 ```
 
 Or you can list all the available networks using:
 
 ```bash
-station *device* get-networks
+station "device" get-networks
 ```
 
 When you are ready, you can connect to your desidered network with the following command:
 
 ```bash
-station *device* connect *SSID*
+station "device" connect "SSID"
 ```
 
 When you already connected your machine to the WiFi, you must execute the `exit` command in order to return to terminal and continue the process of the installation of your operating system.
