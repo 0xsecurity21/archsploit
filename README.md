@@ -116,28 +116,47 @@ ip link set "interface" up
 dhcpcd
 ```
 
+**Connect to the Internet using Wireless Connection**
+
+From the latest version of **Arch Linux** released since June 2020, the package `wifi-menu`, is not present anymore in your live operating system. But you can connect to your WiFi network using the `iwctl` package. In order to do so, the first thing to do is to run the following command in order to get an interactive prompt.
+
+```bash
+iwctl
+```
+
+Once you are done, you can list the available WiFi devices using:
+
+```bash
+device list
+```
+
+Then, to scan the network:
+
+```bash
+station *device* scan
+```
+
+Or you can list all the available networks using:
+
+```bash
+station *device* get-networks
+```
+
+When you are ready, you can connect to your desidered network with the following command:
+
+```bash
+station *device* connect *SSID*
+```
+
+When you already connected your machine to the WiFi, you must execute the `exit` command in order to return to terminal and continue the process of the installation of your operating system.
+
+**Verify the connection**
+
 You can now verify the connection doing a simple ping as follow:
 
 ```bash
 ping archsploit.org -c 3
-```
-
-Or
-
-**Connect to the Internet using Wireless Connection**
-
-Like the above method, you must ensure your network interface is listed and enabled. Once you are done with this step, you can connect to your WiFi network using the following command:
-
-```bash
-# Replace "passphrase" with the password of your WiFi network and "SSID" with your network name
-wpa_passphrase "passphrase" | wpa_supplicant -B -i "SSID" -c /dev/stdin
 dhcpcd
-```
-
-In the same way as above, we'll verify the connection using the ping command:
-
-```bash
-ping archsploit.org -c 3
 ```
 
 **Launch The Installation Script**
