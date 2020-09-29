@@ -6,8 +6,7 @@ Let’s cut the bullshit, this project is based on Arch Linux and designed with 
 
 #### KEYS FEATURES
 
-Before you try these alternative Arch Linux installation method, I highly recommend installing Arch Linux in the traditional way from the command line, step-by-step using this [tutorial](https://cybsploit.com/2020/02/23/how-to-install-arch-linux-with-lvm-and-luks-disk-encryption-YzZyRVdDUVZDeHV4MEZYYXBWZU44Zz09) in order for you to gain a deeper understanding of your system and and what goes into installing a desktop Linux operating system.
-
+Before you try these alternative Arch Linux installation method, I highly recommend installing Arch Linux in the traditional way from the command line, step-by-step using this below tutorial in order for you to gain a deeper understanding of your system and and what goes into installing a desktop Linux operating system.
 
 **What exactly does this script do?**
 
