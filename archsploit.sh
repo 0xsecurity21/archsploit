@@ -743,17 +743,6 @@ function terminate()
 		loadstatus " [*] Gnome Background Properties" "!!" "issue"
 	fi
 
-	## Install Dash-to-Dock
-	## --------------------
-	if [ -d "/mnt/tmp/archsploit/usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com" ];
-	then
-		rm -rf /mnt/usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com
-		mv /mnt/tmp/archsploit/usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com /mnt/usr/share/gnome-shell/extensions/
-		loadstatus " [+] Dash to Dock Extension" "OK" "valid"
-	else
-		loadstatus " [*] Dash to Dock Extension" "!!" "issue"
-	fi
-
 	## Install Themes
 	## --------------
 	if [ -d "/mnt/tmp/archsploit/usr/share/themes" ];
