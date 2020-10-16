@@ -14,7 +14,6 @@
 
 ##### EXPLOITATION PACKAGES
 
-* [Armitage](http://www.fastandeasyhacking.com/)
 * [Commix](https://github.com/commixproject/commix/)
 * [ExploitDB](https://github.com/offensive-security/exploitdb)
 * [Jexboss](https://github.com/joaomatosf/jexboss/)

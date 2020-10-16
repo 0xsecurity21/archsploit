@@ -394,30 +394,6 @@ function install_exploitation()
 		sudo cp -r /tmp/packages-exploitation/opt/archsploit/exploitation/ /opt/archsploit/
 		loadstatus " [+] Copy Github Tools" "OK" "valid"
 
-		## Armitage
-	    ## http://www.fastandeasyhacking.com
-	    ## ---------------------------------
-		if [ ! -f "/etc/archsploit/packages/armitage.md" ];
-		then
-			wget -O /tmp/armitage.tgz http://www.fastandeasyhacking.com/download/armitage150813.tgz >/dev/null 2>&1
-			if [ -f "/tmp/armitage.tgz" ];
-			then
-				cd /tmp/
-				tar -xvzf /tmp/armitage.tgz >/dev/null 2>&1
-				sudo mv /tmp/armitage /opt/archsploit/exploitation/
-				sudo ln -s /opt/archsploit/exploitation/armitage/armitage /usr/local/bin/armitage
-				sudo ln -s /opt/archsploit/exploitation/armitage/teamserver /usr/local/bin/teamserver
-				sh -c "echo java -jar /opt/archsploit/exploitation/armitage/armitage.jar \$\* > /opt/archsploit/exploitation/armitage/armitage"
-				sudo perl -pi -e 's/armitage.jar/\/opt\/archsploit\/exploitation\/armitage\/armitage.jar/g' /opt/archsploit/exploitation/armitage/teamserver
-				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/armitage.md >/dev/null 2>&1
-			    loadstatus " [+] Install Armitage" "OK" "valid"
-			else
-				loadstatus " [*] Install Armitage" "!!" "issue"
-			fi
-		else
-			loadstatus " [+] Armitage Already Installed" "OK" "valid"
-		fi
-
 		## Commix
 	    ## https://github.com/commixproject/commix/
 	    ## ----------------------------------------
@@ -551,7 +527,7 @@ function install_exploitation()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-armitage.desktop', 'archsploit-commix.desktop', 'archsploit-exploitdb.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-commix.desktop', 'archsploit-exploitdb.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
