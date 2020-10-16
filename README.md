@@ -1,6 +1,6 @@
 #### INTRODUCTION
 
-Let’s cut the bullshit, this project is based on Arch Linux and designed with Pentest, Security and Development in mind for the best experience. This installation script of Arch Linux is based on the excellent work of [picodot.dev](https://github.com/picodotdev). The main purpose of this script is to make the Arch Linux installation process easier with a special touch for the Arch Linux Lovers with the aim to promote the culture of pentest and security IT environment.
+Let’s cut the bullshit, this project is based on Arch Linux and designed with Pentest, Security and Development in mind for the best experience.This installation script of Arch Linux is based on the excellent work of [picodot.dev](https://github.com/picodotdev). The main purpose of this script is to make the Arch Linux installation process easier with a special touch for the Arch Linux Lovers with the aim to promote the culture of pentest and security IT environment.
 
 * * *
 

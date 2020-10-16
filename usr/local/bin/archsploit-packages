@@ -1,0 +1,2509 @@
+#!/usr/bin/env bash
+
+## ---------------- ##
+## Define Variables ##
+## ---------------- ##
+
+## Colour Output
+## -------------
+color_d9534f="\033[01;31m"	# Issues/Errors
+color_5cb85c="\033[01;32m"	# Success
+color_f0ad4e="\033[01;33m"	# Warnings/Information
+color_0275d8="\033[01;34m"	# Heading
+color_revert="\033[00m"		# Normal
+
+## Text Options
+## ------------
+text_bold="\e[1m"		# Text Bold
+text_line="\e[4m"		# Text Underline
+text_main="\e[0m"		# Text Normal
+
+## Load Banner
+## -----------
+function showbanner()
+{
+	clear
+	echo -e "${color_d9534f}                  _               _       _ _       ${color_revert}"
+	echo -e "${color_d9534f}    __ _ _ __ ___| |__  ___ _ __ | | ___ (_) |_     ${color_revert}"
+	echo -e "${color_d9534f}   / _' | '__/ __| '_ \/ __| '_ \| |/ _ \| | __|    ${color_revert}"
+	echo -e "${color_d9534f}  | (_| | | | (__| | | \__ \ |_) | | (_) | | |_     ${color_revert}"
+	echo -e "${color_d9534f}   \__,_|_|  \___|_| |_|___/ .__/|_|\___/|_|\__|    ${color_revert}"
+	echo -e "${color_d9534f}                           |_|            v3.0.1    ${color_revert}"
+	echo
+	echo -e "${color_5cb85c} [i] [Package]: archsploit-packages${color_revert}"
+	echo -e "${color_5cb85c} [i] [Website]: https://archsploit.org${color_revert}"
+  	echo
+	sleep 4s
+	clear
+}
+
+## Keep Alive
+## ----------
+function keepalive()
+{
+	sudo -v
+
+	while true;
+	do
+		sudo -n true;
+		sleep 60;
+		kill -0 "$$" || exit;
+	done 2>/dev/null &
+}
+
+## Load Header
+## -----------
+function loadheader()
+{
+	echo
+    echo -e "${color_0275d8}${@}${color_revert}"
+	sleep 2
+}
+
+## Load Notice
+## -----------
+function loadnotice()
+{
+	echo -e "${color_5cb85c}${@}${color_revert}"
+	sleep 5
+}
+
+## Load Status
+## -----------
+function loadstatus()
+{
+    color_d9534f=$(tput setaf 1)
+    color_5cb85c=$(tput setaf 2)
+    color_f0ad4e=$(tput setaf 3)
+    color_0275d8=$(tput setaf 4)
+    color_revert=$(tput sgr0)
+
+    message=$1
+    display="[$2]"
+
+    if [ "$3" == "issue" ];
+    then
+        return="$color_d9534f${display}$color_revert"
+    elif [ "$3" == "valid" ];
+    then
+        return="$color_5cb85c${display}$color_revert"
+    elif [ "$3" == "warning" ];
+    then
+        return="$color_f0ad4e${display}$color_revert"
+    elif [ "$3" == "info" ];
+    then
+        return="$color_f0ad4e${display}$color_revert"
+    else
+        return="$color_revert${display}$color_revert"
+    fi
+
+    let COL=$(tput cols)-${#message}+${#return}-${#display}
+
+    echo -n $message
+    printf "%${COL}s\n"  "$return"
+}
+
+## Display Usage
+## -------------
+function usage
+{
+	clear
+    echo "usage: archsploit-system [-i --install] or [-h --help]"
+	echo
+	echo "  -i      - Followed by the packages category to be installed"
+	echo "  -h      - Display this help menu"
+	echo
+	echo -e "${text_bold}Packages:${text_main}"
+    echo "  all               - Install and configure All Tools"
+    echo "  cracking          - Install and configure Cracking Tools"
+    echo "  exploitation      - Install and configure Exploitation Tools"
+    echo "  forensics         - Install and configure Forensics Tools"
+    echo "  gathering         - Install and configure Gathering Tools"
+    echo "  hardware          - Install and configure Hardware Tools"
+    echo "  miscs             - Install and configure Miscs Tools"
+    echo "  networking        - Install and configure Networking Tools"
+    echo "  reporting         - Install and configure Reporting Tools"
+    echo "  reverse           - Install and configure Reverse Tools"
+    echo "  sniffing          - Install and configure Sniffing Tools"
+    echo "  social            - Install and configure Social Tools"
+    echo "  stressing         - Install and configure Stress-Testing Tools"
+    echo "  vulnerability     - Install and configure Vulnerability Tools"
+    echo "  webapps           - Install and configure Webapps Tools"
+    echo "  wireless          - Install and configure Wireless Tools"
+	echo
+    exit 1
+}
+
+## Check Internet status
+## ---------------------
+function checkinternet()
+{
+	for i in {1..10};
+	do
+		ping -c 1 -W ${i} www.google.com &>/dev/null && break;
+	done
+
+	if [[ "$?" -ne 0 ]];
+	then
+		cd /tmp/
+		echo
+		echo -e " ${color_d9534f}[!]${color_revert} An unknown error occured ~ Possible DNS issues or no Internet connection"
+		echo -e " ${color_d9534f}[!]${color_revert} Quitting ..."
+		echo -e "\n"
+		exit 1
+	fi
+}
+
+## Create System Drawers
+## ---------------------
+function systemdrawers()
+{
+	if [ ! -f "/etc/archsploit/system/drawers.md" ];
+	then
+		gsettings set org.gnome.desktop.app-folders folder-children "['Cracking', 'Exploitation', 'Forensics', 'Gathering', 'Hardware', 'Miscs', 'Networking', 'Reporting', 'Reverse', 'Sniffing', 'Social', 'Stressing', 'Vulnerability', 'Webapps', 'Wireless']"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ name "01 - Cracking"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ name "02 - Exploitation"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Forensics/ name "03 - Digital Forensics"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ name "04 - Information Gathering"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ name "05 - Hardware"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Miscs/ name "06 - Miscellaneous"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Networking/ name "07 - Networking"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reporting/ name "08 - Reporting"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reverse/ name "09 - Reverse Engineering"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ name "10 - Sniffing/Spoofing"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Social/ name "11 - Social Engineering"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Stressing/ name "12 - Stress Testing"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Vulnerability/ name "13 - Vulnerability Analysis"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Webapps/ name "14 - Web Applications"
+		gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Wireless/ name "15 - Wireless"
+		sudo mkdir /etc/archsploit/system/
+		echo "true" | sudo tee /etc/archsploit/system/drawers.md >/dev/null 2>&1
+	fi
+}
+
+## Install Cracking Packages
+## -------------------------
+function install_cracking()
+{
+	loadheader "# Step: Install Cracking Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S hashcat --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Hashcat" "OK" "valid"
+
+	sudo pacman -S hydra --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Hydra" "OK" "valid"
+
+	sudo pacman -S john --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install John" "OK" "valid"
+
+	sudo pacman -S ncrack --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Ncrack" "OK" "valid"
+
+	sudo pacman -S ophcrack --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/ophcrack.desktop
+	loadstatus " [+] Install Ophcrack" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-cracking >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-cracking/opt/archsploit/cracking/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-cracking/opt/archsploit/cracking/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Brutespray
+		## https://github.com/x90skysn3k/brutespray/
+		## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/brutespray.md" ];
+		then
+			sudo chmod +x /opt/archsploit/cracking/brutespray/brutespray.py
+			sudo ln -s /opt/archsploit/cracking/brutespray/brutespray.py /usr/local/bin/brutespray
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/brutespray.md >/dev/null 2>&1
+			loadstatus " [+] Install Brutespray" "OK" "valid"
+		else
+			loadstatus " [+] Brutespray Already Installed" "OK" "valid"
+		fi
+
+		## CredCrack
+	    ## https://github.com/gojhonny/CredCrack/
+	    ## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/credcrack.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/cracking/credcrack/credcrack.py
+		    sudo ln -s /opt/archsploit/cracking/credcrack/credcrack.py /usr/local/bin/credcrack
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credcrack.md >/dev/null 2>&1
+			loadstatus " [+] Install CredCrack" "OK" "valid"
+		else
+			loadstatus " [+] CredCrack Already Installed" "OK" "valid"
+		fi
+
+		## Findmyhash
+		## https://code.google.com/archive/p/findmyhash/
+		## ---------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/findmyhash.md" ];
+		then
+			sudo chmod +x /opt/archsploit/cracking/findmyhash/findmyhash.py
+			sudo ln -s /opt/archsploit/cracking/findmyhash/findmyhash.py /usr/local/bin/findmyhash
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/findmyhash.md >/dev/null 2>&1
+			loadstatus " [+] Install Findmyhash" "OK" "valid"
+		else
+			loadstatus " [+] Findmyhash Already Installed" "OK" "valid"
+		fi
+
+		## HashID
+		## http://code.google.com/p/hash-identifier/
+		## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/hashid.md" ];
+		then
+			sudo chmod +x /opt/archsploit/cracking/hashid/hashid.py
+			sudo ln -s /opt/archsploit/cracking/hashid/hashid.py /usr/local/bin/hashid
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashid.md >/dev/null 2>&1
+			loadstatus " [+] Install HashID" "OK" "valid"
+		else
+			loadstatus " [+] HashID Already Installed" "OK" "valid"
+		fi
+
+		## HashTag
+		## https://github.com/SmeegeSec/HashTag/
+		## -------------------------------------
+		if [ ! -f "/etc/archsploit/packages/hashtag.md" ];
+		then
+			sudo chmod +x /opt/archsploit/cracking/hashtag/hashtag.py
+			sudo ln -s /opt/archsploit/cracking/hashtag/hashtag.py /usr/local/bin/hashtag
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hashtag.md >/dev/null 2>&1
+			loadstatus " [+] Install HashTag" "OK" "valid"
+		else
+			loadstatus " [+] HashTag Already Installed" "OK" "valid"
+		fi
+
+		## Rainbowcrack
+		## https://project-rainbowcrack.com/
+		## ---------------------------------
+		if [ ! -f "/etc/archsploit/packages/rainbowcrack.md" ];
+		then
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rcrack
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rt2rtc
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rtc2rt
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rtgen
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rtmerge
+			sudo chmod +x /opt/archsploit/cracking/rainbowcrack/rtsort
+			sudo touch /usr/local/bin/rcrack
+			sudo chmod +x /usr/local/bin/rcrack
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+			echo './rcrack' | sudo tee -a /usr/local/bin/rcrack >/dev/null 2>&1
+			sudo touch /usr/local/bin/rt2rtc
+			sudo chmod +x /usr/local/bin/rt2rtc
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+			echo './rt2rtc' | sudo tee -a /usr/local/bin/rt2rtc >/dev/null 2>&1
+			sudo touch /usr/local/bin/rtc2rt
+			sudo chmod +x /usr/local/bin/rtc2rt
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+			echo './rtc2rt' | sudo tee -a /usr/local/bin/rtc2rt >/dev/null 2>&1
+			sudo touch /usr/local/bin/rtgen
+			sudo chmod +x /usr/local/bin/rtgen
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+			echo './rtgen' | sudo tee -a /usr/local/bin/rtgen >/dev/null 2>&1
+			sudo touch /usr/local/bin/rtmerge
+			sudo chmod +x /usr/local/bin/rtmerge
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+			echo './rtmerge' | sudo tee -a /usr/local/bin/rtmerge >/dev/null 2>&1
+			sudo touch /usr/local/bin/rtsort
+			sudo chmod +x /usr/local/bin/rtsort
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+			echo 'cd /opt/archsploit/cracking/rainbowcrack/' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+			echo './rtsort' | sudo tee -a /usr/local/bin/rtsort >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/rainbowcrack.md >/dev/null 2>&1
+			loadstatus " [+] Install Rainbowcrack" "OK" "valid"
+		else
+			loadstatus " [+] Rainbowcrack Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-cracking/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Cracking/ apps "['archsploit-brutespray.desktop', 'archsploit-credcrack.desktop', 'archsploit-findmyhash.desktop', 'archsploit-hashcat.desktop', 'archsploit-hashid.desktop', 'archsploit-hashtag.desktop', 'archsploit-hydra.desktop', 'archsploit-john.desktop', 'archsploit-ncrack.desktop', 'archsploit-ophcrack.desktop', 'archsploit-rcrack.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-cracking/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+    ## ------------------------
+    sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Cracking Packages Installed"
+}
+
+## Install Exploitation Packages
+## -----------------------------
+function install_exploitation()
+{
+	loadheader "# Step: Install Exploitation Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-exploitation >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-exploitation/opt/archsploit/exploitation/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-exploitation/opt/archsploit/exploitation/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Armitage
+	    ## http://www.fastandeasyhacking.com
+	    ## ---------------------------------
+		if [ ! -f "/etc/archsploit/packages/armitage.md" ];
+		then
+			wget -O /tmp/armitage.tgz http://www.fastandeasyhacking.com/download/armitage150813.tgz >/dev/null 2>&1
+			if [ -f "/tmp/armitage.tgz" ];
+			then
+				cd /tmp/
+				tar -xvzf /tmp/armitage.tgz >/dev/null 2>&1
+				sudo mv /tmp/armitage /opt/archsploit/exploitation/
+				sudo ln -s /opt/archsploit/exploitation/armitage/armitage /usr/local/bin/armitage
+				sudo ln -s /opt/archsploit/exploitation/armitage/teamserver /usr/local/bin/teamserver
+				sh -c "echo java -jar /opt/archsploit/exploitation/armitage/armitage.jar \$\* > /opt/archsploit/exploitation/armitage/armitage"
+				sudo perl -pi -e 's/armitage.jar/\/opt\/archsploit\/exploitation\/armitage\/armitage.jar/g' /opt/archsploit/exploitation/armitage/teamserver
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/armitage.md >/dev/null 2>&1
+			    loadstatus " [+] Install Armitage" "OK" "valid"
+			else
+				loadstatus " [*] Install Armitage" "!!" "issue"
+			fi
+		else
+			loadstatus " [+] Armitage Already Installed" "OK" "valid"
+		fi
+
+		## Commix
+	    ## https://github.com/commixproject/commix/
+	    ## ----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/commix.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/exploitation/commix/commix.py
+		    sudo touch /usr/local/bin/commix
+		    sudo chmod +x /usr/local/bin/commix
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+		    echo 'cd /opt/archsploit/exploitation/commix/' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+		    echo 'sudo python commix.py $@' | sudo tee -a /usr/local/bin/commix >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/commix.md >/dev/null 2>&1
+			loadstatus " [+] Install Commix" "OK" "valid"
+		else
+			loadstatus " [+] Commix Already Installed" "OK" "valid"
+		fi
+
+		## ExploitDB
+		## https://github.com/offensive-security/exploitdb
+		## -----------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/exploitdb.md" ];
+		then
+		    sudo git clone https://github.com/offensive-security/exploitdb >/dev/null 2>&1
+			sudo mv /tmp/exploitdb/ /opt/archsploit/exploitation/
+			sudo chmod +x /opt/archsploit/exploitation/exploitdb/searchsploit
+			sudo ln -s /opt/archsploit/exploitation/exploitdb/searchsploit /usr/local/bin/searchsploit
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/exploitdb.md >/dev/null 2>&1
+			loadstatus " [+] Install Exploit-DB" "OK" "valid"
+		else
+			loadstatus " [+] Exploit-DB Already Installed" "OK" "valid"
+		fi
+
+		## Jexboss
+		## https://github.com/joaomatosf/jexboss/
+		## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/jexboss.md" ];
+		then
+			sudo chmod +x /opt/archsploit/exploitation/jexboss/jexboss.py
+			sudo touch /usr/local/bin/jexboss
+			sudo chmod +x /usr/local/bin/jexboss
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+			echo 'cd /opt/archsploit/exploitation/jexboss/' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+			echo 'sudo python jexboss.py $@' | sudo tee -a /usr/local/bin/jexboss >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/jexboss.md >/dev/null 2>&1
+			loadstatus " [+] Install Jexboss" "OK" "valid"
+		else
+			loadstatus " [+] Jexboss Already Installed" "OK" "valid"
+		fi
+
+		## Libenom
+		## https://github.com/bounteous/libenom/
+		## -------------------------------------
+		if [ ! -f "/etc/archsploit/packages/libenom.md" ];
+		then
+			sudo chmod +x /opt/archsploit/exploitation/libenom/libenom.py
+			sudo ln -s /opt/archsploit/exploitation/libenom/libenom.py /usr/local/bin/libenom
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/libenom.md >/dev/null 2>&1
+			loadstatus " [+] Install Libenom" "OK" "valid"
+		else
+			loadstatus " [+] Libenom Already Installed" "OK" "valid"
+		fi
+
+		## PocSuite3
+		## https://github.com/knownsec/pocsuite3/
+		## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/pocsuite3.md" ];
+		then
+			sudo pip3 install pocsuite3 >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pocsuite3.md >/dev/null 2>&1
+			loadstatus " [+] Install PocSuite3" "OK" "valid"
+		else
+			loadstatus " [+] PocSuite3 Already Installed" "OK" "valid"
+		fi
+
+		## Routersploit
+		## https://github.com/threat9/routersploit/
+		## ----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/routersploit.md" ];
+		then
+			cd /opt/archsploit/exploitation/routersploit/
+			sudo chmod +x /opt/archsploit/exploitation/routersploit/rsf.py
+			sudo touch /usr/local/bin/routersploit
+			sudo chmod +x /usr/local/bin/routersploit
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+			echo 'cd /opt/archsploit/exploitation/routersploit/' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+			echo 'sudo ./rsf.py $@' | sudo tee -a /usr/local/bin/routersploit >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/routersploit.md >/dev/null 2>&1
+			loadstatus " [+] Install Routersploit" "OK" "valid"
+		else
+			loadstatus " [+] Routersploit Already Installed" "OK" "valid"
+		fi
+
+		## Shellnoob
+		## https://github.com/reyammer/shellnoob/
+		## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/shellnoob.md" ];
+		then
+			sudo chmod +x /opt/archsploit/exploitation/shellnoob/shellnoob.py
+			sudo ln -s /opt/archsploit/exploitation/shellnoob/shellnoob.py /usr/local/bin/shellnoob
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/shellnoob.md >/dev/null 2>&1
+			loadstatus " [+] Install Shellnoob" "OK" "valid"
+		else
+			loadstatus " [+] Shellnoob Already Installed" "OK" "valid"
+		fi
+
+		## Unicorn
+		## https://github.com/trustedsec/unicorn/
+		## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/unicorn.md" ];
+		then
+			sudo chmod +x /opt/archsploit/exploitation/unicorn/unicorn.py
+			sudo ln -s /opt/archsploit/exploitation/unicorn/unicorn.py /usr/local/bin/unicorn
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/unicorn.md >/dev/null 2>&1
+			loadstatus " [+] Install Unicorn" "OK" "valid"
+		else
+			loadstatus " [+] Unicorn Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-exploitation/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Exploitation/ apps "['archsploit-armitage.desktop', 'archsploit-commix.desktop', 'archsploit-exploitdb.desktop', 'archsploit-jexboss.desktop', 'archsploit-libenom.desktop', 'archsploit-pocsuite.desktop', 'archsploit-routersploit.desktop', 'archsploit-shellnoob.desktop', 'archsploit-unicorn.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-exploitation/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+    ## ------------------------
+    sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Exploitation Packages Installed"
+}
+
+## Install Digital Forensics Packages
+## ----------------------------------
+function install_forensics()
+{
+	loadheader "# Step: Install Forensics Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S chntpw --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Chntpw" "OK" "valid"
+
+	sudo pacman -S extundelete --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Extundelete" "OK" "valid"
+
+	sudo pacman -S foremost --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Foremost" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-forensics >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-forensics/opt/archsploit/forensics/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-forensics/opt/archsploit/forensics/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Ddrescue
+	    ## http://www.garloff.de/kurt/linux/ddrescue/
+	    ## ------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/ddrescue.md" ];
+		then
+			cd /opt/archsploit/forensics/ddrescue/
+			sudo make >/dev/null 2>&1
+			sudo mv /opt/archsploit/forensics/ddrescue/dd_rescue /opt/archsploit/forensics/ddrescue/ddrescue
+			sudo ln -s /opt/archsploit/forensics/ddrescue/ddrescue /usr/local/bin/ddrescue
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/ddrescue.md >/dev/null 2>&1
+			loadstatus " [+] Install Ddrescue" "OK" "valid"
+		else
+			loadstatus " [+] Ddrescue Already Installed" "OK" "valid"
+		fi
+
+		## Dumpzilla
+		## https://www.dumpzilla.org/
+		## --------------------------
+		if [ ! -f "/etc/archsploit/packages/dumpzilla.md" ];
+		then
+			sudo chmod +x /opt/archsploit/forensics/dumpzilla/dumpzilla.py
+			sudo ln -s /opt/archsploit/forensics/dumpzilla/dumpzilla.py /usr/local/bin/dumpzilla
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dumpzilla.md >/dev/null 2>&1
+			loadstatus " [+] Install Dumpzilla" "OK" "valid"
+		else
+			loadstatus " [+] Dumpzilla Already Installed" "OK" "valid"
+		fi
+
+		## Pdf-Parser
+		## https://blog.didierstevens.com/programs/pdf-parser/
+		## ---------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/pdf-parser.md" ];
+		then
+			sudo chmod +x /opt/archsploit/forensics/pdf-parser/pdf-parser.py
+			sudo ln -s /opt/archsploit/forensics/pdf-parser/pdf-parser.py /usr/local/bin/pdf-parser
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pdf-parser.md >/dev/null 2>&1
+			loadstatus " [+] Install Pdf-Parser" "OK" "valid"
+		else
+			loadstatus " [+] Pdf-Parser Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-forensics/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Forensics/ apps "['archsploit-chntpw.desktop', 'archsploit-ddrescue.desktop', 'archsploit-dumpzilla.desktop', 'archsploit-extundelete.desktop', 'archsploit-foremost.desktop', 'archsploit-pdf-parser.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-forensics/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+    ## ------------------------
+    sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Digital Forensics Packages Installed"
+}
+
+## Install Information Gathering Packages
+## --------------------------------------
+function install_gathering()
+{
+	loadheader "# Step: Install Gathering Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S arp-scan --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Arp-Scan" "OK" "valid"
+
+	sudo pacman -S dnstracer --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Dnstracer" "OK" "valid"
+
+	sudo pacman -S masscan --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Masscan" "OK" "valid"
+
+	sudo pacman -S nmap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Nmap" "OK" "valid"
+
+	sudo pacman -S p0f --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install P0f" "OK" "valid"
+
+	sudo pacman -S sslsplit --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Sslsplit" "OK" "valid"
+
+	sudo pacman -S thc-ipv6 --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Thc-ipv6" "OK" "valid"
+
+	sudo pacman -S traceroute --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Traceroute" "OK" "valid"
+
+	sudo pacman -S whois --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Whois" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-gathering >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-gathering/opt/archsploit/gathering/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-gathering/opt/archsploit/gathering/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Automater
+	    ## https://github.com/1aN0rmus/TekDefense-Automater/
+	    ## -------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/automater.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/gathering/automater/automater.py
+		    sudo ln -s /opt/archsploit/gathering/automater/automater.py /usr/local/bin/automater
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/automater.md >/dev/null 2>&1
+		    loadstatus " [+] Install Automater" "OK" "valid"
+		else
+			loadstatus " [+] Automater Already Installed" "OK" "valid"
+		fi
+
+		## DNSMap
+		## https://code.google.com/archive/p/dnsmap/
+		## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/dnsmap.md" ];
+		then
+			cd /opt/archsploit/gathering/dnsmap/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/gathering/dnsmap/dnsmap /usr/local/bin/dnsmap
+			sudo ln -s /opt/archsploit/gathering/dnsmap/dnsmap-bulk.sh /usr/local/bin/dnsmap-bulk
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dnsmap.md >/dev/null 2>&1
+			loadstatus " [+] Install DNSMap" "OK" "valid"
+		else
+			loadstatus " [+] DNSMap Already Installed" "OK" "valid"
+		fi
+
+		## Enum4Linux
+		## https://labs.portcullis.co.uk/tools/enum4linux/
+		## -----------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/enum4linux.md" ];
+		then
+			sudo chmod +x /opt/archsploit/gathering/enum4linux/enum4linux.pl
+			sudo ln -s /opt/archsploit/gathering/enum4linux/enum4linux.pl /usr/local/bin/enum4linux
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/enum4linux.md >/dev/null 2>&1
+			loadstatus " [+] Install Enum4Linux" "OK" "valid"
+		else
+			loadstatus " [+] Enum4Linux Already Installed" "OK" "valid"
+		fi
+
+		## Enumiax
+		## https://sourceforge.net/projects/enumiax/
+		## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/enumiax.md" ];
+		then
+			cd /opt/archsploit/gathering/enumiax/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/gathering/enumiax/enumiax /usr/local/bin/enumiax
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/enumiax.md >/dev/null 2>&1
+			loadstatus " [+] Install Enumiax" "OK" "valid"
+		else
+			loadstatus " [+] Enumiax Already Installed" "OK" "valid"
+		fi
+
+		## LinEnum
+		## https://github.com/rebootuser/LinEnum/
+		## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/linenum.md" ];
+		then
+			sudo chmod +x /opt/archsploit/gathering/linenum/linenum.sh
+			sudo ln -s /opt/archsploit/gathering/linenum/linenum.sh /usr/local/bin/linenum
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/linenum.md >/dev/null 2>&1
+			loadstatus " [+] Install LinEnum" "OK" "valid"
+		else
+			loadstatus " [+] LinEnum Already Installed" "OK" "valid"
+		fi
+
+		## Nikto
+		## https://github.com/sullo/nikto/
+		## -------------------------------
+		if [ ! -f "/etc/archsploit/packages/nikto.md" ];
+		then
+			sudo chmod +x /opt/archsploit/gathering/nikto/program/nikto.pl
+			sudo touch /usr/local/bin/nikto
+			sudo chmod +x /usr/local/bin/nikto
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+			echo 'cd /opt/archsploit/gathering/nikto/program/' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+			echo 'sudo ./nikto.pl $@' | sudo tee -a /usr/local/bin/nikto >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nikto.md >/dev/null 2>&1
+			loadstatus " [+] Install Nikto" "OK" "valid"
+		else
+			loadstatus " [+] Nikto Already Installed" "OK" "valid"
+		fi
+
+		## NSE Parser
+		## https://github.com/actuated/nse-parse
+		## -------------------------------------
+		if [ ! -f "/etc/archsploit/packages/nse-parser.md" ];
+		then
+			sudo chmod +x /opt/archsploit/gathering/nse-parser/nse-parser.sh
+			sudo touch /usr/local/bin/nse-parser
+			sudo chmod +x /usr/local/bin/nse-parser
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nse-parser >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/nse-parser >/dev/null 2>&1
+			echo 'cd /opt/archsploit/gathering/nse-parser/' | sudo tee -a /usr/local/bin/nse-parser >/dev/null 2>&1
+			echo './nse-parser.sh $@' | sudo tee -a /usr/local/bin/nse-parser >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nse-parser.md >/dev/null 2>&1
+			loadstatus " [+] Install NSE Parser" "OK" "valid"
+		else
+			loadstatus " [+] NSE Parser Already Installed" "OK" "valid"
+		fi
+
+		## Nullinux
+		## https://github.com/m8r0wn/nullinux/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/nullinux.md" ];
+		then
+			sudo chmod +x /opt/archsploit/gathering/nullinux/nullinux.py
+			sudo ln -s /opt/archsploit/gathering/nullinux/nullinux.py /usr/local/bin/nullinux
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nullinux.md >/dev/null 2>&1
+			loadstatus " [+] Install Nullinux" "OK" "valid"
+		else
+			loadstatus " [+] Nullinux Already Installed" "OK" "valid"
+		fi
+
+		## Smbmap
+		## https://github.com/ShawnDEvans/smbmap
+		## -------------------------------------
+		if [ ! -f "/etc/archsploit/packages/smbmap.md" ];
+		then
+			sudo chmod +x /opt/archsploit/gathering/smbmap/smbmap.py
+			cd /opt/archsploit/gathering/smbmap/
+			sudo pip install -r requirements.txt >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/gathering/smbmap/smbmap.py /usr/local/bin/smbmap.py
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smbmap.md >/dev/null 2>&1
+			loadstatus " [+] Install Smbmap" "OK" "valid"
+		else
+			loadstatus " [+] Smbmap Already Installed" "OK" "valid"
+		fi
+
+		## SMTP User Enum
+		## https://github.com/pentestmonkey/smtp-user-enum/
+		## ------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/smtp-user-enum.md" ];
+		then
+			sudo chmod +x /opt/archsploit/gathering/smtp-user-enum/smtp-user-enum.pl
+			sudo ln -s /opt/archsploit/gathering/smtp-user-enum/smtp-user-enum.pl /usr/local/bin/smtp-user-enum
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smtp-user-enum.md >/dev/null 2>&1
+			loadstatus " [+] Install SMTP User Enum" "OK" "valid"
+		else
+			loadstatus " [+] SMTP User Enum Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-gathering/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ apps "['archsploit-arp-scan.desktop', 'archsploit-automater.desktop', 'archsploit-dnsmap.desktop', 'archsploit-dnstracer.desktop', 'archsploit-enum4linux.desktop', 'archsploit-enumiax.desktop', 'archsploit-linenum.desktop', 'archsploit-masscan.desktop', 'archsploit-nikto.desktop', 'archsploit-nmap.desktop', 'archsploit-nse-parser.desktop', 'archsploit-nullinux.desktop', 'archsploit-p0f.desktop', 'archsploit-smbmap.desktop', 'archsploit-smtp-user-enum.desktop', 'archsploit-sslsplit.desktop', 'archsploit-thc-ipv6.desktop', 'archsploit-traceroute.desktop', 'archsploit-whois.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-gathering/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+    ## ------------------------
+    sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Information Gathering Packages Installed"
+}
+
+## Install Hardware Packages
+## -------------------------
+function install_hardware()
+{
+	loadheader "# Step: Install Hardware Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S arduino --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/arduino.desktop
+	loadstatus " [+] Install Arduino" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-hardware >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-hardware/opt/archsploit/hardware/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-hardware/opt/archsploit/hardware/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## ApkTool
+	    ## https://code.google.com/p/android-apktool/
+	    ## ------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/apktool.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/hardware/apktool/apktool
+		    sudo chmod +x /opt/archsploit/hardware/apktool/apktool.jar
+		    sudo ln -s /opt/archsploit/hardware/apktool/apktool /usr/local/bin/apktool
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/apktool.md >/dev/null 2>&1
+		    loadstatus " [+] Install ApkTool" "OK" "valid"
+		else
+			loadstatus " [+] ApkTool Already Installed" "OK" "valid"
+		fi
+
+		## Baksmali
+		## https://github.com/JesusFreke/smali/
+		## ------------------------------------
+		if [ ! -f "/etc/archsploit/packages/baksmali.md" ];
+		then
+			sudo chmod +x /opt/archsploit/hardware/baksmali/baksmali.jar
+			sudo touch /usr/local/bin/baksmali
+			sudo chmod +x /usr/local/bin/baksmali
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
+			echo 'cd /opt/archsploit/hardware/baksmali/' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/hardware/baksmali/baksmali.jar' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/baksmali.md >/dev/null 2>&1
+			loadstatus " [+] Install Baksmali" "OK" "valid"
+		else
+			loadstatus " [+] Baksmali Already Installed" "OK" "valid"
+		fi
+
+		## Dex2jar
+		## https://bitbucket.org/pxb1988/Dex2jar
+		## -------------------------------------
+		if [ ! -f "/etc/archsploit/packages/dex2jar.md" ];
+		then
+			sudo chmod +x /opt/archsploit/hardware/dex2jar/*.sh
+			sudo ln -s /opt/archsploit/hardware/dex2jar/d2j-dex2jar.sh /usr/local/bin/dex2jar
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dex2jar.md >/dev/null 2>&1
+			loadstatus " [+] Install Dex2jar" "OK" "valid"
+		else
+			loadstatus " [+] Dex2jar Already Installed" "OK" "valid"
+		fi
+
+		## Smali
+		## https://github.com/JesusFreke/smali/
+		## ------------------------------------
+		if [ ! -f "/etc/archsploit/packages/smali.md" ];
+		then
+			sudo chmod +x /opt/archsploit/hardware/smali/smali.jar
+			sudo touch /usr/local/bin/smali
+			sudo chmod +x /usr/local/bin/smali
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/smali >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/smali >/dev/null 2>&1
+			echo 'cd /opt/archsploit/hardware/smali/' | sudo tee -a /usr/local/bin/smali >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/hardware/smali/smali.jar' | sudo tee -a /usr/local/bin/baksmali >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smali.md >/dev/null 2>&1
+			loadstatus " [+] Install Smali" "OK" "valid"
+		else
+			loadstatus " [+] Smali Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-hardware/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Hardware/ apps "['archsploit-apktool.desktop', 'archsploit-arduino.desktop', 'archsploit-baksmali.desktop', 'archsploit-dex2jar.desktop', 'archsploit-smali.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-hardware/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+    ## ------------------------
+    sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Hardware Packages Installed"
+}
+
+## Install Miscellaneous Packages
+## ------------------------------
+function install_miscs()
+{
+	loadheader "# Step: Install Miscs Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-miscs >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-miscs/opt/archsploit/miscs/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-miscs/opt/archsploit/miscs/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## ColdWar
+	    ## https://github.com/ChrisTruncer/PenTestScripts/
+	    ## -----------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/coldwar.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/miscs/coldwar/coldwar.py
+		    sudo ln -s /opt/archsploit/miscs/coldwar/coldwar.py /usr/local/bin/coldwar
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/coldwar.md >/dev/null 2>&1
+			loadstatus " [+] Install ColdWar" "OK" "valid"
+		else
+			loadstatus " [+] ColdWar Already Installed" "OK" "valid"
+		fi
+
+		## Dedsploit
+	    ## https://github.com/ex0dus-0x/dedsploit/
+	    ## ---------------------------------------
+		if [ ! -f "/etc/archsploit/packages/dedsploit.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/miscs/dedsploit/dedsploit.py
+		    sudo ln -s /opt/archsploit/miscs/dedsploit/dedsploit.py /usr/local/bin/dedsploit
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dedsploit.md >/dev/null 2>&1
+			loadstatus " [+] Install Dedsploit" "OK" "valid"
+		else
+			loadstatus " [+] Dedsploit Already Installed" "OK" "valid"
+		fi
+
+		## Dracnmap
+		## https://github.com/Screetsec/Dracnmap/
+		## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/dracnmap.md" ];
+		then
+			sudo chmod +x /opt/archsploit/miscs/dracnmap/dracnmap.sh
+			sudo ln -s /opt/archsploit/miscs/dracnmap/dracnmap.sh /usr/local/bin/dracnmap
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dracnmap.md >/dev/null 2>&1
+			loadstatus " [+] Install Dracnmap" "OK" "valid"
+		else
+			loadstatus " [+] Dracnmap Already Installed" "OK" "valid"
+		fi
+
+		## Hammer
+		## https://github.com/cyweb/hammer/
+		## --------------------------------
+		if [ ! -f "/etc/archsploit/packages/hammer.md" ];
+		then
+			sudo chmod +x /opt/archsploit/miscs/hammer/hammer.py
+			sudo ln -s /opt/archsploit/miscs/hammer/hammer.py /usr/local/bin/hammer
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/hammer.md >/dev/null 2>&1
+			loadstatus " [+] Install Hammer" "OK" "valid"
+		else
+			loadstatus " [+] Hammer Already Installed" "OK" "valid"
+		fi
+
+		## SubBrute
+		## https://github.com/TheRook/subbrute/
+		## ------------------------------------
+		if [ ! -f "/etc/archsploit/packages/subbrute.md" ];
+		then
+			sudo chmod +x /opt/archsploit/miscs/subbrute/subbrute.py
+			sudo ln -s /opt/archsploit/miscs/subbrute/subbrute.py /usr/local/bin/subbrute
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/subbrute.md >/dev/null 2>&1
+			loadstatus " [+] Install SubBrute" "OK" "valid"
+		else
+			loadstatus " [+] SubBrute Already Installed" "OK" "valid"
+		fi
+
+		## TOR Browser
+		## https://www.torproject.org/
+		## ---------------------------
+		if [ ! -f "/etc/archsploit/packages/tor-browser.md" ];
+		then
+			wget -O "/tmp/tor-browser-linux64-10.0.1_en-US.tar.xz" https://www.torproject.org/dist/torbrowser/10.0.1/tor-browser-linux64-10.0.1_en-US.tar.xz >/dev/null 2>&1
+			if [ -f "/tmp/tor-browser-linux64-10.0.1_en-US.tar.xz" ];
+			then
+			    cd /tmp/
+			    tar xf tor-browser-linux64-10.0.1_en-US.tar.xz
+			    sudo mv /tmp/tor-browser_en-US /opt/archsploit/miscs/tor-browser
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/tor-browser.md >/dev/null 2>&1
+				loadstatus " [+] Install TOR Browser" "OK" "valid"
+			else
+				loadstatus " [*] Install TOR Browser" "!!" "issue"
+			fi
+		else
+			loadstatus " [+] TOR Browser Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-miscs/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Miscs/ apps "['archsploit-coldwar.desktop', 'archsploit-dedsploit.desktop', 'archsploit-dracnmap.desktop', 'archsploit-hammer.desktop', 'archsploit-subbrute.desktop', 'archsploit-tor-browser.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-miscs/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+    ## ------------------------
+    sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Miscellaneous Packages Installed"
+}
+
+## Install Networking Packages
+## ---------------------------
+function install_networking()
+{
+	loadheader "# Step: Install Networking Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S httptunnel --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Httptunnel" "OK" "valid"
+
+	sudo pacman -S i2pd --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install I2pd" "OK" "valid"
+
+	sudo pacman -S lftp --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Lftp" "OK" "valid"
+
+	sudo pacman -S macchanger --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Macchanger" "OK" "valid"
+
+	sudo pacman -S medusa --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Medusa" "OK" "valid"
+
+	sudo pacman -S nbtscan --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Nbtscan" "OK" "valid"
+
+	sudo pacman -S gnu-netcat --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install NetCat GNU" "OK" "valid"
+
+	sudo pacman -S nfs-utils --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install NFS-utils" "OK" "valid"
+
+	sudo pacman -S openssh --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install OpenSSH" "OK" "valid"
+
+	sudo pacman -S openvpn --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install OpenVPN" "OK" "valid"
+
+	sudo pacman -S proxychains-ng --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Proxychains-ng" "OK" "valid"
+
+	sudo pacman -S ptunnel --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install pTunnel" "OK" "valid"
+
+	sudo pacman -S samba --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Samba" "OK" "valid"
+
+	sudo pacman -S smbclient --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Smbclient" "OK" "valid"
+
+	sudo pacman -S sipcalc --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Sipcalc" "OK" "valid"
+
+	sudo pacman -S socat --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Socat" "OK" "valid"
+
+	sudo pacman -S tcpdump --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install TCPdump" "OK" "valid"
+
+	sudo pacman -S tcpreplay --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install TCPreplay" "OK" "valid"
+
+	sudo pacman -S tor --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Tor" "OK" "valid"
+
+	sudo pacman -S torsocks --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Torsocks" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-networking >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-networking/opt/archsploit/networking/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-networking/opt/archsploit/networking/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Cymothoa
+	    ## http://sourceforge.net/projects/cymothoa/
+	    ## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/cymothoa.md" ];
+		then
+			cd /opt/archsploit/networking/cymothoa/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/networking/cymothoa/bgrep /usr/local/bin/bgrep
+			sudo ln -s /opt/archsploit/networking/cymothoa/cymothoa /usr/local/bin/cymothoa
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/cymothoa.md >/dev/null 2>&1
+			loadstatus " [+] Install Cymothoa" "OK" "valid"
+		else
+			loadstatus " [+] Cymothoa Already Installed" "OK" "valid"
+		fi
+
+		## Nishang
+		## https://github.com/samratashok/nishang/
+		## ---------------------------------------
+		if [ ! -f "/etc/archsploit/packages/nishang.md" ];
+		then
+			sudo touch /usr/local/bin/nishang
+			sudo chmod +x /usr/local/bin/nishang
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
+			echo 'tree /opt/archsploit/networking/nishang/' | sudo tee -a /usr/local/bin/nishang >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nishang.md >/dev/null 2>&1
+			loadstatus " [+] Install Nishang" "OK" "valid"
+		else
+			loadstatus " [+] Nishang Already Installed" "OK" "valid"
+		fi
+
+		## PowerSploit
+		## https://github.com/PowerShellMafia/PowerSploit/
+		## -----------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/powersploit.md" ];
+		then
+			sudo touch /usr/local/bin/powersploit
+			sudo chmod +x /usr/local/bin/powersploit
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
+			echo 'tree /opt/archsploit/networking/powersploit/' | sudo tee -a /usr/local/bin/powersploit >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/powersploit.md >/dev/null 2>&1
+			loadstatus " [+] Install PowerSploit" "OK" "valid"
+		else
+			loadstatus " [+] PowerSploit Already Installed" "OK" "valid"
+		fi
+
+		## Pwnat
+		## https://samy.pl/pwnat/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/pwnat.md" ];
+		then
+			cd /opt/archsploit/networking/pwnat/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/networking/pwnat/pwnat /usr/local/bin/pwnat
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/pwnat.md >/dev/null 2>&1
+			loadstatus " [+] Install Pwnat" "OK" "valid"
+		else
+			loadstatus " [+] Pwnat Already Installed" "OK" "valid"
+		fi
+
+		## TorBridge
+		## https://archsploit.org
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/torbridge.md" ];
+		then
+			sudo chmod +x /opt/archsploit/networking/torbridge/torbridge
+			sudo ln -s /opt/archsploit/networking/torbridge/torbridge /usr/local/bin/torbridge
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/torbridge.md >/dev/null 2>&1
+			loadstatus " [+] Install TorBridge" "OK" "valid"
+		else
+			loadstatus " [+] TorBridge Already Installed" "OK" "valid"
+		fi
+
+		## WebShells
+		## https://tools.kali.org/
+		## -----------------------
+		if [ ! -f "/etc/archsploit/packages/webshells.md" ];
+		then
+			sudo touch /usr/local/bin/webshells
+			sudo chmod +x /usr/local/bin/webshells
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
+			echo 'tree /opt/archsploit/networking/webshells/' | sudo tee -a /usr/local/bin/webshells >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webshells.md >/dev/null 2>&1
+			loadstatus " [+] Install WebShells" "OK" "valid"
+		else
+			loadstatus " [+] WebShells Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-networking/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Networking/ apps "['archsploit-cymothoa.desktop', 'archsploit-i2pd.desktop', 'archsploit-lftp.desktop', 'archsploit-macchanger.desktop', 'archsploit-medusa.desktop', 'archsploit-nbtscan.desktop', 'archsploit-netcat.desktop', 'archsploit-nishang.desktop', 'archsploit-openvpn.desktop', 'archsploit-powersploit.desktop', 'archsploit-proxychains.desktop', 'archsploit-ptunnel.desktop', 'archsploit-pwnat.desktop', 'archsploit-sipcalc.desktop', 'archsploit-smbclient.desktop', 'archsploit-socat.desktop', 'archsploit-tcpdump.desktop', 'archsploit-tcpreplay.desktop', 'archsploit-torbridge.desktop', 'archsploit-webshells.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-networking/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Networking Packages Installed"
+}
+
+## Install Reporting Packages
+## --------------------------
+function install_reporting()
+{
+	loadheader "# Step: Install Reporting Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S dos2unix --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Dos2Unix" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-reporting >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-reporting/opt/archsploit/reporting/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-reporting/opt/archsploit/reporting/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## MagicTree
+		## https://www.gremwell.com/
+		## -------------------------
+		if [ ! -f "/etc/archsploit/packages/magictree.md" ];
+		then
+			sudo chmod +x /opt/archsploit/reporting/magictree/magictree.jar
+			sudo touch /usr/local/bin/magictree
+			sudo chmod +x /usr/local/bin/magictree
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/reporting/magictree/magictree.jar' | sudo tee -a /usr/local/bin/magictree >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/magictree.md >/dev/null 2>&1
+			loadstatus " [+] Install MagicTree" "OK" "valid"
+		else
+			loadstatus " [+] MagicTree Already Installed" "OK" "valid"
+		fi
+
+		## Metagoofil
+		## https://code.google.com/archive/p/metagoofil/
+		## ---------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/metagoofil.md" ];
+		then
+			sudo chmod +x /opt/archsploit/reporting/metagoofil/metagoofil.py
+			sudo ln -s /opt/archsploit/reporting/metagoofil/metagoofil.py /usr/local/bin/metagoofil
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/metagoofil.md >/dev/null 2>&1
+			loadstatus " [+] Install Metagoofil" "OK" "valid"
+		else
+			loadstatus " [+] Metagoofil Already Installed" "OK" "valid"
+		fi
+
+		## Nipper-NG
+		## https://code.google.com/archive/p/nipper-ng/
+		## --------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/nipper-ng.md" ];
+		then
+			cd /opt/archsploit/reporting/nipper-ng/
+			sudo make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/nipper-ng.md >/dev/null 2>&1
+			loadstatus " [+] Install Nipper-NG" "OK" "valid"
+		else
+			loadstatus " [+] Nipper-NG Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-reporting/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reporting/ apps "['archsploit-dos2unix.desktop', 'archsploit-magictree.desktop', 'archsploit-metagoofil.desktop', 'archsploit-nipper-ng.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-reporting/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Reporting Packages Installed"
+}
+
+## Install Reverse Engineering Packages
+## ------------------------------------
+function install_reverse()
+{
+	loadheader "# Step: Install Reverse Engineering Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S radare2 --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Radare2" "OK" "valid"
+
+	sudo pacman -S valgrind --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Valgrind" "OK" "valid"
+
+	sudo pacman -S yara --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Yara" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-reverse >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-reverse/opt/archsploit/reverse/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-reverse/opt/archsploit/reverse/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## EDB Debugger
+		## https://github.com/eteran/edb-debugger/
+		## ---------------------------------------
+		if [ ! -f "/etc/archsploit/packages/edb-debugger.md" ];
+		then
+			cd /opt/archsploit/reverse/
+			sudo git clone https://github.com/eteran/edb-debugger/ >/dev/null 2>&1
+			if [ -d "/opt/archsploit/reverse/edb-debugger/" ];
+			then
+				cd /opt/archsploit/reverse/edb-debugger/
+				sudo git submodule update --init --recursive >/dev/null 2>&1
+				sudo mkdir -p /opt/archsploit/reverse/edb-debugger/build/
+				cd /opt/archsploit/reverse/edb-debugger/build/
+				sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ .. >/dev/null 2>&1
+				sudo make >/dev/null 2>&1
+				sudo make install >/dev/null 2>&1
+				sudo rm -f /usr/local/share/applications/edb.desktop
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/edb-debugger.md >/dev/null 2>&1
+				loadstatus " [+] Install EDB Debugger" "OK" "valid"
+			else
+				loadstatus " [*] Install EDB Debugger" "!!" "issue"
+			fi
+		else
+			loadstatus " [+] EDB Debugger Already Installed" "OK" "valid"
+		fi
+
+		## Javasnoop
+		## https://code.google.com/archive/p/javasnoop/
+		## --------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/javasnoop.md" ];
+		then
+			sudo chmod +x /opt/archsploit/reverse/javasnoop/javasnoop.jar
+			sudo touch /usr/local/bin/javasnoop
+			sudo chmod +x /usr/local/bin/javasnoop
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/reverse/javasnoop/javasnoop.jar' | sudo tee -a /usr/local/bin/javasnoop >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/javasnoop.md >/dev/null 2>&1
+			loadstatus " [+] Install Javasnoop" "OK" "valid"
+		else
+			loadstatus " [+] Javasnoop Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-reverse/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Reverse/ apps "['archsploit-edb-debugger.desktop', 'archsploit-javasnoop.desktop', 'archsploit-radare2.desktop', 'archsploit-valgrind.desktop', 'archsploit-yara.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-reverse/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Reverse Engineering Packages Installed"
+}
+
+## Install Sniffing/Spoofing Packages
+## ----------------------------------
+function install_sniffing()
+{
+	loadheader "# Step: Install Sniffing Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S bettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Bettercap" "OK" "valid"
+
+	sudo pacman -S ettercap --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Ettercap" "OK" "valid"
+
+	sudo pacman -S dsniff --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Dsniff" "OK" "valid"
+
+	sudo pacman -S wireshark-qt --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/wireshark.desktop
+	loadstatus " [+] Install Wireshark" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-sniffing >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-sniffing/opt/archsploit/sniffing/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-sniffing/opt/archsploit/sniffing/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## MITM-Dump
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmdump.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmdump/mitmdump
+			sudo ln -s /opt/archsploit/sniffing/mitmdump/mitmdump /usr/local/bin/mitmdump
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmdump.md >/dev/null 2>&1
+			loadstatus " [+] Install MITM-Dump" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Dump Already Installed" "OK" "valid"
+		fi
+
+		## MITM-Proxy
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmproxy.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmproxy/mitmproxy
+			sudo ln -s /opt/archsploit/sniffing/mitmproxy/mitmproxy /usr/local/bin/mitmproxy
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmproxy.md >/dev/null 2>&1
+			loadstatus " [+] Install MITM-Proxy" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Proxy Already Installed" "OK" "valid"
+		fi
+
+		## MITM-Web
+		## https://mitmproxy.org/
+		## ----------------------
+		if [ ! -f "/etc/archsploit/packages/mitmweb.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/mitmweb/mitmweb
+			sudo ln -s /opt/archsploit/sniffing/mitmweb/mitmweb /usr/local/bin/mitmweb
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/mitmweb.md >/dev/null 2>&1
+			loadstatus " [+] Install MITM-Web" "OK" "valid"
+		else
+			loadstatus " [+] MITM-Web Already Installed" "OK" "valid"
+		fi
+
+		## SniffJoke
+		## https://github.com/vecna/sniffjoke/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/sniffjoke.md" ];
+		then
+			sudo mkdir -p /opt/archsploit/sniffing/sniffjoke/build
+			cd /opt/archsploit/sniffing/sniffjoke/build/
+			sudo cmake .. >/dev/null 2>&1
+			sudo make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sniffjoke.md >/dev/null 2>&1
+			loadstatus " [+] Install SniffJoke" "OK" "valid"
+		else
+			loadstatus " [+] SniffJoke Already Installed" "OK" "valid"
+		fi
+
+		## WebScarab
+		## http://dawes.za.net/
+		## --------------------
+		if [ ! -f "/etc/archsploit/packages/webscarab.md" ];
+		then
+			sudo chmod +x /opt/archsploit/sniffing/webscarab/webscarab.jar
+			sudo touch /usr/local/bin/webscarab
+			sudo chmod +x /usr/local/bin/webscarab
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'cd /opt/archsploit/sniffing/webscarab/' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/sniffing/webscarab/webscarab.jar' | sudo tee -a /usr/local/bin/webscarab >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/webscarab.md >/dev/null 2>&1
+			loadstatus " [+] Install WebScarab" "OK" "valid"
+		else
+			loadstatus " [+] WebScarab Already Installed" "OK" "valid"
+		fi
+
+		## Xspy
+		## https://github.com/mnp/xspy/
+		## ----------------------------
+		if [ ! -f "/etc/archsploit/packages/xspy.md" ];
+		then
+			cd /opt/archsploit/sniffing/xspy/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/sniffing/xspy/xspy /usr/local/bin/xspy
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/xspy.md >/dev/null 2>&1
+			loadstatus " [+] Install Xspy" "OK" "valid"
+		else
+			loadstatus " [+] Xspy Already Installed" "OK" "valid"
+		fi
+
+		## Zaproxy
+		## https://github.com/zaproxy/zaproxy/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/zaproxy.md" ];
+		then
+			wget -O "/tmp/ZAP_2.9.0_Linux.tar.gz" https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2.9.0_Linux.tar.gz >/dev/null 2>&1
+			if [ -f "/tmp/ZAP_2.9.0_Linux.tar.gz" ];
+			then
+			    cd /tmp/
+				sudo tar -xvf /tmp/ZAP_2.9.0_Linux.tar.gz >/dev/null 2>&1
+				sudo mv ZAP_2.9.0 /opt/archsploit/sniffing/zaproxy/
+				sudo chmod +x /opt/archsploit/sniffing/zaproxy/zap.sh
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/zaproxy.md >/dev/null 2>&1
+			    loadstatus " [+] Install Zaproxy" "OK" "valid"
+			else
+				loadstatus " [*] Install Zaproxy" "!!" "issue"
+			fi
+		else
+			loadstatus " [+] Zaproxy Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-sniffing/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Sniffing/ apps "['archsploit-bettercap.desktop', 'archsploit-dsniff.desktop', 'archsploit-ettercap.desktop', 'archsploit-mitmdump.desktop', 'archsploit-mitmproxy.desktop', 'archsploit-mitmweb.desktop', 'archsploit-sniffjoke.desktop', 'archsploit-webscarab.desktop', 'archsploit-wireshark.desktop', 'archsploit-xspy.desktop', 'archsploit-zaproxy.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-sniffing/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Sniffing/Spoofing Packages Installed"
+}
+
+## Install Social Engineering Packages
+## -----------------------------------
+function install_social()
+{
+	loadheader "# Step: Install Social Engineering Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S httrack --noconfirm --needed >/dev/null 2>&1
+	sudo rm -f /usr/share/applications/WebHTTrack.desktop
+	sudo rm -f /usr/share/applications/WebHTTrack-Websites.desktop
+	loadstatus " [+] Install Httrack" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-social >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-social/opt/archsploit/social/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-social/opt/archsploit/social/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Blackeye
+	    ## https://github.com/thelinuxchoice/blackeye/
+	    ## -------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/blackeye.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/social/blackeye/blackeye.sh
+		    sudo ln -s /opt/archsploit/social/blackeye/blackeye.sh /usr/local/bin/blackeye
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blackeye.md >/dev/null 2>&1
+			loadstatus " [+] Install Blackeye" "OK" "valid"
+		else
+			loadstatus " [+] Blackeye Already Installed" "OK" "valid"
+		fi
+
+		## CredSniper
+	    ## https://github.com/ustayready/CredSniper/
+	    ## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/credsniper.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/social/credsniper/credsniper.py
+		    sudo touch /usr/local/bin/credsniper
+		    sudo chmod +x /usr/local/bin/credsniper
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+		    echo 'cd /opt/archsploit/social/credsniper/' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+		    echo 'sudo python credsniper.py $@' | sudo tee -a /usr/local/bin/credsniper >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/credsniper.md >/dev/null 2>&1
+			loadstatus " [+] Install CredSniper" "OK" "valid"
+		else
+			loadstatus " [+] CredSniper Already Installed" "OK" "valid"
+		fi
+
+		## Gophish
+	    ## https://github.com/gophish/gophish
+	    ## ----------------------------------
+		if [ ! -f "/etc/archsploit/packages/gophish.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/social/gophish/gophish
+		    sudo touch /usr/local/bin/gophish
+		    sudo chmod +x /usr/local/bin/gophish
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
+		    echo 'cd /opt/archsploit/social/gophish/' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
+		    echo 'sudo ./gophish $@' | sudo tee -a /usr/local/bin/gophish >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/gophish.md >/dev/null 2>&1
+			loadstatus " [+] Install Gophish" "OK" "valid"
+		else
+			loadstatus " [+] Gophish Already Installed" "OK" "valid"
+		fi
+
+		## Seeker
+	    ## https://github.com/thewhiteh4t/seeker/
+	    ## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/seeker.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/social/seeker/seeker.py
+		    sudo ln -s /opt/archsploit/social/seeker/seeker.py /usr/local/bin/seeker
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/seeker.md >/dev/null 2>&1
+			loadstatus " [+] Install Seeker" "OK" "valid"
+		else
+			loadstatus " [+] Seeker Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-social/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Social/ apps "['archsploit-blackeye.desktop', 'archsploit-credsniper.desktop', 'archsploit-httrack.desktop', 'archsploit-gophish.desktop', 'archsploit-seeker.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-social/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Social Engineering Packages Installed"
+}
+
+## Install Stress-Testing Packages
+## -------------------------------
+function install_stressing()
+{
+	loadheader "# Step: Install Stress-Testing Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S hping --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Hping" "OK" "valid"
+
+	sudo pacman -S slowhttptest --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Slowhttptest" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-stress-testing >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-stress-testing/opt/archsploit/stress-testing/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-stress-testing/opt/archsploit/stress-testing/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Iaxflood
+		## http://www.hackingexposedvoip.com/sec_tools.html
+		## ------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/iaxflood.md" ];
+		then
+			cd /opt/archsploit/stress-testing/iaxflood/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/stress-testing/iaxflood/iaxflood /usr/local/bin/iaxflood
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/iaxflood.md >/dev/null 2>&1
+			loadstatus " [+] Install Iaxflood" "OK" "valid"
+		else
+			loadstatus " [+] Iaxflood Already Installed" "OK" "valid"
+		fi
+
+		## Rtpflood
+		## http://www.hackingexposedvoip.com/sec_tools.html
+		## ------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/rtpflood.md" ];
+		then
+			cd /opt/archsploit/stress-testing/rtpflood/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/stress-testing/rtpflood/rtpflood /usr/local/bin/rtpflood
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/rtpflood.md >/dev/null 2>&1
+			loadstatus " [+] Install Rtpflood" "OK" "valid"
+		else
+			loadstatus " [+] Rtpflood Already Installed" "OK" "valid"
+		fi
+
+		## Udpflood
+		## http://www.hackingexposedvoip.com/sec_tools.html
+		## ------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/udpflood.md" ];
+		then
+			cd /opt/archsploit/stress-testing/udpflood/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/stress-testing/udpflood/udpflood /usr/local/bin/udpflood
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/udpflood.md >/dev/null 2>&1
+			loadstatus " [+] Install Udpflood" "OK" "valid"
+		else
+			loadstatus " [+] Udpflood Already Installed" "OK" "valid"
+		fi
+
+		## Ufonet
+		## https://github.com/epsylon/ufonet
+		## ---------------------------------
+		if [ ! -f "/etc/archsploit/packages/ufonet.md" ];
+		then
+			cd /opt/archsploit/stress-testing/ufonet/
+			sudo pip install pycrypto >/dev/null 2>&1
+		    sudo pip install whois >/dev/null 2>&1
+			sudo touch /usr/local/bin/ufonet
+		    sudo chmod +x /usr/local/bin/ufonet
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
+		    echo 'cd /opt/archsploit/stress-testing/ufonet/' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
+		    echo 'sudo ./ufonet $@' | sudo tee -a /usr/local/bin/ufonet >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/ufonet.md >/dev/null 2>&1
+			loadstatus " [+] Install Ufonet" "OK" "valid"
+		else
+			loadstatus " [+] Ufonet Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-stress-testing/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Stressing/ apps "['archsploit-hping.desktop', 'archsploit-iaxflood.desktop', 'archsploit-rtpflood.desktop', 'archsploit-slowhttptest.desktop', 'archsploit-udpflood.desktop', 'archsploit-ufonet.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-stress-testing/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Stress-Testing Packages Installed"
+}
+
+## Install Vulnerability Packages
+## ------------------------------
+function install_vulnerability()
+{
+	loadheader "# Step: Install Vulnerability Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-vulnerability >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-vulnerability/opt/archsploit/vulnerability/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-vulnerability/opt/archsploit/vulnerability/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Bed
+	    ## http://ww5.snake-basket.de/
+	    ## ---------------------------
+		if [ ! -f "/etc/archsploit/packages/bed.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/vulnerability/bed/bed.pl
+		    sudo touch /usr/local/bin/bed
+		    sudo chmod +x /usr/local/bin/bed
+		    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+		    echo 'clear' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+		    echo 'cd /opt/archsploit/vulnerability/bed/' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+		    echo 'perl bed.pl $@' | sudo tee -a /usr/local/bin/bed >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/bed.md >/dev/null 2>&1
+		    loadstatus " [+] Install Bed" "OK" "valid"
+		else
+			loadstatus " [+] Bed Already Installed" "OK" "valid"
+		fi
+
+		## JSQL-Injection
+		## https://github.com/ron190/jsql-injection/
+		## -----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/jsql-injection.md" ];
+		then
+			sudo chmod +x /opt/archsploit/vulnerability/jsql-injection/jsql-injection.jar
+			sudo touch /usr/local/bin/jsql-injection
+			sudo chmod +x /usr/local/bin/jsql-injection
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/vulnerability/jsql-injection/jsql-injection.jar' | sudo tee -a /usr/local/bin/jsql-injection >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/jsql-injection.md >/dev/null 2>&1
+			loadstatus " [+] Install JSQL-Injection" "OK" "valid"
+		else
+			loadstatus " [+] JSQL-Injection Already Installed" "OK" "valid"
+		fi
+
+		## Oscanner
+		## http://www.cqure.net/wp/tools/database/oscanner/
+		## ------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/oscanner.md" ];
+		then
+			sudo chmod +x /opt/archsploit/vulnerability/oscanner/oscanner.sh
+			sudo touch /usr/local/bin/oscanner
+			sudo chmod +x /usr/local/bin/oscanner
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+			echo 'cd /opt/archsploit/vulnerability/oscanner/' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+			echo './oscanner.sh $@' | sudo tee -a /usr/local/bin/oscanner >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/oscanner.md >/dev/null 2>&1
+			loadstatus " [+] Install Oscanner" "OK" "valid"
+		else
+			loadstatus " [+] Oscanner Already Installed" "OK" "valid"
+		fi
+
+		## Sfuzz
+		## https://github.com/orgcandman/Simple-Fuzzer/
+		## --------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/sfuzz.md" ];
+		then
+			cd /opt/archsploit/vulnerability/sfuzz/
+			sudo ./configure >/dev/null 2>&1
+			sudo make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sfuzz.md >/dev/null 2>&1
+			loadstatus " [+] Install Sfuzz" "OK" "valid"
+		else
+			loadstatus " [+] Sfuzz Already Installed" "OK" "valid"
+		fi
+
+		## SidGuesser
+		## http://www.cqure.net/wp/tools/database/sidguesser/
+		## --------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/sidguesser.md" ];
+		then
+			sudo chmod +x /opt/archsploit/vulnerability/sidguesser/configure
+			cd /opt/archsploit/vulnerability/sidguesser/
+			sudo ./configure >/dev/null 2>&1
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/vulnerability/sidguesser/sidguess /usr/local/bin/sidguess
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sidguesser.md >/dev/null 2>&1
+			loadstatus " [+] Install SidGuesser" "OK" "valid"
+		else
+			loadstatus " [+] SidGuesser Already Installed" "OK" "valid"
+		fi
+
+		## SQLMap
+		## https://github.com/sqlmapproject/sqlmap/
+		## ----------------------------------------
+		if [ ! -f "/etc/archsploit/packages/sqlmap.md" ];
+		then
+			sudo chmod +x /opt/archsploit/vulnerability/sqlmap/sqlmap.py
+			sudo ln -s /opt/archsploit/vulnerability/sqlmap/sqlmap.py /usr/local/bin/sqlmap
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/sqlmap.md >/dev/null 2>&1
+			loadstatus " [+] Install SQLMap" "OK" "valid"
+		else
+			loadstatus " [+] SQLMap Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-vulnerability/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Vulnerability/ apps "['archsploit-bed.desktop', 'archsploit-jsql-injection.desktop', 'archsploit-oscanner.desktop', 'archsploit-sfuzz.desktop', 'archsploit-sidguess.desktop', 'archsploit-sqlmap.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-vulnerability/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Vulnerability Packages Installed"
+}
+
+## Install Web Applications Packages
+## ---------------------------------
+function install_webapps()
+{
+	loadheader "# Step: Install Web Applications Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-webapps >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-webapps/opt/archsploit/webapps/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-webapps/opt/archsploit/webapps/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Arachni
+	    ## http://www.arachni-scanner.com/
+	    ## -------------------------------
+		if [ ! -f "/etc/archsploit/packages/arachni.md" ];
+		then
+			wget -O "/tmp/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz" https://github.com/Arachni/arachni/releases/download/v1.5.1/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz >/dev/null 2>&1
+			if [ -f "/tmp/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz" ];
+			then
+			    cd /tmp/
+			    tar -xvf arachni-1.5.1-0.5.12-linux-x86_64.tar.gz >/dev/null 2>&1
+				sudo mv /tmp/arachni-1.5.1-0.5.12 /opt/archsploit/webapps/arachni
+				sudo chmod +x /opt/archsploit/webapps/arachni/bin/arachni*
+			    sudo touch /usr/local/bin/arachni
+			    sudo chmod +x /usr/local/bin/arachni
+			    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+			    echo 'clear' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+			    echo 'cd /opt/archsploit/webapps/arachni/bin/' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+			    echo 'sudo ./arachni $@' | sudo tee -a /usr/local/bin/arachni >/dev/null 2>&1
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/arachni.md >/dev/null 2>&1
+			    loadstatus " [+] Install Arachni" "OK" "valid"
+			else
+				loadstatus " [*] Install Arachni" "!!" "issue"
+			fi
+		else
+			loadstatus " [+] Arachni Already Installed" "OK" "valid"
+		fi
+
+		## BurpSuite
+	    ## https://portswigger.net/DownloadUpdate.ashx?Product=Free
+	    ## --------------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/burpsuite.md" ];
+		then
+			wget -O "/tmp/burpsuite.jar" https://portswigger.net/DownloadUpdate.ashx?Product=Free >/dev/null 2>&1
+			if [ -f "/tmp/burpsuite.jar" ];
+			then
+			    sudo mkdir -p /opt/archsploit/webapps/burpsuite/
+				sudo mv /tmp/burpsuite.jar /opt/archsploit/webapps/burpsuite/
+				sudo chmod +x /opt/archsploit/webapps/burpsuite/burpsuite.jar
+			    sudo touch /usr/local/bin/burpsuite
+			    sudo chmod +x /usr/local/bin/burpsuite
+			    echo '#!/bin/bash' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+			    echo 'clear' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+			    echo 'cd /opt/archsploit/webapps/burpsuite/' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+			    echo 'sudo /usr/bin/java -jar /opt/archsploit/webapps/burpsuite/burpsuite.jar' | sudo tee -a /usr/local/bin/burpsuite >/dev/null 2>&1
+				echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/burpsuite.md >/dev/null 2>&1
+				loadstatus " [+] Install BurpSuite" "OK" "valid"
+			else
+				loadstatus " [*] Install BurpSuite" "!!" "issue"
+			fi
+		else
+			loadstatus " [+] BurpSuite Already Installed" "OK" "valid"
+		fi
+
+		## CMSMap
+	    ## https://github.com/Dionach/CMSmap/
+	    ## ----------------------------------
+		if [ ! -f "/etc/archsploit/packages/cmsmap.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/webapps/cmsmap/cmsmap.py
+		    sudo ln -s /opt/archsploit/webapps/cmsmap/cmsmap.py /usr/local/bin/cmsmap
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/cmsmap.md >/dev/null 2>&1
+			loadstatus " [+] Install CMSMap" "OK" "valid"
+		else
+			loadstatus " [+] CMSMap Already Installed" "OK" "valid"
+		fi
+
+		## DirBuster
+		## https://sourceforge.net/projects/dirbuster/
+		## -------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/dirbuster.md" ];
+		then
+			sudo chmod +x /opt/archsploit/webapps/dirbuster/dirbuster.jar
+			sudo touch /usr/local/bin/dirbuster
+			sudo chmod +x /usr/local/bin/dirbuster
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+			echo 'cd /opt/archsploit/webapps/dirbuster/' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+			echo 'sudo /usr/bin/java -jar /opt/archsploit/webapps/dirbuster/dirbuster.jar' | sudo tee -a /usr/local/bin/dirbuster >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/dirbuster.md >/dev/null 2>&1
+			loadstatus " [+] Install DirBuster" "OK" "valid"
+		else
+			loadstatus " [+] DirBuster Already Installed" "OK" "valid"
+		fi
+
+		## Joomscan
+		## https://github.com/rezasp/joomscan/
+		## -----------------------------------
+		if [ ! -f "/etc/archsploit/packages/joomscan.md" ];
+		then
+			sudo chmod +x /opt/archsploit/webapps/joomscan/joomscan.pl
+			sudo ln -s /opt/archsploit/webapps/joomscan/joomscan.pl /usr/local/bin/joomscan
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/joomscan.md >/dev/null 2>&1
+			loadstatus " [+] Install Joomscan" "OK" "valid"
+		else
+			loadstatus " [+] Joomscan Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-webapps/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Webapps/ apps "['archsploit-arachni.desktop', 'archsploit-burpsuite.desktop', 'archsploit-cmsmap.desktop', 'archsploit-dirbuster.desktop', 'archsploit-joomscan.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-webapps/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Web Applications Packages Installed"
+}
+
+## Install Wireless Packages
+## -------------------------
+function install_wireless()
+{
+	loadheader "# Step: Install Wireless Packages"
+
+	## Update System
+	## -------------
+	sudo pacman -Syyu --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Update System Packages" "OK" "valid"
+
+	## Install Arch Repository Tools
+	## -----------------------------
+	sudo pacman -S aircrack-ng --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Aircrack-ng" "OK" "valid"
+
+	sudo pacman -S cowpatty --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Cowpatty" "OK" "valid"
+
+	sudo pacman -S hostapd --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Hostapd" "OK" "valid"
+
+	sudo pacman -S kismet --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Kismet" "OK" "valid"
+
+	sudo pacman -S mdk3 --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Mdk3" "OK" "valid"
+
+	sudo pacman -S pixiewps --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install PixieWPS" "OK" "valid"
+
+	sudo pacman -S pyrit --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Pyrit" "OK" "valid"
+
+	sudo pacman -S reaver --noconfirm --needed >/dev/null 2>&1
+	loadstatus " [+] Install Reaver" "OK" "valid"
+
+	## Install Github Repository Tools
+	## -------------------------------
+	sudo mkdir -p /opt/archsploit/
+	cd /tmp/
+	sudo git clone https://github.com/archsploit/packages-wireless >/dev/null 2>&1
+	loadstatus " [+] Cloning Github Repository" "OK" "valid"
+
+	if [ -d "/tmp/packages-wireless/opt/archsploit/wireless/" ];
+	then
+		## Copy Tools Packages
+		## -------------------
+		sudo cp -r /tmp/packages-wireless/opt/archsploit/wireless/ /opt/archsploit/
+		loadstatus " [+] Copy Github Tools" "OK" "valid"
+
+		## Airsnort
+	    ## https://sourceforge.net/projects/airsnort/
+	    ## ------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/airsnort.md" ];
+		then
+		    cd /opt/archsploit/wireless/airsnort/
+		    sudo ./configure >/dev/null 2>&1
+		    sudo make >/dev/null 2>&1
+		    sudo make install >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/airsnort.md >/dev/null 2>&1
+		    loadstatus " [+] Install Airsnort" "OK" "valid"
+		else
+			loadstatus " [+] Airsnort Already Installed" "OK" "valid"
+		fi
+
+		## Blueranger
+	    ## http://www.hackfromacave.com/projects/blueranger.html
+	    ## -----------------------------------------------------
+		if [ ! -f "/etc/archsploit/packages/blueranger.md" ];
+		then
+		    sudo chmod +x /opt/archsploit/wireless/blueranger/blueranger.sh
+		    sudo ln -s /opt/archsploit/wireless/blueranger/blueranger.sh /usr/bin/blueranger
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/blueranger.md >/dev/null 2>&1
+			loadstatus " [+] Install Blueranger" "OK" "valid"
+		else
+			loadstatus " [+] Blueranger Already Installed" "OK" "valid"
+		fi
+
+		## Crackle
+	    ## https://github.com/mikeryan/crackle/
+	    ## ------------------------------------
+		if [ ! -f "/etc/archsploit/packages/crackle.md" ];
+		then
+			cd /opt/archsploit/wireless/crackle/
+			sudo make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/crackle.md >/dev/null 2>&1
+			loadstatus " [+] Install Crackle" "OK" "valid"
+		else
+			loadstatus " [+] Crackle Already Installed" "OK" "valid"
+		fi
+
+		## EapMd5pass
+		## http://www.willhackforsushi.com/
+		## --------------------------------
+		if [ ! -f "/etc/archsploit/packages/eapmd5pass.md" ];
+		then
+			cd /opt/archsploit/wireless/eapmd5pass/
+			sudo make >/dev/null 2>&1
+			sudo ln -s /opt/archsploit/wireless/eapmd5pass/eapmd5pass /usr/bin/eapmd5pass
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/eapmd5pass.md >/dev/null 2>&1
+			loadstatus " [+] Install EapMd5pass" "OK" "valid"
+		else
+			loadstatus " [+] EapMd5pass Already Installed" "OK" "valid"
+		fi
+	fi
+
+	## Create Applications Desktop
+	## ---------------------------
+	desktops=/tmp/packages-wireless/usr/share/applications/*
+	for desktop in $desktops
+	do
+		sudo rm -f /usr/share/applications/$(basename ${desktop})
+		sudo mv ${desktop} /usr/share/applications/
+	done
+
+	## Add System Desktop
+	## ------------------
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Wireless/ apps "['archsploit-aircrack-ng.desktop', 'archsploit-airsnort.desktop', 'archsploit-blueranger.desktop', 'archsploit-cowpatty.desktop', 'archsploit-crackle.desktop', 'archsploit-eapmd5pass.desktop', 'archsploit-hostapd.desktop', 'archsploit-kismet.desktop', 'archsploit-mdk3.desktop', 'archsploit-pixiewps.desktop', 'archsploit-pyrit.desktop', 'archsploit-reaver.desktop']"
+	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
+
+	## Remove Temporary Files
+	## ----------------------
+	sudo rm -rf /tmp/packages-wireless/
+	loadstatus " [+] Removing Temporary Files" "OK" "valid"
+
+	## Correct User Permissions
+	## ------------------------
+	sudo chown -R $USER:users /opt/*
+	loadstatus " [+] Correct User Permissions" "OK" "valid"
+	loadnotice "ArchSploit Wireless Packages Installed"
+}
+
+## -------- ##
+## Callback ##
+## -------- ##
+
+if [ "$#" -eq  "0" ]
+then
+	usage
+else
+	if [ "$1" == "--install" -o "$1" == "-i" ];
+	then
+		clear
+		keepalive
+		showbanner
+		checkinternet
+		systemdrawers
+
+		case "$2" in
+		cracking)
+			install_cracking
+			;;
+		exploitation)
+			install_exploitation
+			;;
+		forensics)
+			install_forensics
+			;;
+		gathering)
+			install_gathering
+			;;
+		hardware)
+			install_hardware
+			;;
+		miscs)
+			install_miscs
+			;;
+		networking)
+			install_networking
+			;;
+		reporting)
+			install_reporting
+			;;
+		reverse)
+			install_reverse
+			;;
+		sniffing)
+			install_sniffing
+			;;
+		social)
+			install_social
+			;;
+		stressing)
+			install_stressing
+			;;
+		vulnerability)
+			install_vulnerability
+			;;
+		webapps)
+			install_webapps
+			;;
+		wireless)
+			install_wireless
+			;;
+		all)
+			install_cracking
+			install_exploitation
+			install_forensics
+			install_gathering
+			install_hardware
+			install_miscs
+			install_networking
+			install_reporting
+			install_reverse
+			install_sniffing
+			install_social
+			install_stressing
+			install_vulnerability
+			install_webapps
+			install_wireless
+			;;
+		*)
+	        usage
+	        exit 1
+	        ;;
+	    esac
+	    exit 0
+	elif [ "$1" == "--help" -o "$1" == "-h" ];
+	then
+		usage
+	else
+		usage
+	fi
+fi

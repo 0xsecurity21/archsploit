@@ -19,7 +19,6 @@
 * [ExploitDB](https://github.com/offensive-security/exploitdb)
 * [Jexboss](https://github.com/joaomatosf/jexboss/)
 * [Libenom](https://github.com/bounteous/libenom/)
-* [Metasploit](https://github.com/rapid7/metasploit-framework/)
 * [PocSuite](https://github.com/knownsec/pocsuite3/)
 * [Routersploit](https://github.com/threat9/routersploit/)
 * [Shellnoob](https://github.com/reyammer/shellnoob/)
