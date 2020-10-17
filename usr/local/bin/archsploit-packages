@@ -1306,7 +1306,7 @@ function install_networking()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Networking/ apps "['archsploit-cymothoa.desktop', 'archsploit-i2pd.desktop', 'archsploit-lftp.desktop', 'archsploit-macchanger.desktop', 'archsploit-medusa.desktop', 'archsploit-nbtscan.desktop', 'archsploit-netcat.desktop', 'archsploit-nishang.desktop', 'archsploit-openvpn.desktop', 'archsploit-powersploit.desktop', 'archsploit-proxychains.desktop', 'archsploit-ptunnel.desktop', 'archsploit-pwnat.desktop', 'archsploit-sipcalc.desktop', 'archsploit-smbclient.desktop', 'archsploit-socat.desktop', 'archsploit-tcpdump.desktop', 'archsploit-tcpreplay.desktop', 'archsploit-torbridge.desktop', 'archsploit-webshells.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Networking/ apps "['archsploit-cymothoa.desktop', 'archsploit-i2pd.desktop', 'archsploit-lftp.desktop', 'archsploit-macchanger.desktop', 'archsploit-medusa.desktop', 'archsploit-nbtscan.desktop', 'archsploit-netcat.desktop', 'archsploit-nishang.desktop', 'archsploit-openvpn.desktop', 'archsploit-powersploit.desktop', 'archsploit-proxychains.desktop', 'archsploit-ptunnel.desktop', 'archsploit-pwnat.desktop', 'archsploit-sipcalc.desktop', 'archsploit-smbclient.desktop', 'archsploit-socat.desktop', 'archsploit-tcpdump.desktop', 'archsploit-tcpreplay.desktop', 'archsploit-webshells.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
