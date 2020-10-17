@@ -162,7 +162,7 @@ When you are ready, you will need to grab and configure the installation script.
 
 ```bash
 # Download the script and configuration file using wget
-wget -O - https://raw.githubusercontent.com/archsploit/archsploit/master/download.sh | bash
+curl -s https://raw.githubusercontent.com/archsploit/archsploit/master/download.sh | bash
 
 # Edit the archsploit.conf script with nano
 nano archsploit.conf
