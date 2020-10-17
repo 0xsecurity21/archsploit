@@ -81,8 +81,6 @@ The block size parameter "`bs`" can be increased, and while it may speed up the 
 
 Once you are ready with your bootable Arch Linux USB drive, shut down your system. Plugin your USB and boot your machine again.
 
-<a class="gallery-item" href="https://cybsploit.com/uploads/posts/2020/02/how-to-install-arch-linux-with-lvm-and-luks-disk-encryption-1.png" data-fancybox="How to Install Arch Linux with LVM and LUKS Disk Encryption" data-options="{'caption':'How to Install Arch Linux with LVM and LUKS Disk Encryption'}"><img src="https://cybsploit.com/uploads/posts/2020/02/how-to-install-arch-linux-with-lvm-and-luks-disk-encryption-1.png" alt="How to Install Arch Linux with LVM and LUKS Disk Encryption"/></a>
-
 **Important:** You may be unable to boot from live USB if **secure boot** is enabled on your system. In such a case you must first disable the secure boot option from your BIOS panel.
 
 **Configure Default Keyboard**
@@ -154,7 +152,7 @@ When you already connected your machine to the WiFi, you must execute the `exit`
 You can now verify the connection doing a simple ping as follow:
 
 ```bash
-ping archsploit.org -c 3
+ping archlinux.org -c 3
 dhcpcd
 ```
 
