@@ -238,10 +238,10 @@ function cleaner()
 	sleep 5
 
 	loadnotice "ArchSploit Cleaner Completed"
-	echo "The system will shutdown within 5 seconds"
+	echo "The system will reboot within 5 seconds"
 	sleep 5
 
-	sudo shutdown now
+	sudo reboot now
 }
 
 ## Launch

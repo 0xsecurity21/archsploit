@@ -1,3 +1,11 @@
+##### 3.0.1 (2020-10-21)
+
+```
+[removed] `Torbridge` package
+[removed] `Metasploit` package
+[updated] `archsploit-clean` function
+```
+
 ##### 2.0.3 (2020-05-11)
 
 ```
