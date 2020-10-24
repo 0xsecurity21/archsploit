@@ -829,6 +829,16 @@ function terminate()
 		loadstatus " [*] Arch Update Configuration" "!!" "issue"
 	fi
 
+	## Configure Samba
+	## ---------------
+	if [ -d "/mnt/tmp/archsploit/etc/samba/smb.conf" ];
+	then
+		mv /mnt/tmp/archsploit/etc/samba/smb.conf /mnt/etc/samba/smb.conf
+		loadstatus " [+] Samba Configuration" "OK" "valid"
+	else
+		loadstatus " [*] Samba Configuration" "!!" "issue"
+	fi
+
 	## Configure Dconf
 	## ---------------
 	if [ -d "/mnt/tmp/archsploit/etc/dconf" ];
