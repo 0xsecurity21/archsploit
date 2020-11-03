@@ -817,6 +817,24 @@ function install_gathering()
 			loadstatus " [+] Nullinux Already Installed" "OK" "valid"
 		fi
 
+		## Smbcheck
+		## https://github.com/lavalamp-/smb-check
+		## --------------------------------------
+		if [ ! -f "/etc/archsploit/packages/smbcheck.md" ];
+		then
+			sudo chmod +x /opt/archsploit/gathering/smbcheck/smbcheck
+			sudo touch /usr/local/bin/smbcheck
+			sudo chmod +x /usr/local/bin/smbcheck
+			echo '#!/bin/bash' | sudo tee -a /usr/local/bin/smbcheck >/dev/null 2>&1
+			echo 'clear' | sudo tee -a /usr/local/bin/smbcheck >/dev/null 2>&1
+			echo 'cd /opt/archsploit/gathering/smbcheck/' | sudo tee -a /usr/local/bin/smbcheck >/dev/null 2>&1
+			echo './smbcheck $@' | sudo tee -a /usr/local/bin/smbcheck >/dev/null 2>&1
+			echo "Version: 1.0.1" | sudo tee /etc/archsploit/packages/smbcheck.md >/dev/null 2>&1
+			loadstatus " [+] Install Smbcheck" "OK" "valid"
+		else
+			loadstatus " [+] Smbcheck Already Installed" "OK" "valid"
+		fi
+
 		## Smbmap
 		## https://github.com/ShawnDEvans/smbmap
 		## -------------------------------------
@@ -857,7 +875,7 @@ function install_gathering()
 
 	## Add System Desktop
 	## ------------------
-	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ apps "['archsploit-arp-scan.desktop', 'archsploit-automater.desktop', 'archsploit-dnsmap.desktop', 'archsploit-dnstracer.desktop', 'archsploit-enum4linux.desktop', 'archsploit-enumiax.desktop', 'archsploit-linenum.desktop', 'archsploit-masscan.desktop', 'archsploit-nikto.desktop', 'archsploit-nmap.desktop', 'archsploit-nse-parser.desktop', 'archsploit-nullinux.desktop', 'archsploit-p0f.desktop', 'archsploit-smbmap.desktop', 'archsploit-smtp-user-enum.desktop', 'archsploit-sslsplit.desktop', 'archsploit-thc-ipv6.desktop', 'archsploit-traceroute.desktop', 'archsploit-whois.desktop']"
+	gsettings set org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Gathering/ apps "['archsploit-arp-scan.desktop', 'archsploit-automater.desktop', 'archsploit-dnsmap.desktop', 'archsploit-dnstracer.desktop', 'archsploit-enum4linux.desktop', 'archsploit-enumiax.desktop', 'archsploit-linenum.desktop', 'archsploit-masscan.desktop', 'archsploit-nikto.desktop', 'archsploit-nmap.desktop', 'archsploit-nse-parser.desktop', 'archsploit-nullinux.desktop', 'archsploit-p0f.desktop', 'archsploit-smbcheck.desktop', 'archsploit-smbmap.desktop', 'archsploit-smtp-user-enum.desktop', 'archsploit-sslsplit.desktop', 'archsploit-thc-ipv6.desktop', 'archsploit-traceroute.desktop', 'archsploit-whois.desktop']"
 	loadstatus " [+] Creating Applications Launchers" "OK" "valid"
 
 	## Remove Temporary Files
